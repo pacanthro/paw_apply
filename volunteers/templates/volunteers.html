@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}PAW Volunteers{% endblock %}
+
+{% block content %}
+<h1>Volunteer and Staffing Policies</h1>
+<ul>
+  <li>Normal registration fees apply for the initial year.</li>
+  <li>Members must complete a minimum of 8 hours during the con to be eligible for volunteer benefits.</li>
+  <li>Staff are designated by being leads, supervisors and by taking active part in staff planning. All other positions will be considered volunteer.</li>
+  <li>All members MUST sign in & sign out each shift at Con Ops. Failure to do so will result in forfeiture of those hours worked.</li>
+  <li>Hours worked for loading-in or loading-out count as double time (i.e. 2 hours worked = 4 hours).</li>
+  <li>Free membership is valid for a regular attendance level in the following year.</li>
+</ul>
+<a href="{% url 'volunteers:apply' %}" class="btn btn-primary btn-lg">Apply Now</a>
+{% endblock %}

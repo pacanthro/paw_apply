@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}PAW Volunteers{% endblock %}
+
+{% block content %}
+<h1>Welcome</h1>
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">Volunteer</h5>
+    <p class="card-text">Volunteers are key to PAW's success if you wish to help be part of that. Apply to volunteer with us.</p>
+    <a href="{% url 'volunteers:index' %}" class="btn btn-primary">Volunteer</a>
+  </div>
+</div>
+{% endblock %}

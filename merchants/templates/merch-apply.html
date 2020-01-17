@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}PAW Merchants - Application{% endblock %}
+
+{% block content %}
+<h1>Merchant Application</h1>
+<form action="{% url 'merchants:new' %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="event" value="{{event.id}}">
+  {% if error %}
+  <div class="alert alert-danger" role="alert">{{error|safe}}</div>
+  {% endif %}
+  <fieldset>
+    <legend>Contact Info</legend>
+    <div class="form-group row">
+        <label for="legal_name" class="col-sm-2 col-form-label">Legal Name</label>
+        <div class="col-sm-10">
+          <input name="legal_name" type="text" class="form-control" id="legal_name" required>
+        </div>
+    </div>
+    <div class="form-group row">
+      <label for="fan_name" class="col-sm-2 col-form-label">Fan Name</label>
+      <div class="col-sm-10">
+        <input name="fan_name" type="text" class="form-control" id="fan_name" required>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="email" class="col-sm-2 col-form-label">Email</label>
+      <div class="col-sm-10">
+        <input name="email" type="email" class="form-control" id="email" required>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="phone" class="col-sm-2 col-form-label">Phone Number</label>
+      <div class="col-sm-10">
+        <input name="phone" type="phone" class="form-control" id="phone" required>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Business Information</legend>
+    <div class="form-group row">
+      <label for="table_size" class="col-sm-2 col-form-label">Table Size</label>
+      <div class="col-sm">
+        <select name="table_size" class="form-control" id="table_size" required>
+          <option value="">------</option>
+          {% for table in tables %}
+          <option value="{{table.key}}">{{table.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="business_name" class="col-sm-2 col-form-label">Business Name</label>
+      <div class="col-sm-10">
+        <input name="business_name" type="text" class="form-control" id="business_name" required>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="wares_description" class="col-sm-2 col-form-label">Description of Wares</label>
+      <div class="col-sm-10">
+        <textarea name="wares_description" class="form-control" id="wares_description" rows="8" cols="80" required></textarea>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Helper Info</legend>
+    <div class="form-group row">
+        <label for="helper_legal_name" class="col-sm-2 col-form-label">Legal Name</label>
+        <div class="col-sm-10">
+          <input name="helper_legal_name" type="text" class="form-control" id="helper_legal_name">
+        </div>
+    </div>
+    <div class="form-group row">
+      <label for="helper_fan_name" class="col-sm-2 col-form-label">Fan Name</label>
+      <div class="col-sm-10">
+        <input name="helper_fan_name" type="text" class="form-control" id="helper_fan_name">
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Extras</legend>
+    <div class="form-group row">
+        <label for="special_requests" class="col-sm-2 col-form-label">Sepcial Requests</label>
+        <div class="col-sm-10">
+          <textarea name="special_requests" rows="8" cols="80" class="form-control" id="special_requests"></textarea>
+        </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <div class="form-group row float-right">
+      <div class="col">
+        <input type="submit" class="btn btn-primary" value="Apply">
+      </div>
+    </div>
+  </fieldset>
+</form>
+{% endblock %}

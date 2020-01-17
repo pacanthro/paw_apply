@@ -1,0 +1,49 @@
+from django.db import models
+
+# Create your models here.
+class Event(models.Model):
+    event_name = models.CharField(max_length=200)
+    event_start = models.DateField()
+    event_end = models.DateField()
+
+    def __str__(self):
+        return self.event_name
+
+class PanelDuration(models.Model):
+    key = models.CharField(max_length=4, primary_key=True)
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+class DaysAvailable(models.Model):
+    key = models.CharField(max_length=4, primary_key=True)
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+class PanelSlots(models.Model):
+    key = models.CharField(max_length=4, primary_key=True)
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+class Panel(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    email = models.CharField(max_length=100, unique=True)
+    legal_name = models.CharField(max_length=200)
+    fan_name = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=15)
+    twitter_handle = models.CharField(max_length=30)
+    telegram_handle = models.CharField(max_length=30)
+    panelist_bio = models.TextField('Panelist Bio')
+    panel_name = models.CharField(max_length=100)
+    panel_description = models.TextField()
+    panel_duration = models.ForeignKey(PanelDuration, on_delete=models.SET_NULL, null=True)
+    equipment_needs = models.TextField()
+    mature_content = models.BooleanField()
+    panel_day = models.ManyToManyField(DaysAvailable)
+    panel_times = models.ManyToManyField(PanelSlots)
+    check_ids = models.BooleanField()
