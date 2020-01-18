@@ -1,24 +1,11 @@
+from core.models import Event, DaysAvailable
 from django.db import models
 
 # Create your models here.
-class Event(models.Model):
-    event_name = models.CharField(max_length=200)
-    event_start = models.DateField()
-    event_end = models.DateField()
-
-    def __str__(self):
-        return self.event_name
-
 class PanelDuration(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.name
-
-class DaysAvailable(models.Model):
-    key = models.CharField(max_length=4, primary_key=True)
-    name = models.CharField(max_length=20)
+    order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -26,13 +13,14 @@ class DaysAvailable(models.Model):
 class PanelSlots(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=30)
+    order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
 
 class Panel(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    email = models.CharField(max_length=100, unique=True)
+    email = models.CharField(max_length=100)
     legal_name = models.CharField(max_length=200)
     fan_name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=15)
@@ -47,3 +35,6 @@ class Panel(models.Model):
     panel_day = models.ManyToManyField(DaysAvailable)
     panel_times = models.ManyToManyField(PanelSlots)
     check_ids = models.BooleanField()
+
+    def __str__(self):
+        return "{} ({})".format(self.panel_name, self.legal_name)

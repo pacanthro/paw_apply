@@ -1,8 +1,8 @@
 import datetime
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
 from django.db import IntegrityError
-from django import forms
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 from .models import Department, DaysAvailable, Event, TimesAvailable, Volunteer
 
@@ -38,7 +38,7 @@ def new(request):
 
         # Times available
         times = TimesAvailable.objects.filter(key__in=request.POST.getlist('times'))
-    except (KeyError, Event.DoesNotExist):
+    except (KeyError, Event.DoesNotExist, Department.DoesNotExist, DaysAvailable.DoesNotExist, TimesAvailable.DoesNotExist):
         event = Event.objects.get(event_end__gte=datetime.date.today())
         departments = Department.objects.all()
         days = DaysAvailable.objects.all()
@@ -95,4 +95,7 @@ def new(request):
         context = {
             'is_volunteers': True
         }
-        return render(request, 'confirmation.html', context)
+        return HttpResponseRedirect(reverse('volunteers:confirm'))
+
+def confirm(request):
+    return render(request, 'volunteer-confirm.html', {'is_volunteers': True})

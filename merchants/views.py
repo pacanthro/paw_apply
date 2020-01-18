@@ -1,6 +1,8 @@
 import datetime
-from django.shortcuts import render
 from django.db import IntegrityError
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse
 
 from .models import Event, Merchant, Table
 
@@ -25,7 +27,7 @@ def new(request):
 
         # table
         table = Table.objects.get(pk=request.POST['table_size'])
-    except (KeyError, Event.DoesNotExist):
+    except (KeyError, Event.DoesNotExist, Table.DoesNotExist):
         event = Event.objects.get(event_end__gte=datetime.date.today())
         tables = Table.objects.all()
         context = {
@@ -64,4 +66,7 @@ def new(request):
         context = {
             'is_merchants': True
         }
-        return render(request, 'merch-confirm.html', context)
+        return HttpResponseRedirect(reverse('volunteers:confirm'))
+
+def confirm(request):
+    return render(request, 'merch-confirm.html', {'is_merchants': True})
