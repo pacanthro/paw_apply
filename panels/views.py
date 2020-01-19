@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import Event, DaysAvailable, Panel, PanelDuration, PanelSlots
+from .models import Event, DaysAvailable, Panel, PanelDuration, PanelSlot
 
 # Create your views here.
 def index(request):
@@ -11,9 +11,9 @@ def index(request):
 
 def apply(request):
     event = Event.objects.get(event_end__gte=datetime.date.today())
-    days = DaysAvailable.objects.all()
-    durations = PanelDuration.objects.all()
-    time_slots = PanelSlots.objects.all()
+    days = DaysAvailable.objects.order_by('order')
+    durations = PanelDuration.objects.order_by('order')
+    time_slots = PanelSlot.objects.order_by('order')
     context = {
         'is_panels': True,
         'event': event,
@@ -35,12 +35,12 @@ def new(request):
         days = DaysAvailable.objects.filter(key__in=request.POST.getlist('panel_day'))
 
         # Time Slots
-        time_slots = PanelSlots.objects.filter(key__in=request.POST.getlist('panel_slot'))
+        time_slots = PanelSlot.objects.filter(key__in=request.POST.getlist('panel_slot'))
     except ():
         event = Event.objects.get(event_end__gte=datetime.date.today())
-        days = DaysAvailable.objects.all()
-        durations = PanelDuration.objects.all()
-        time_slots = PanelSlots.objects.all()
+        days = DaysAvailable.objects.order_by('order')
+        durations = PanelDuration.objects.order_by('order')
+        time_slots = PanelSlot.objects.order_by('order')
         context = {
             'is_panels': True,
             'event': event,

@@ -12,7 +12,7 @@ def index(request):
 
 def apply(request):
     event = Event.objects.get(event_end__gte=datetime.date.today())
-    tables = Table.objects.all()
+    tables = Table.objects.order_by('order')
     context = {
         'is_merchants': True,
         'event': event,
@@ -29,7 +29,7 @@ def new(request):
         table = Table.objects.get(pk=request.POST['table_size'])
     except (KeyError, Event.DoesNotExist, Table.DoesNotExist):
         event = Event.objects.get(event_end__gte=datetime.date.today())
-        tables = Table.objects.all()
+        tables = Table.objects.order_by('order')
         context = {
             'is_merchants': True,
             'event': event,
@@ -54,7 +54,7 @@ def new(request):
             merchant.save()
         except (IntegrityError):
             event = Event.objects.get(event_end__gte=datetime.date.today())
-            tables = Table.objects.all()
+            tables = Table.objects.order_by('order')
             context = {
                 'is_merchants': True,
                 'event': event,

@@ -10,7 +10,7 @@ class PanelDuration(models.Model):
     def __str__(self):
         return self.name
 
-class PanelSlots(models.Model):
+class PanelSlot(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=30)
     order = models.IntegerField(default=0)
@@ -33,7 +33,7 @@ class Panel(models.Model):
     equipment_needs = models.TextField()
     mature_content = models.BooleanField()
     panel_day = models.ManyToManyField(DaysAvailable)
-    panel_times = models.ManyToManyField(PanelSlots)
+    panel_times = models.ManyToManyField(PanelSlot)
     check_ids = models.BooleanField()
 
     def __str__(self):

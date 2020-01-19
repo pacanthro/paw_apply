@@ -26,7 +26,8 @@ SECRET_KEY = 'a(e(7i)df)@=w+qw!g*4oc!75lic8uh#24ktl-x91-8r6k&&o)'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '.moltenvisuals.com'
+    '.moltenvisuals.com',
+    'localhost'
 ]
 
 
@@ -83,8 +84,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'paw_apply',
-        'USER': '',
-        'PASSWORD': '',
+        'USER': os.getenv('PG_USER'),
+        'PASSWORD': os.getenv('PG_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '',
     }

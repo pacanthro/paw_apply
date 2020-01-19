@@ -13,9 +13,9 @@ def index(request):
 
 def apply(request):
     event = Event.objects.get(event_end__gte=datetime.date.today())
-    departments = Department.objects.all()
-    days = DaysAvailable.objects.all()
-    times = TimesAvailable.objects.all()
+    departments = Department.objects.order_by('order')
+    days = DaysAvailable.objects.order_by('order')
+    times = TimesAvailable.objects.order_by('order')
     context = {
         'is_volunteers': True,
         'event': event,
@@ -40,9 +40,9 @@ def new(request):
         times = TimesAvailable.objects.filter(key__in=request.POST.getlist('times'))
     except (KeyError, Event.DoesNotExist, Department.DoesNotExist, DaysAvailable.DoesNotExist, TimesAvailable.DoesNotExist):
         event = Event.objects.get(event_end__gte=datetime.date.today())
-        departments = Department.objects.all()
-        days = DaysAvailable.objects.all()
-        times = TimesAvailable.objects.all()
+        departments = Department.objects.order_by('order')
+        days = DaysAvailable.objects.order_by('order')
+        times = TimesAvailable.objects.order_by('order')
         context = {
             'is_volunteers': True,
             'event': event,
@@ -70,9 +70,9 @@ def new(request):
             volunteer.save()
         except (IntegrityError):
             event = Event.objects.get(event_end__gte=datetime.date.today())
-            departments = Department.objects.all()
-            days = DaysAvailable.objects.all()
-            times = TimesAvailable.objects.all()
+            departments = Department.objects.order_by('order')
+            days = DaysAvailable.objects.order_by('order')
+            times = TimesAvailable.objects.order_by('order')
             context = {
                 'is_volunteers': True,
                 'event': event,
