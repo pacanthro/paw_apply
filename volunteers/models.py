@@ -27,4 +27,4 @@ class Volunteer(models.Model):
     avail_teardown = models.BooleanField('Available Teardown')
 
     def __str__(self):
-        return self.legal_name
+        return "{} ({})".format(self.fan_name, self.legal_name)

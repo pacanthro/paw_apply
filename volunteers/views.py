@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from modules.email import send_paw_email
 
 from .models import Department, DaysAvailable, Event, TimesAvailable, Volunteer
 
@@ -95,6 +96,9 @@ def new(request):
         context = {
             'is_volunteers': True
         }
+
+        send_paw_email('email-volunteers-confirm.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to='board@pacanthro.org')
+
         return HttpResponseRedirect(reverse('volunteers:confirm'))
 
 def confirm(request):

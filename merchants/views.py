@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from modules.email import send_paw_email
 
 from .models import Event, Merchant, Table
 
@@ -49,6 +50,7 @@ def new(request):
         merchant.wares_description = request.POST['wares_description']
         merchant.helper_legal_name = request.POST['helper_legal_name']
         merchant.helper_fan_name = request.POST['helper_fan_name']
+        merchant.special_requests = request.POST['special_requests']
 
         try:
             merchant.save()
@@ -66,6 +68,9 @@ def new(request):
         context = {
             'is_merchants': True
         }
+
+        send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to='board@pacanthro.org')
+
         return HttpResponseRedirect(reverse('volunteers:confirm'))
 
 def confirm(request):

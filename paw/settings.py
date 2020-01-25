@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'a(e(7i)df)@=w+qw!g*4oc!75lic8uh#24ktl-x91-8r6k&&o)'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sendgrid',
 ]
 
 MIDDLEWARE = [
@@ -74,8 +75,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'paw.wsgi.application'
+# Email Config
+EMAIL_BACKEND = 'sgbackend.SendGridBackend'
+SENDGRID_API_KEY = os.getenv('SEND_GRID_API_KEY')
+DEFAULT_FROM_EMAIL = 'noreply <noreply@pacanthro.org>'
 
+WSGI_APPLICATION = 'paw.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
