@@ -11,8 +11,8 @@
     <p>Telegram: {{volunteer.telegram_handle}}</p>
     <p>Departments of Interest:</p>
     <ul>
-      {% for department in volunteers.department_interest.all %}
-      <li>{{department.name}}</li>
+      {% for department in volunteer.department_interest.all %}
+      <li>{{department.department_name}}</li>
       {% endfor %}
     </ul>
     <p>Days Available:</p>
