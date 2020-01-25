@@ -12,7 +12,7 @@ def index(request):
 
 def apply(request):
     event = Event.objects.get(event_end__gte=datetime.date.today())
-    days = DaysAvailable.objects.order_by('order')
+    days = DaysAvailable.objects.filter(available_scheduling=True).order_by('order')
     durations = PanelDuration.objects.order_by('order')
     time_slots = PanelSlot.objects.order_by('order')
     context = {
