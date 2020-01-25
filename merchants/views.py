@@ -71,7 +71,7 @@ def new(request):
 
         send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to='board@pacanthro.org')
 
-        return HttpResponseRedirect(reverse('volunteers:confirm'))
+        return HttpResponseRedirect(reverse('merchants:confirm'))
 
 def confirm(request):
     return render(request, 'merch-confirm.html', {'is_merchants': True})
