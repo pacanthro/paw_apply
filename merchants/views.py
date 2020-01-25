@@ -12,7 +12,7 @@ def index(request):
     return render(request, 'merchants.html', {'is_merchants': True})
 
 def apply(request):
-    event = Event.objects.get(event_end__gte=datetime.date.today())
+    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
     tables = Table.objects.order_by('order')
     context = {
         'is_merchants': True,
@@ -55,7 +55,7 @@ def new(request):
         try:
             merchant.save()
         except (IntegrityError):
-            event = Event.objects.get(event_end__gte=datetime.date.today())
+            event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
             tables = Table.objects.order_by('order')
             context = {
                 'is_merchants': True,

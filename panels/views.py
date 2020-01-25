@@ -11,7 +11,7 @@ def index(request):
     return render(request, 'panels.html', {'is_panels': True})
 
 def apply(request):
-    event = Event.objects.get(event_end__gte=datetime.date.today())
+    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
     days = DaysAvailable.objects.filter(available_scheduling=True).order_by('order')
     durations = PanelDuration.objects.order_by('order')
     time_slots = PanelSlot.objects.order_by('order')
@@ -38,7 +38,7 @@ def new(request):
         # Time Slots
         time_slots = PanelSlot.objects.filter(key__in=request.POST.getlist('panel_slot'))
     except ():
-        event = Event.objects.get(event_end__gte=datetime.date.today())
+        event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
         days = DaysAvailable.objects.order_by('order')
         durations = PanelDuration.objects.order_by('order')
         time_slots = PanelSlot.objects.order_by('order')
