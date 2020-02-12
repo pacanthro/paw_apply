@@ -2,11 +2,18 @@
 <html lang="en">
 <body>
   <h1>Thank You!</h1>
-  <p>Greetings {{panelist.fan_name}} ({{panelist.legal_name}}),</p>
-  <p>Thank you submitting your panel for {{panelist.event.event_name}}.
-     Please expect an email from us later this year closer to the event to
-     confirm your panel spot. Below is a summary of the information you provided
-     to us for your records.</p>
+  <b>Greetings {{panelist.fan_name}} ({{panelist.legal_name}}),</b>
+  <p>Thank you submitting your panel for {{panelist.event.event_name}}.</p>
+  <b>Please be aware of the following:</b>
+  <ol>
+    <li>Panel submissions end Oct 1st.</li>
+    <li>Panelists will be emailed in Oct with final confirmation.</li>
+    <li>We may reach out before the submission deadline via email with additional
+        questions.</li>
+    <li>If you need to reach us regarding your panel submission, email
+        panel@pacanthro.org.</li>
+  </ol>
+  <b>Information you submitted:</b>
   <p>Email: {{panelist.email}}</p>
   <p>Phone Number: {{panelist.phone_number}}</p>
   <p>Twitter: {{panelist.twitter_handle}}</p>
