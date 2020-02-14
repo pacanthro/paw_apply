@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -69,7 +70,7 @@ def new(request):
             'is_merchants': True
         }
 
-        send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to='board@pacanthro.org')
+        send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
         return HttpResponseRedirect(reverse('merchants:confirm'))
 

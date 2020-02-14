@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -97,7 +98,7 @@ def new(request):
             'is_volunteers': True
         }
 
-        send_paw_email('email-volunteers-confirm.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to='board@pacanthro.org')
+        send_paw_email('email-volunteers-confirm.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
 
         return HttpResponseRedirect(reverse('volunteers:confirm'))
 

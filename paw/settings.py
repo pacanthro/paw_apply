@@ -79,6 +79,9 @@ TEMPLATES = [
 EMAIL_BACKEND = 'sgbackend.SendGridBackend'
 SENDGRID_API_KEY = os.getenv('SEND_GRID_API_KEY')
 DEFAULT_FROM_EMAIL = 'noreply <noreply@pacanthro.org>'
+MERCHANT_EMAIL = 'merchant@pacanthro.org'
+PANEL_EMAIL = 'panel@pacanthro.org'
+VOLUNTEER_EMAIL = 'volunteer@pacanthro.org'
 
 WSGI_APPLICATION = 'paw.wsgi.application'
 

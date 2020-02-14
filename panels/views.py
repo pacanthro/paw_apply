@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -75,7 +76,7 @@ def new(request):
         for time_slot in time_slots:
             panel.panel_times.add(time_slot)
 
-        send_paw_email('email-panels-confirm.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to='board@pacanthro.org')
+        send_paw_email('email-panels-confirm.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
         return HttpResponseRedirect(reverse('panels:confirm'))
 
