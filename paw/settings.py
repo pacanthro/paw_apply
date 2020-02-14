@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
+    'console.apps.ConsoleConfig',
     'merchants.apps.MerchantsConfig',
     'panels.apps.PanelsConfig',
     'volunteers.apps.VolunteersConfig',
