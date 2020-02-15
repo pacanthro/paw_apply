@@ -26,6 +26,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '.pacanthro.org',
     '.moltenvisuals.com',
     'localhost'
 ]
