@@ -9,5 +9,6 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     path('merchants', views.merchants, name='merchants'),
     path('merchants/<int:merchant_id>', views.merchant_detail, name='merchant-detail'),
-    path('merchants/<int:merchant_id>/payment', views.merchant_payment,  name='merchant-payment')
+    path('merchants/<int:merchant_id>/payment', views.merchant_payment,  name='merchant-payment'),
+    path('merchants/<int:merchant_id>/confirm', views.merchant_confirmed, name='merchant-confirm')
 ]
