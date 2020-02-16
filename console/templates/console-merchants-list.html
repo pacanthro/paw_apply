@@ -25,6 +25,26 @@
     {% endfor %}
   </thead>
 </table>
-<h2>Proccessed</h2>
+<h2>Payment Requested</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Business Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Legal Name</th>
+      <th scope="col">Fan Name</th>
+    </tr>
+    {% for merchant in processed %}
+    <tr>
+      <td>
+        <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+      </td>
+      <td>{{merchant.email}}</td>
+      <td>{{merchant.legal_name}}</td>
+      <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
+  </thead>
+</table>
 <h2>Waitlisted</h2>
 {% endblock %}

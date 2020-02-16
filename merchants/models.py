@@ -22,6 +22,8 @@ class Merchant(models.Model):
     helper_legal_name = models.CharField(max_length=200)
     helper_fan_name = models.CharField(max_length=200)
     special_requests = models.TextField()
+    payment_requested = models.BooleanField(null=True)
+    email_sent = models.DateField(null=True)
 
     def __str__(self):
         return "{} ({})".format(self.legal_name, self.business_name)

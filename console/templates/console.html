@@ -9,15 +9,21 @@
       <div class="card-body">
         <h5 class="card-title">Tools</h5>
         <ul class="nav nav-pills flex-column">
+          {% if is_superuser or has_merchant_permission %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'console:merchants' %}">Merchants</a>
           </li>
+          {% endif %}
+          {% if is_superuser or has_panels_permission %}
           <li class="nav-item">
             <a class="nav-link" href="#">Panels</a>
           </li>
+          {% endif %}
+          {% if is_superuser or has_volunteers_permission %}
           <li class="nav-item">
             <a class="nav-link" href="#">Volunteers</a>
           </li>
+          {% endif %}
         </ul>
       </div>
     </div>

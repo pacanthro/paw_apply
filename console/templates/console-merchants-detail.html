@@ -45,16 +45,22 @@
     <td>Special Requests</td>
     <td>{{merchant.special_requests}}</td>
   </tr>
+  {% if merchant.payment_requested is True %}
+  <tr>
+    <td>Payment Request</td>
+    <td>{{merchant.email_sent}}</td>
+  </tr>
+  {% endif %}
 </table>
 <div>
   <h2>Actions</h2>
-  <a href="#" onclick="$.fn.sendPaymentEmail()" class="btn btn-primary">Send Payment Email</a>
-  <a href="" class="btn btn-secondary">Send Waitlist Email</a>
+  <button onclick="$.fn.sendPaymentEmail()" class="btn btn-primary">Request Payment</button>
+  <button class="btn btn-secondary">Send Waitlist Email</button>
 </div>
 <div>
   <h2>Convention Master</h2>
-  <a href="" class="btn btn-outline-primary">CM Lookup</a>
-  <a href="" class="btn btn-outline-secondary">Helper CM Lookup</a>
+  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.helper_fan_name}}" target="_blank" class="btn btn-outline-secondary">Helper CM Lookup</a>
 </div>
 <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-payment-sent" style="position: absolute; top: 0; right: 0;">
   <div class="toast-header">

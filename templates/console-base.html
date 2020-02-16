@@ -48,10 +48,13 @@
         </li>
         {% if is_console %}
         <li class="nav-item {{ is_console|yesno:"active,"}}">
-          <a class="nav-link" href="/merchants">Console</a>
+          <a class="nav-link" href="/console">Console</a>
         </li>
         {% endif %}
       </ul>
+      <span class="navbar-text">
+        <a href="/console/logout" class="nav-link">{{user.username}}</a>
+      </span>
     </div>
   </nav>
 
