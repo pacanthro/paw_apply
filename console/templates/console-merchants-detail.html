@@ -11,7 +11,9 @@
   </tr>
   <tr>
     <td>Email:</td>
-    <td>{{merchant.email}}</td>
+    <td>
+      <a href="mailto:{{merchant.email}}"><i class="far fa-envelope"></i>{{merchant.email}}</a>
+    </td>
   </tr>
   <tr>
     <td>Legal Name:</td>
@@ -23,7 +25,9 @@
   </tr>
   <tr>
     <td>Phone Number:</td>
-    <td>{{merchant.phone_number}}</td>
+    <td>
+      <a href="tel:{{merchant.phon_number}}"><i class="fas fa-phone"></i>{{merchant.phone_number}}</a>
+    </td>
   </tr>
   <tr>
     <td>Table Size:</td>
@@ -42,18 +46,18 @@
     <td>{{merchant.helper_fan_name}}</td>
   </tr>
   <tr>
-    <td>Special Requests</td>
+    <td>Special Requests:</td>
     <td>{{merchant.special_requests}}</td>
   </tr>
   {% if merchant.payment_requested is True %}
   <tr>
-    <td>Payment Request</td>
+    <td>Payment Request:</td>
     <td>{{merchant.email_sent}}</td>
   </tr>
   {% endif %}
   {% if merchant.payment_confirmed is True %}
   <tr>
-    <td>Payment Confirmed</td>
+    <td>Payment Confirmed:</td>
     <td>{{merchant.confirmation_sent}}</td>
   </tr>
   {% endif %}

@@ -1,0 +1,37 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Panels{% endblock %}
+
+{% block tool %}
+<h1>Panels</h1>
+<table class="table">
+  <thead class="thead-dark text-left">
+    <tr>
+      <th scope="col">Panel Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Legal Name</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col">Telegram Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for panel in panels %}
+    <tr>
+      <td>
+          <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
+      </td>
+      <td>
+        <a href="mailto:{{panel.email}}"><i class="far fa-envelope"></i> {{panel.email}}</a>
+      </td>
+      <td>{{panel.legal_name}}</td>
+      <td>
+        <a href="tel:{{panel.phone_number}}"><i class="fas fa-phone"></i> {{panel.phone_number}}</a>
+      </td>
+      <td>
+        <a href="https://t.me/{{panel.telegram_handle}}"><i class="fab fa-telegram"></i> {{panel.telegram_handle}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

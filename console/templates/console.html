@@ -16,12 +16,12 @@
           {% endif %}
           {% if is_superuser or has_panels_permission %}
           <li class="nav-item">
-            <a class="nav-link" href="#">Panels</a>
+            <a class="nav-link" href="{% url 'console:panels' %}">Panels</a>
           </li>
           {% endif %}
           {% if is_superuser or has_volunteers_permission %}
           <li class="nav-item">
-            <a class="nav-link" href="#">Volunteers</a>
+            <a class="nav-link" href="{% url 'console:volunteers' %}">Volunteers</a>
           </li>
           {% endif %}
         </ul>

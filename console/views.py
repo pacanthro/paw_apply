@@ -5,7 +5,7 @@ from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonRespon
 from django.shortcuts import get_object_or_404, render
 from modules.email import send_paw_email
 
-from .models import Event, Merchant
+from .models import Event, Merchant, Panel, Volunteer
 
 # Create your views here.
 @login_required
@@ -33,10 +33,13 @@ def login(request):
                 'error': 'Invalid username or password.'
             }
             return render(request, 'console-login.html', context)
+
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect('/')
-
+# Merchant Views
+# All of the Merchant Tools
+#
 @login_required
 @permission_required('merchants.view_merchant')
 def merchants(request):
@@ -60,6 +63,46 @@ def merchant_detail(request, merchant_id):
         'merchant': merchant
     }
     return render(request, 'console-merchants-detail.html', __build_context(request.user, context))
+
+# Panel Views
+# All of the Panel Tools
+#
+@login_required
+@permission_required('panels.view_panel')
+def panels(request):
+    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
+    panels = Panel.objects.filter(event=event)
+    context = {
+        'panels': panels
+    }
+    return render(request, 'console-panels-list.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('panels.view_panel')
+def panel_detail(request):
+    return render(request, 'console-panels-detail.html', __build_context(request.user, {}))
+
+# Volunteer Views
+# All of the volunteer tools
+#
+@login_required
+@permission_required('volunteers.view_panel')
+def volunteers(request):
+    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
+    volunteers = Volunteer.objects.filter(event=event)
+    context = {
+        'volunteers': volunteers
+    }
+    return render(request, 'console-volunteers-list.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('volunteers.view_panel')
+def volunteer_detail(request, volunteer_id):
+    volunteer = get_object_or_404(Volunteer, pk=volunteer_id)
+    context = {
+        'volunteer': volunteer
+    }
+    return render(request, 'console-volunteers-detail.html', __build_context(request.user, context))
 
 # API Style Methods
 # These are meant to be called by AJAX instead of directly by a user.
