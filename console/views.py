@@ -79,8 +79,12 @@ def panels(request):
 
 @login_required
 @permission_required('panels.view_panel')
-def panel_detail(request):
-    return render(request, 'console-panels-detail.html', __build_context(request.user, {}))
+def panel_detail(request, panel_id):
+    panel = get_object_or_404(Panel, pk=panel_id)
+    context = {
+        'panel': panel
+    }
+    return render(request, 'console-panels-detail.html', __build_context(request.user, context))
 
 # Volunteer Views
 # All of the volunteer tools
