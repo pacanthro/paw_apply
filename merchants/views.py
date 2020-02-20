@@ -13,7 +13,7 @@ from .models import Event, Merchant, Table
 def __is_merchants_full():
     event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
     merchant_count = Merchant.objects.filter(event=event).count()
-    return (merchant_count <= event.max_merchants)
+    return (merchant_count >= event.max_merchants)
 
 # Create your views here.
 def index(request):
