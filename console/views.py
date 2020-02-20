@@ -43,7 +43,7 @@ def logout(request):
 @login_required
 @permission_required('merchants.view_merchant')
 def merchants(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
     merchants = Merchant.objects.filter(event=event).filter(payment_requested__isnull=True)
     processed = Merchant.objects.filter(event=event).filter(payment_requested=True).filter(payment_confirmed__isnull=True)
     confirmed = Merchant.objects.filter(event=event).filter(payment_confirmed=True)
@@ -70,7 +70,7 @@ def merchant_detail(request, merchant_id):
 @login_required
 @permission_required('panels.view_panel')
 def panels(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
     panels = Panel.objects.filter(event=event)
     context = {
         'panels': panels
@@ -92,7 +92,7 @@ def panel_detail(request, panel_id):
 @login_required
 @permission_required('volunteers.view_panel')
 def volunteers(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
     volunteers = Volunteer.objects.filter(event=event)
     context = {
         'volunteers': volunteers

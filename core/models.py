@@ -22,6 +22,7 @@ class Event(models.Model):
     event_name = models.CharField(max_length=200)
     event_start = models.DateField()
     event_end = models.DateField()
+    max_merchants = models.IntegerField(default=0)
 
     def __str__(self):
         return self.event_name

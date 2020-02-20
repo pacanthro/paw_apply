@@ -20,5 +20,11 @@
     approve your application.</li>
   <li>By applying you agree that you understand all of the above.</li>
 </ul>
+{% if is_merchants_full %}
+<div class="alert alert-danger" role="alert">
+  Merchants is currently full. :(
+</div>
+{% else %}
 <a href="{% url 'merchants:apply' %}" class="btn btn-primary btn-lg">Apply Now</a>
+{% endif %}
 {% endblock %}
