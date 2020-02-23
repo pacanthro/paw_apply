@@ -47,13 +47,13 @@
         <li class="nav-item {{ is_merchants|yesno:"active,"}}">
           <a class="nav-link" href="/merchants">Merchants</a>
         </li>
-        {% if request.user != None %}
+        {% if request.user.id != None %}
         <li class="nav-item {{ is_console|yesno:"active,"}}">
           <a class="nav-link" href="/console">Console</a>
         </li>
         {% endif %}
       </ul>
-      {% if request.user %}
+      {% if request.user.id != None %}
       <span class="navbar-text">
         <a href="/console/logout" class="nav-link">{{request.user.username}}</a>
       </span>
