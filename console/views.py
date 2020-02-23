@@ -10,7 +10,22 @@ from .models import Event, Merchant, Panel, Volunteer
 # Create your views here.
 @login_required
 def index(request):
-    return render(request, 'console.html', __build_context(request.user, {'is_console': True}))
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    merchant_count = Merchant.objects.filter(event=event).count()
+    panel_count = Panel.objects.filter(event=event).count()
+    volunteer_count = Volunteer.objects.filter(event=event).count()
+
+    context = {
+        'is_console': True,
+        'merchant_count': {
+            'count': merchant_count,
+            'total': event.max_merchants
+        },
+        'panel_count': panel_count,
+        'volunteer_count': volunteer_count
+    }
+
+    return render(request, 'console.html', __build_context(request.user, context))
 
 def login(request):
     if request.method == 'GET':
@@ -150,7 +165,6 @@ def merchant_confirmed(request, merchant_id):
 def __build_context(user, extras):
     context = {
         'is_console': True,
-        'user': user,
     }
     if (user.is_superuser):
         context['is_superuser'] = True

@@ -47,12 +47,17 @@
         <li class="nav-item {{ is_merchants|yesno:"active,"}}">
           <a class="nav-link" href="/merchants">Merchants</a>
         </li>
-        {% if is_console %}
+        {% if request.user != None %}
         <li class="nav-item {{ is_console|yesno:"active,"}}">
-          <a class="nav-link" href="/merchants">Console</a>
+          <a class="nav-link" href="/console">Console</a>
         </li>
         {% endif %}
       </ul>
+      {% if request.user %}
+      <span class="navbar-text">
+        <a href="/console/logout" class="nav-link">{{request.user.username}}</a>
+      </span>
+      {% endif %}
     </div>
   </nav>
 

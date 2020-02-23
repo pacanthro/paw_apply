@@ -30,6 +30,35 @@
   </div>
   <div class="col-10">
     {% block tool %}
+    <div class="row">
+      {% if is_superuser or has_merchant_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Merchants</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{merchant_count.count}} / {{merchant_count.total}} have applied</h6>
+          <a href="{% url 'console:merchants' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+      {% if is_superuser or has_panels_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Panels</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{panel_count}} have applied</h6>
+          <a href="{% url 'console:panels' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+      {% if is_superuser or has_volunteers_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Volunteers</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{volunteer_count}} have applied</h6>
+          <a href="% url 'console:volunteers' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
     {% endblock %}
   </div>
 </div>
