@@ -1,0 +1,130 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Merchants{% endblock %}
+
+{% block tool %}
+<h1>Merchant Details</h1>
+<table class="table">
+  <tr>
+    <td>Business Name:</td>
+    <td>{{merchant.business_name}}</td>
+  </tr>
+  <tr>
+    <td>Email:</td>
+    <td>
+      <a href="mailto:{{merchant.email}}"><i class="far fa-envelope"></i>{{merchant.email}}</a>
+    </td>
+  </tr>
+  <tr>
+    <td>Legal Name:</td>
+    <td>{{merchant.legal_name}}</td>
+  </tr>
+  <tr>
+    <td>Fan Name:</td>
+    <td>{{merchant.fan_name}}</td>
+  </tr>
+  <tr>
+    <td>Phone Number:</td>
+    <td>
+      <a href="tel:{{merchant.phon_number}}"><i class="fas fa-phone"></i>{{merchant.phone_number}}</a>
+    </td>
+  </tr>
+  <tr>
+    <td>Table Size:</td>
+    <td>{{merchant.table_size.name}}</td>
+  </tr>
+  <tr>
+    <td>Description of Wares:</td>
+    <td>{{merchant.wares_description}}</td>
+  </tr>
+  <tr>
+    <td>Helper Legal Name:</td>
+    <td>{{merchant.helper_legal_name}}</td>
+  </tr>
+  <tr>
+    <td>Helper Fan Name:</td>
+    <td>{{merchant.helper_fan_name}}</td>
+  </tr>
+  <tr>
+    <td>Special Requests:</td>
+    <td>{{merchant.special_requests}}</td>
+  </tr>
+  {% if merchant.payment_requested is True %}
+  <tr>
+    <td>Payment Request:</td>
+    <td>{{merchant.email_sent}}</td>
+  </tr>
+  {% endif %}
+  {% if merchant.payment_confirmed is True %}
+  <tr>
+    <td>Payment Confirmed:</td>
+    <td>{{merchant.confirmation_sent}}</td>
+  </tr>
+  {% endif %}
+</table>
+<div>
+  <h2>Actions</h2>
+  {% if merchant.payment_requested is None %}
+  <button onclick="$.fn.sendPaymentEmail()" class="btn btn-primary">Request Payment</button>
+  {% elif merchant.payment_confirmed is None %}
+  <button onclick="$.fn.sendConfirmationEmail()" class="btn btn-primary">Send Confirmation</button>
+  <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
+  {% endif %}
+</div>
+<div>
+  <h2>Convention Master</h2>
+  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.helper_fan_name}}" target="_blank" class="btn btn-outline-secondary">Helper CM Lookup</a>
+</div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-payment-sent" style="position: absolute; top: 0; right: 0;">
+  <div class="toast-header">
+    <strong class="mr-auto">PAWConsole</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Payment email sent to {{merchant.email}}!
+  </div>
+</div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-confirmation-sent" style="position: absolute; top: 0; right: 0;">
+  <div class="toast-header">
+    <strong class="mr-auto">PAWConsole</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Confirmation email sent to {{merchant.email}}!
+  </div>
+</div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-error" style="position: absolute; top: 0; right: 0;">
+  <div class="toast-header">
+    <strong class="mr-auto">PAWConsole</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Something went wrong... I'm very very sorry. Contact Laveur!
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+jQuery.fn.sendPaymentEmail = function() {
+  $.get('{% url 'console:merchant-payment' merchant.id %}').done(function(data) {
+    $('#toast-payment-sent').toast('show');
+  }).fail(function(data) {
+    $('#toast-error').toast('show');
+  });
+}
+
+jQuery.fn.sendConfirmationEmail = function() {
+  $.get('{% url 'console:merchant-confirm' merchant.id %}').done(function(data) {
+    $('#toast-confirmation-sent').toast('show');
+  }).fail(function() {
+    $('#toast-error').toast('show')
+  });
+}
+{% endblock %}

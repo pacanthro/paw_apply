@@ -1,0 +1,58 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Merchants{% endblock %}
+
+{% block tool %}
+<h1>Merchants</h1>
+<table class="table">
+  <thead class="thead-dark text-left">
+    <tr>
+      <th scope="col">Business Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Legal Name</th>
+      <th scope="col">Fan Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="4" class="table-info">New</td>
+    </tr>
+    {% for merchant in merchants %}
+    <tr>
+      <td>
+        <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+      </td>
+      <td>{{merchant.email}}</td>
+      <td>{{merchant.legal_name}}</td>
+      <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="4" class="table-info">Payment Requested</td>
+    </tr>
+    {% for merchant in processed %}
+    <tr>
+      <td>
+        <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+      </td>
+      <td>{{merchant.email}}</td>
+      <td>{{merchant.legal_name}}</td>
+      <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="4" class="table-info">Confirmed</td>
+    </tr>
+    {% for merchant in confirmed %}
+    <tr>
+      <td>
+        <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+      </td>
+      <td>{{merchant.email}}</td>
+      <td>{{merchant.legal_name}}</td>
+      <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

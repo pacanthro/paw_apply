@@ -20,6 +20,7 @@ from core import views as core
 urlpatterns = [
     path('', core.index, name='home'),
     path('admin/', admin.site.urls),
+    path('console/', include('console.urls')),
     path('merchants/', include('merchants.urls')),
     path('panels/', include('panels.urls')),
     path('volunteers/', include('volunteers.urls')),

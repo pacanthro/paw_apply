@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
+    'console.apps.ConsoleConfig',
     'merchants.apps.MerchantsConfig',
     'panels.apps.PanelsConfig',
     'volunteers.apps.VolunteersConfig',
@@ -118,6 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOGIN_URL = 'console:login'
 
 
 # Internationalization

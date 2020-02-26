@@ -1,19 +1,37 @@
 import datetime
 from django.conf import settings
 from django.db import IntegrityError
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from modules.email import send_paw_email
+import logging
 
 from .models import Event, Merchant, Table
 
+def __is_merchants_full():
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    merchant_count = Merchant.objects.filter(event=event).count()
+    return (merchant_count >= event.max_merchants)
+
 # Create your views here.
 def index(request):
-    return render(request, 'merchants.html', {'is_merchants': True})
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    merchant_count = Merchant.objects.filter(event=event).count()
+    context = {
+        'is_merchants': True,
+        'merchant_count': merchant_count,
+        'max_merchants': event.max_merchants,
+        'is_merchants_full': __is_merchants_full()
+    }
+    return render(request, 'merchants.html', context)
 
 def apply(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
+    if (__is_merchants_full()):
+        return HttpResponseRedirect(reverse('merchants:index'))
+
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
     tables = Table.objects.order_by('order')
     context = {
         'is_merchants': True,
@@ -23,6 +41,9 @@ def apply(request):
     return render(request, 'merch-apply.html', context)
 
 def new(request):
+    if (__is_merchants_full()):
+        return HttpResponseRedirect(reverse('merchants:index'))
+
     try:
         # Event
         event = Event.objects.get(pk=request.POST['event'])
@@ -30,7 +51,7 @@ def new(request):
         # table
         table = Table.objects.get(pk=request.POST['table_size'])
     except (KeyError, Event.DoesNotExist, Table.DoesNotExist):
-        event = Event.objects.get(event_end__gte=datetime.date.today())
+        event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
         tables = Table.objects.order_by('order')
         context = {
             'is_merchants': True,
@@ -56,7 +77,7 @@ def new(request):
         try:
             merchant.save()
         except (IntegrityError):
-            event = Event.objects.filter(event_end__gte=datetime.date.today())[:1].get()
+            event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
             tables = Table.objects.order_by('order')
             context = {
                 'is_merchants': True,

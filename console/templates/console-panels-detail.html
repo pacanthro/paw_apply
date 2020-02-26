@@ -1,0 +1,85 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Panels{% endblock %}
+
+{% block tool %}
+<h1>Panels</h1>
+<table class="table">
+  <tr>
+    <td>Panel Name:</td>
+    <td>{{panel.panel_name}}</td>
+  </tr>
+  <tr>
+    <td>Fan Name:</td>
+    <td>{{panel.fan_name}}</td>
+  </tr>
+  <tr>
+    <td>Legal Name:</td>
+    <td>{{panel.legal_name}}</td>
+  </tr>
+  <tr>
+    <td>Email:</td>
+    <td>{{panel.email}}</td>
+  </tr>
+  <tr>
+    <td>Phone Number:</td>
+    <td>{{panel.phone_number}}</td>
+  </tr>
+  <tr>
+    <td>Twitter Handle:</td>
+    <td>{{panel.twitter_handle}}</td>
+  </tr>
+  <tr>
+    <td>Telegram Handle:</td>
+    <td>{{panel.telegram_handle}}</td>
+  </tr>
+  <tr>
+    <td>Panelist Bio:</td>
+    <td>{{panel.panelist_bio}}</td>
+  </tr>
+  <tr>
+    <td>Panel Description:</td>
+    <td>{{panel.panel_description}}</td>
+  </tr>
+  <tr>
+    <td>Panel Duration:</td>
+    <td>{{panel.panel_duration.name}}</td>
+  </tr>
+  <tr>
+    <td>Equipment Needs:</td>
+    <td>{{panel.equipment_needs}}</td>
+  </tr>
+  <tr>
+    <td>Contains Mature Content:</td>
+    <td>{{panel.mature_content|yesno:"Yes,No"}}</td>
+  </tr>
+  <tr>
+    <td>Panel Day:</td>
+    <td>
+      <ul class="px-0">
+        {% for day in panel.panel_day.all %}
+        <li>{{day.name}}</li>
+        {% endfor %}
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Panel Times:</td>
+    <td>
+      <ul class="px-0">
+        {% for time in panel.panel_times.all %}
+        <li>{{time.name}}</li>
+        {% endfor %}
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Agrees to check ID's:</td>
+    <td>{{panel.check_ids|yesno:"Yes,No"}}</td>
+  </tr>
+</table>
+<div>
+  <h2>Convention Master</h2>
+  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{panel.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+</div>
+{% endblock %}

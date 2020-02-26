@@ -1,0 +1,65 @@
+{% extends 'console-base.html' %}
+
+{% block title %}PAWConsole{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Tools</h5>
+        <ul class="nav nav-pills flex-column">
+          {% if is_superuser or has_merchant_permission %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'console:merchants' %}">Merchants</a>
+          </li>
+          {% endif %}
+          {% if is_superuser or has_panels_permission %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'console:panels' %}">Panels</a>
+          </li>
+          {% endif %}
+          {% if is_superuser or has_volunteers_permission %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'console:volunteers' %}">Volunteers</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-10">
+    {% block tool %}
+    <div class="row">
+      {% if is_superuser or has_merchant_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Merchants</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{merchant_count.count}} / {{merchant_count.total}} have applied</h6>
+          <a href="{% url 'console:merchants' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+      {% if is_superuser or has_panels_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Panels</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{panel_count}} have applied</h6>
+          <a href="{% url 'console:panels' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+      {% if is_superuser or has_volunteers_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Volunteers</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{volunteer_count}} have applied</h6>
+          <a href="% url 'console:volunteers' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}
