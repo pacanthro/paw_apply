@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Welcome! I would like to...</h1>
 <div class="row">
-  <div class="col-sm">
+  <div class="col-sm-4">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Volunteer</h5>
@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm">
+  <div class="col-sm-4">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Host A Panel</h5>
@@ -23,7 +23,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm">
+  <div class="col-sm-4">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Become a Merchant</h5>
@@ -33,4 +33,14 @@
     </div>
   </div>
 </div>
+<div class="row mt-4">
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Perform</h5>
+        <p class="card-text">Come help entertain you fellow attendees while showcasing your unique sound.</p>
+        <a href="{% url 'performers:index' %}" class="btn btn-primary">Apply</a>
+      </div>
+    </div>
+  </div>
 {% endblock %}
