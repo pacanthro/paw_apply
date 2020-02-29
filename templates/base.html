@@ -35,17 +35,20 @@
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item {{ is_home|yesno:"active,"}}">
+        <li class="nav-item {{ is_home|yesno:"active," }}">
           <a class="nav-link" href="/">Home</a>
         </li>
-        <li class="nav-item {{ is_volunteers|yesno:"active,"}}">
+        <li class="nav-item {{ is_volunteers|yesno:"active," }}">
           <a class="nav-link" href="/volunteers">Volunteers</a>
         </li>
-        <li class="nav-item {{ is_panels|yesno:"active,"}}">
+        <li class="nav-item {{ is_panels|yesno:"active," }}">
           <a class="nav-link" href="/panels">Panels</a>
         </li>
-        <li class="nav-item {{ is_merchants|yesno:"active,"}}">
+        <li class="nav-item {{ is_merchants|yesno:"active," }}">
           <a class="nav-link" href="/merchants">Merchants</a>
+        </li>
+        <li class="nav-item {{ is_djs|yesno:"active," }}">
+          <a class="nav-link" href="/performers">DJs</a>
         </li>
         {% if request.user.id != None %}
         <li class="nav-item {{ is_console|yesno:"active,"}}">

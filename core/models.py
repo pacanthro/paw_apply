@@ -1,4 +1,8 @@
+import datetime
 from django.db import models
+
+def get_current_event():
+    return Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
 
 # Create your models here.
 class DaysAvailable(models.Model):

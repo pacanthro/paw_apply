@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'console.apps.ConsoleConfig',
+    'performers.apps.PerformersConfig',
     'merchants.apps.MerchantsConfig',
     'panels.apps.PanelsConfig',
     'volunteers.apps.VolunteersConfig',
@@ -84,7 +85,7 @@ DEFAULT_FROM_EMAIL = 'noreply <noreply@pacanthro.org>'
 MERCHANT_EMAIL = 'merchant@pacanthro.org'
 PANEL_EMAIL = 'panel@pacanthro.org'
 VOLUNTEER_EMAIL = 'volunteer@pacanthro.org'
-
+PERFORMERS_EMAIL = 'dj@pacanthro.org'
 WSGI_APPLICATION = 'paw.wsgi.application'
 
 # Database
