@@ -16,7 +16,7 @@ def index(request):
 def apply(request):
     event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
     departments = Department.objects.order_by('order')
-    days = DaysAvailable.objects.order_by('order')
+    days = DaysAvailable.objects.filter(party_only=False).order_by('order')
     times = TimesAvailable.objects.order_by('order')
     context = {
         'is_volunteers': True,

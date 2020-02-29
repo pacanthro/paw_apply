@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import DaysAvailable, Department, Event
 
 class DaysAvailableAdmin(admin.ModelAdmin):
-    list_display = ('name', 'order', 'available_scheduling')
+    list_display = ('name', 'order', 'available_scheduling', 'available_party', 'party_only')
     ordering = ['order']
 
 class DepartmentAdmin(admin.ModelAdmin):

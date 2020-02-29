@@ -27,7 +27,8 @@ def new(request):
         event = get_current_event()
         context = {
             'is_djs': True,
-            'event': event
+            'event': event,
+            'error': 'Something has gone wrong, please contact us at <a href="mailto:feedback@pacanthro.org" class="alert-link">feedback@pacanthro.org</a>'
         }
         return render(request, 'performer-apply.html', context)
     else:

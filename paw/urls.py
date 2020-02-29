@@ -25,4 +25,5 @@ urlpatterns = [
     path('panels/', include('panels.urls')),
     path('performers/', include('performers.urls')),
     path('volunteers/', include('volunteers.urls')),
+    path('partyfloor/', include('partyfloor.urls')),
 ]

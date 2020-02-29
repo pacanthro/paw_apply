@@ -37,9 +37,10 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'console.apps.ConsoleConfig',
-    'performers.apps.PerformersConfig',
     'merchants.apps.MerchantsConfig',
     'panels.apps.PanelsConfig',
+    'partyfloor.apps.PartyfloorConfig',
+    'performers.apps.PerformersConfig',
     'volunteers.apps.VolunteersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -86,6 +87,8 @@ MERCHANT_EMAIL = 'merchant@pacanthro.org'
 PANEL_EMAIL = 'panel@pacanthro.org'
 VOLUNTEER_EMAIL = 'volunteer@pacanthro.org'
 PERFORMERS_EMAIL = 'dj@pacanthro.org'
+HOTEL_EMAIL = 'hotel@pacanthro.org'
+
 WSGI_APPLICATION = 'paw.wsgi.application'
 
 # Database

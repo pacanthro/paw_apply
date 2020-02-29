@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <h1>Thank You!</h1>
+  <b>Greetings {{host.fan_name}} ({{host.legal_name}}),</b>
+  <p>Thank you submitting your party floor request for {{panelist.event.event_name}}.</p>
+  <b>Please be aware of the following:</b>
+  <ol>
+    <li>TODO: List Details</li>
+  </ol>
+  <b>Information you submitted:</b>
+  <p>Email: {{host.email}}</p>
+  <p>Phone Number: {{host.phone_number}}</p>
+  <p>Twitter: {{host.twitter_handle}}</p>
+  <p>Telegram: {{host.telegram_handle}}</p>
+  <p>Hotel Primary: {{host.hotel_primary}}</p>
+  <p>Hotel Reservation Number: {{host.hotel_ack_num}}</p>
+  <p>Party Days:</p>
+  <ul>
+    {% for time in host.party_days.all %}
+    <li>{{time.name}}</li>
+    {% endfor %}
+  </ul>
+  <p>If you have any questions, please don't hesitate to reach out at any time
+     to hotel@pacanthro.org</p>
+  <p>Sincerely,</p>
+  <p>PAWCon Programming</p>
+</body>
+</html>

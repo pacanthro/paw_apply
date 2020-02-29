@@ -50,6 +50,9 @@
         <li class="nav-item {{ is_djs|yesno:"active," }}">
           <a class="nav-link" href="/performers">DJs</a>
         </li>
+        <li class="nav-item {{ is_partyfloor|yesno:"active," }}">
+          <a class="nav-link" href="/partyfloor">Party Floor</a>
+        </li>
         {% if request.user.id != None %}
         <li class="nav-item {{ is_console|yesno:"active,"}}">
           <a class="nav-link" href="/console">Console</a>
