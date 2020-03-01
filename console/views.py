@@ -1,4 +1,5 @@
 import csv, datetime
+from core.models import get_current_event
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
@@ -10,7 +11,7 @@ from .models import Event, Merchant, Panel, Volunteer
 # Create your views here.
 @login_required
 def index(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     merchant_count = Merchant.objects.filter(event=event).count()
     panel_count = Panel.objects.filter(event=event).count()
     volunteer_count = Volunteer.objects.filter(event=event).count()
@@ -59,7 +60,7 @@ def logout(request):
 @login_required
 @permission_required('merchants.view_merchant')
 def merchants(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     merchants = Merchant.objects.filter(event=event).filter(payment_requested__isnull=True)
     processed = Merchant.objects.filter(event=event).filter(payment_requested=True).filter(payment_confirmed__isnull=True)
     confirmed = Merchant.objects.filter(event=event).filter(payment_confirmed=True)
@@ -86,7 +87,7 @@ def merchant_detail(request, merchant_id):
 @login_required
 @permission_required('panels.view_panel')
 def panels(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     panels = Panel.objects.filter(event=event)
     context = {
         'panels': panels
@@ -108,7 +109,7 @@ def panel_detail(request, panel_id):
 @login_required
 @permission_required('volunteers.view_panel')
 def volunteers(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     volunteers = Volunteer.objects.filter(event=event)
     context = {
         'volunteers': volunteers
@@ -167,7 +168,7 @@ def merchant_confirmed(request, merchant_id):
 def merchant_download_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="merchants.csv"'
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     merchants = Merchant.objects.filter(event=event)
 
     writer = csv.writer(response)

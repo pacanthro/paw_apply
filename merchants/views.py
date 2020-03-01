@@ -1,4 +1,5 @@
 import datetime
+from core.models import get_current_event
 from django.conf import settings
 from django.db import IntegrityError
 from django.db.models import Count
@@ -11,13 +12,13 @@ import logging
 from .models import Event, Merchant, Table
 
 def __is_merchants_full():
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     merchant_count = Merchant.objects.filter(event=event).count()
     return (merchant_count >= event.max_merchants)
 
 # Create your views here.
 def index(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     merchant_count = Merchant.objects.filter(event=event).count()
     context = {
         'is_merchants': True,
@@ -31,7 +32,7 @@ def apply(request):
     if (__is_merchants_full()):
         return HttpResponseRedirect(reverse('merchants:index'))
 
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     tables = Table.objects.order_by('order')
     context = {
         'is_merchants': True,
@@ -51,7 +52,7 @@ def new(request):
         # table
         table = Table.objects.get(pk=request.POST['table_size'])
     except (KeyError, Event.DoesNotExist, Table.DoesNotExist):
-        event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+        event = get_current_event()
         tables = Table.objects.order_by('order')
         context = {
             'is_merchants': True,
@@ -77,7 +78,7 @@ def new(request):
         try:
             merchant.save()
         except (IntegrityError):
-            event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+            event = get_current_event()
             tables = Table.objects.order_by('order')
             context = {
                 'is_merchants': True,

@@ -1,4 +1,5 @@
 import datetime
+from core.models import get_current_event
 from django.conf import settings
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
@@ -14,7 +15,7 @@ def index(request):
     return render(request, 'volunteers.html', context)
 
 def apply(request):
-    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    event = get_current_event()
     departments = Department.objects.order_by('order')
     days = DaysAvailable.objects.filter(party_only=False).order_by('order')
     times = TimesAvailable.objects.order_by('order')
@@ -41,7 +42,7 @@ def new(request):
         # Times available
         times = TimesAvailable.objects.filter(key__in=request.POST.getlist('times'))
     except (KeyError, Event.DoesNotExist, Department.DoesNotExist, DaysAvailable.DoesNotExist, TimesAvailable.DoesNotExist):
-        event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+        event = get_current_event()
         departments = Department.objects.order_by('order')
         days = DaysAvailable.objects.order_by('order')
         times = TimesAvailable.objects.order_by('order')
@@ -71,7 +72,7 @@ def new(request):
         try:
             volunteer.save()
         except (IntegrityError):
-            event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+            event = get_current_event()
             departments = Department.objects.order_by('order')
             days = DaysAvailable.objects.order_by('order')
             times = TimesAvailable.objects.order_by('order')
