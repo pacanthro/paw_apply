@@ -37,6 +37,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'console.apps.ConsoleConfig',
+    'dancecomp.apps.DancecompConfig',
     'merchants.apps.MerchantsConfig',
     'panels.apps.PanelsConfig',
     'partyfloor.apps.PartyfloorConfig',
@@ -88,6 +89,7 @@ PANEL_EMAIL = 'panel@pacanthro.org'
 VOLUNTEER_EMAIL = 'volunteer@pacanthro.org'
 PERFORMERS_EMAIL = 'dj@pacanthro.org'
 HOTEL_EMAIL = 'hotel@pacanthro.org'
+DANCE_EMAIL = 'board@pacanthro.org'
 
 WSGI_APPLICATION = 'paw.wsgi.application'
 

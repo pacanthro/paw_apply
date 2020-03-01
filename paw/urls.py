@@ -26,4 +26,5 @@ urlpatterns = [
     path('performers/', include('performers.urls')),
     path('volunteers/', include('volunteers.urls')),
     path('partyfloor/', include('partyfloor.urls')),
+    path('dancecomp/', include('dancecomp.urls'))
 ]
