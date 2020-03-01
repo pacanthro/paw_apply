@@ -89,7 +89,7 @@ PANEL_EMAIL = 'panel@pacanthro.org'
 VOLUNTEER_EMAIL = 'volunteer@pacanthro.org'
 PERFORMERS_EMAIL = 'dj@pacanthro.org'
 HOTEL_EMAIL = 'hotel@pacanthro.org'
-DANCE_EMAIL = 'board@pacanthro.org'
+DANCE_EMAIL = 'dancecomp@pacanthro.org'
 
 WSGI_APPLICATION = 'paw.wsgi.application'
 
