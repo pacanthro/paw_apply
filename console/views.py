@@ -153,7 +153,7 @@ def merchant_confirmed(request, merchant_id):
         merchant.payment_confirmed = True
         merchant.confirmation_sent = datetime.date.today()
         merchant.save()
-        send_paw_email('email-merchant-payment.html', {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to='merchant@pacanthro.org')
+        send_paw_email('email-merchant-payment-confirmed.html', {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to='merchant@pacanthro.org')
         data = {
             'status': 'Success'
         }
