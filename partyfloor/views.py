@@ -51,6 +51,8 @@ def new(request):
         host.ack_amplified_sound = request.POST.get('ack_amplified_sound', default=False)
         host.ack_verify_age = request.POST.get('ack_verify_age', default=False)
         host.ack_wristbands = request.POST.get('ack_wristbands', default=False)
+        host.ack_closure_time = request.POST.get('ack_closure_time', default=False)
+        host.ack_suspension_policy = request.POST.get('ack_suspension_policy', default=False)
 
         try:
             host.save()
