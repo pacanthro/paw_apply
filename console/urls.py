@@ -13,7 +13,7 @@ urlpatterns = [
     path('merchants/<int:merchant_id>', views.merchant_detail, name='merchant-detail'),
     path('merchants/<int:merchant_id>/payment', views.merchant_payment,  name='merchant-payment'),
     path('merchants/<int:merchant_id>/confirm', views.merchant_confirmed, name='merchant-confirm'),
-
+    path('merchants/download_csv', views.merchant_download_csv, name='merchant-download'),
     # Panels
     path('panels', views.panels, name='panels'),
     path('panels/<int:panel_id>', views.panel_detail, name='panel-detail'),

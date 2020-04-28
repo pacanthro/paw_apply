@@ -1,7 +1,7 @@
-import datetime
+import csv, datetime
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from modules.email import send_paw_email
 
@@ -52,6 +52,7 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect('/')
+
 # Merchant Views
 # All of the Merchant Tools
 #
@@ -160,6 +161,21 @@ def merchant_confirmed(request, merchant_id):
         return JsonResponse(data)
     else:
         return HttpResponseBadRequest()
+
+@login_required
+@permission_required('merchants.view_merchant')
+def merchant_download_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="merchants.csv"'
+    event = Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    merchants = Merchant.objects.filter(event=event)
+
+    writer = csv.writer(response)
+
+    for merchant in merchants:
+        writer.writerow([merchant.business_name, merchant.email, merchant.legal_name, merchant.fan_name])
+
+    return response
 
 # Private Functions
 def __build_context(user, extras):
