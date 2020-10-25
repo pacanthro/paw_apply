@@ -1,11 +1,17 @@
+import datetime
 from django.db import models
+
+def get_current_event():
+    return Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
 
 # Create your models here.
 class DaysAvailable(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     order = models.IntegerField(default=0)
     available_scheduling = models.BooleanField(default=False)
+    available_party = models.BooleanField(default=False)
+    party_only = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

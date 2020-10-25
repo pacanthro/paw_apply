@@ -37,8 +37,11 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'console.apps.ConsoleConfig',
+    'dancecomp.apps.DancecompConfig',
     'merchants.apps.MerchantsConfig',
     'panels.apps.PanelsConfig',
+    'partyfloor.apps.PartyfloorConfig',
+    'performers.apps.PerformersConfig',
     'volunteers.apps.VolunteersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,6 +87,9 @@ DEFAULT_FROM_EMAIL = 'noreply <noreply@pacanthro.org>'
 MERCHANT_EMAIL = 'merchant@pacanthro.org'
 PANEL_EMAIL = 'panel@pacanthro.org'
 VOLUNTEER_EMAIL = 'volunteer@pacanthro.org'
+PERFORMERS_EMAIL = 'dj@pacanthro.org'
+HOTEL_EMAIL = 'hotel@pacanthro.org'
+DANCE_EMAIL = 'dancecomp@pacanthro.org'
 
 WSGI_APPLICATION = 'paw.wsgi.application'
 

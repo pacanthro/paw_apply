@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <h1>Thank You!</h1>
+  <b>Greetings {{competitor.fan_name}} ({{competitor.legal_name}}),</b>
+  Thank you for submitting your application to dance at {peformer.event.event_name}}!
+  <p>Once the sign-up period ends, you will receive a follow-up email with instructions on how to submit your music to us. Get practicing!</p>
+  <b>Information you submitted:</b>
+  <p>Email: {{competitor.email}}</p>
+  <p>Phone Number: {{competitor.phone_number}}</p>
+  <p>Twitter: {{competitor.twitter_handle}}</p>
+  <p>Telegram: {{competitor.telegram_handle}}</p>
+  <p>Individual/Group: {{competitor.is_group|yesno:"Group,Individual" }}</p>
+  {% if competitor.is_group %}
+  <p>Performer #2: {{competitor.performer_two}}</p>
+  <p>Performer #3: {{competitor.performer_three}}</p>
+  <p>Performer #4: {{competitor.performer_four}}</p>
+  <p>Performer #5: {{competitor.performer_five}}</p>
+  {% endif %}
+  <p>Sincerely,</p>
+  <p>PAWCon Programming</p>
+</body>
+</html>
