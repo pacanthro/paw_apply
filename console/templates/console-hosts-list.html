@@ -18,7 +18,7 @@
     {% for host in hosts %}
     <tr>
       <td>
-          <a href="{% url 'console:host-detail' performer.id %}">{{host.performer_name}}</a>
+          <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
       </td>
       <td>
         <a href="mailto:{{host.email}}"><i class="far fa-envelope"></i> {{host.email}}</a>

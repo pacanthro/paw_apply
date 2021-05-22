@@ -18,7 +18,7 @@
     {% for competitor in competitors %}
     <tr>
       <td>
-          <a href="{% url 'console:competitor-detail' performer.id %}">{{competitor.performer_name}}</a>
+          <a href="{% url 'console:competitor-detail' competitor.id %}">{{competitor.fan_name}}</a>
       </td>
       <td>
         <a href="mailto:{{competitor.email}}"><i class="far fa-envelope"></i> {{competitor.email}}</a>

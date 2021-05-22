@@ -7,7 +7,7 @@
 <table class="table">
   <thead class="thead-dark text-left">
     <tr>
-      <th scope="col">Performer Name</th>
+      <th scope="col">Fan Name</th>
       <th scope="col">Email</th>
       <th scope="col">Legal Name</th>
       <th scope="col">Phone Number</th>
@@ -18,7 +18,7 @@
     {% for performer in performers %}
     <tr>
       <td>
-          <a href="{% url 'console:panel-detail' performer.id %}">{{performer.performer_name}}</a>
+          <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
       </td>
       <td>
         <a href="mailto:{{performer.email}}"><i class="far fa-envelope"></i> {{performer.email}}</a>
