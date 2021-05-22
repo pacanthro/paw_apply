@@ -20,5 +20,17 @@ urlpatterns = [
 
     # Volunteers
     path('volunteers', views.volunteers, name='volunteers'),
-    path('volunteers/<int:volunteer_id>', views.volunteer_detail, name='volunteer-detail')
+    path('volunteers/<int:volunteer_id>', views.volunteer_detail, name='volunteer-detail'),
+
+    # Performers
+    path('performers', views.performers, name='performers'),
+    path('performers/<int:performer_id>', views.performer_detail, name='performer-detail'),
+
+    # Party Hosts
+    path('hosts', views.hosts, name='hosts'),
+    path('hosts/<int:host_id>', views.host_detail, name='host-detail'),
+
+    # Competitors
+    path('competitors', views.competitors, name='competitors'),
+    path('competitors/<int:competitor_id>', views.competitor_detail, name='competitor-detail')
 ]
