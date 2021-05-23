@@ -132,7 +132,7 @@ def volunteer_detail(request, volunteer_id):
     return render(request, 'console-volunteers-detail.html', __build_context(request.user, context))
 
 @login_required
-@permission_required('performers.view_performer')
+@permission_required('performer.view_performer')
 def performers(request):
     event = get_current_event()
     performers = Performer.objects.filter(event=event)
@@ -142,9 +142,12 @@ def performers(request):
     return render(request, 'console-performers-list.html', __build_context(request.user, context))
 
 @login_required
-@permission_required('performers.view_performer')
+@permission_required('performer.view_performer')
 def performer_detail(request, performer_id):
-    context = {}
+    performer = get_object_or_404(Performer, pk=performer_id)
+    context = {
+        'performer': performer
+    }
     return render(request, 'console-performer-detail.html', __build_context(request.user, context))
 
 @login_required
@@ -160,7 +163,10 @@ def hosts(request):
 @login_required
 @permission_required('host.view_host')
 def host_detail(request, host_id):
-    context = {}
+    host = get_object_or_404(PartyHost, pk=host_id)
+    context = {
+        'host': host
+    }
     return render(request, 'console-host-detail.html', __build_context(request.user, context))
 
 @login_required
@@ -177,7 +183,10 @@ def competitors(request):
 @login_required
 @permission_required('host.view_host')
 def competitor_detail(request, competitor_id):
-    context = {}
+    competitor = get_object_or_404(Competitor, pk=competitor_id)
+    context = {
+        'competitor': competitor
+    }
     return render(request, 'console-competitor-detail.html', __build_context(request.user, context))
 
 # API Style Methods
@@ -244,6 +253,9 @@ def __build_context(user, extras):
         context['has_merchant_permission'] = user.has_perm('merchants.view_merchant')
         context['has_panels_permission'] = user.has_perm('panels.view_panel')
         context['has_volunteers_permission'] = user.has_perm('volunteers.view_volunteer')
+        context['has_performer_permission'] = user.has_perm('performer.view_performer')
+        context['has_host_permission'] = user.has_perm('partyhost.view_partyhost')
+        context['has_competitor_permission'] = user.has_perm('competitor.view_competitor')
 
     context.update(extras)
     return context
