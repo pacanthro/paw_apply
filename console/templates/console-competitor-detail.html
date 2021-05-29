@@ -3,7 +3,7 @@
 {% block title %}PAWConsole - Competitors{% endblock %}
 
 {% block tool %}
-<h1>Competitor</h1>
+<h1>Competitor Details</h1>
 <table class="table">
   <tr>
     <td>Fan Name:</td>
@@ -31,11 +31,15 @@
   </tr>
   <tr>
     <td>Telegram Handle:</td>
-    <td>{{competitor.telegram_handle}}</td>
+    <td>
+        <a href="https://t.me/{{competitor.telegram_handle}}"><i class="fab fa-telegram"></i> {{competitor.telegram_handle}}</a>
+    </td>
   </tr>
   <tr>
     <td>Music Url:</td>
-    <td>{{competitor.music_url}}</td>
+    <td>
+      <a href="{{competitor.music_url}}">{{competitor.music_url}}</a>
+    </td>
   </tr>
   {% if competitor.is_group %}
   <tr>
@@ -56,4 +60,8 @@
   </tr>
   {% endif %}
 </table>
+<div>
+  <h2>Convention Master</h2>
+  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{competitor.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+</div>
 {% endblock %}
