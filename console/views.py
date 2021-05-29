@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.shortcuts import get_object_or_404, render
 from modules.email import send_paw_email
 
-from .models import Event, Merchant, Panel, Volunteer
+from .models import Event, Merchant, Panel, Volunteer, Performer, PartyHost, Competitor
 
 # Create your views here.
 @login_required
@@ -15,6 +15,9 @@ def index(request):
     merchant_count = Merchant.objects.filter(event=event).count()
     panel_count = Panel.objects.filter(event=event).count()
     volunteer_count = Volunteer.objects.filter(event=event).count()
+    performer_count = Performer.objects.filter(event=event).count()
+    host_count = PartyHost.objects.filter(event=event).count()
+    competitor_count = Competitor.objects.filter(event=event).count()
 
     context = {
         'is_console': True,
@@ -23,7 +26,10 @@ def index(request):
             'total': event.max_merchants
         },
         'panel_count': panel_count,
-        'volunteer_count': volunteer_count
+        'volunteer_count': volunteer_count,
+        'performer_count': performer_count,
+        'host_count': host_count,
+        'competitor_count': competitor_count
     }
 
     return render(request, 'console.html', __build_context(request.user, context))
@@ -125,6 +131,64 @@ def volunteer_detail(request, volunteer_id):
     }
     return render(request, 'console-volunteers-detail.html', __build_context(request.user, context))
 
+@login_required
+@permission_required('performer.view_performer')
+def performers(request):
+    event = get_current_event()
+    performers = Performer.objects.filter(event=event)
+    context = {
+        'performers': performers
+    }
+    return render(request, 'console-performers-list.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('performer.view_performer')
+def performer_detail(request, performer_id):
+    performer = get_object_or_404(Performer, pk=performer_id)
+    context = {
+        'performer': performer
+    }
+    return render(request, 'console-performer-detail.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('host.view_host')
+def hosts(request):
+    event = get_current_event()
+    hosts = PartyHost.objects.filter(event=event)
+    context = {
+        'hosts': hosts
+    }
+    return render(request, 'console-hosts-list.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('host.view_host')
+def host_detail(request, host_id):
+    host = get_object_or_404(PartyHost, pk=host_id)
+    context = {
+        'host': host
+    }
+    return render(request, 'console-host-detail.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('competitors.view_host')
+def competitors(request):
+    event = get_current_event()
+    competitors = Competitor.objects.filter(event=event)
+
+    context = {
+        'competitors': competitors
+    }
+    return render(request, 'console-competitors-list.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('host.view_host')
+def competitor_detail(request, competitor_id):
+    competitor = get_object_or_404(Competitor, pk=competitor_id)
+    context = {
+        'competitor': competitor
+    }
+    return render(request, 'console-competitor-detail.html', __build_context(request.user, context))
+
 # API Style Methods
 # These are meant to be called by AJAX instead of directly by a user.
 #
@@ -189,6 +253,9 @@ def __build_context(user, extras):
         context['has_merchant_permission'] = user.has_perm('merchants.view_merchant')
         context['has_panels_permission'] = user.has_perm('panels.view_panel')
         context['has_volunteers_permission'] = user.has_perm('volunteers.view_volunteer')
+        context['has_performer_permission'] = user.has_perm('performer.view_performer')
+        context['has_host_permission'] = user.has_perm('partyhost.view_partyhost')
+        context['has_competitor_permission'] = user.has_perm('competitor.view_competitor')
 
     context.update(extras)
     return context

@@ -1,0 +1,46 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Performers{% endblock %}
+
+{% block tool %}
+<h1>Performers</h1>
+<table class="table">
+  <tr>
+    <td>Fan Name:</td>
+    <td>{{performer.fan_name}}</td>
+  </tr>
+  <tr>
+    <td>Legal Name:</td>
+    <td>{{performer.legal_name}}</td>
+  </tr>
+  <tr>
+    <td>Email:</td>
+    <td>{{performer.email}}</td>
+  </tr>
+  <tr>
+    <td>Phone Number:</td>
+    <td>{{performer.phone_number}}</td>
+  </tr>
+  <tr>
+    <td>Twitter Handle:</td>
+    <td>{{performer.twitter_handle}}</td>
+  </tr>
+  <tr>
+    <td>Telegram Handle:</td>
+    <td>{{performer.telegram_handle}}</td>
+  </tr>
+  <tr>
+    <td>Performer Biography:</td>
+    <td>{{performer.biography}}</td>
+  </tr>
+  <tr>
+    <td>Performer History:</td>
+    <td>{{performer.dj_history}}</td>
+  </tr>
+  <tr>
+    <td>Set Link:</td>
+    <td>
+      <a href="{{performer.set_link}}">{{performer.set_link}}</a>
+    </td>
+</table>
+{% endblock %}

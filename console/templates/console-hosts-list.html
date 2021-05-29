@@ -1,0 +1,37 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Party Hosts{% endblock %}
+
+{% block tool %}
+<h1>Hosts</h1>
+<table class="table">
+  <thead class="thead-dark text-left">
+    <tr>
+      <th scope="col">Host Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Legal Name</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col">Telegram Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for host in hosts %}
+    <tr>
+      <td>
+          <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
+      </td>
+      <td>
+        <a href="mailto:{{host.email}}"><i class="far fa-envelope"></i> {{host.email}}</a>
+      </td>
+      <td>{{host.legal_name}}</td>
+      <td>
+        <a href="tel:{{host.phone_number}}"><i class="fas fa-phone"></i> {{host.phone_number}}</a>
+      </td>
+      <td>
+        <a href="https://t.me/{{host.telegram_handle}}"><i class="fab fa-telegram"></i> {{host.telegram_handle}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

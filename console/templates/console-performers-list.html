@@ -1,0 +1,37 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Performers{% endblock %}
+
+{% block tool %}
+<h1>Performers</h1>
+<table class="table">
+  <thead class="thead-dark text-left">
+    <tr>
+      <th scope="col">Fan Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Legal Name</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col">Telegram Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for performer in performers %}
+    <tr>
+      <td>
+          <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
+      </td>
+      <td>
+        <a href="mailto:{{performer.email}}"><i class="far fa-envelope"></i> {{performer.email}}</a>
+      </td>
+      <td>{{panel.legal_name}}</td>
+      <td>
+        <a href="tel:{{performer.phone_number}}"><i class="fas fa-phone"></i> {{performer.phone_number}}</a>
+      </td>
+      <td>
+        <a href="https://t.me/{{panel.telegram_handle}}"><i class="fab fa-telegram"></i> {{performer.telegram_handle}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

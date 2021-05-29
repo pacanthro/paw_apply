@@ -24,6 +24,21 @@
             <a class="nav-link" href="{% url 'console:volunteers' %}">Volunteers</a>
           </li>
           {% endif %}
+          {% if is_superuser or has_performer_permission %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'console:performers' %}">Performers</a>
+          </li>
+          {% endif %}
+          {% if is_superuser or has_partyhost_permission %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'console:hosts' %}">Party Hosts</a>
+          </li>
+          {% endif %}
+          {% if is_superuser or has_competitor_permission %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'console:competitors' %}">Competitors</a>
+          </li>
+          {% endif %}
         </ul>
       </div>
     </div>
@@ -55,6 +70,33 @@
           <h5 class="card-title">Volunteers</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{volunteer_count}} have applied</h6>
           <a href="{% url 'console:volunteers' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+      {% if is_superuser or has_performer_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Performers</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{performer_count}} have applied</h6>
+          <a href="{% url 'console:performers' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+      {% if is_superuser or has_partyhost_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Party Hosts</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{host_count}} have applied</h6>
+          <a href="{% url 'console:hosts' %}" class="card-link">View</a>
+        </div>
+      </div>
+      {% endif %}
+      {% if is_superuser or has_competitor_permission %}
+      <div class="card col-sm-2 m-1">
+        <div class="card-body">
+          <h5 class="card-title">Dance Comp</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{host_count}} have applied</h6>
+          <a href="{% url 'console:competitors' %}" class="card-link">View</a>
         </div>
       </div>
       {% endif %}
