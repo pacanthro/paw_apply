@@ -47,9 +47,11 @@ def new(request):
         competitor.email = request.POST['email']
         competitor.legal_name = request.POST['legal_name']
         competitor.fan_name = request.POST['fan_name']
+        competitor.competitor_name = request.POST['competitor_name']
         competitor.phone_number = request.POST['phone']
         competitor.twitter_handle = request.POST['twitter']
         competitor.telegram_handle = request.POST['telegram']
+        competitor.music_url = request.POST['music_url']
         competitor.is_group = request.POST.get('is_group', default=False)
 
         if (competitor.is_group):

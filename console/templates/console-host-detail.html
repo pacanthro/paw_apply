@@ -3,7 +3,7 @@
 {% block title %}PAWConsole - Party Hosts{% endblock %}
 
 {% block tool %}
-<h1>Party Hosts</h1>
+<h1>Party Host Details</h1>
 <table class="table">
   <tr>
     <td>Fan Name:</td>
@@ -27,7 +27,9 @@
   </tr>
   <tr>
     <td>Telegram Handle:</td>
-    <td>{{host.telegram_handle}}</td>
+    <td>
+      <a href="https://t.me/{{host.telegram_handle}}"><i class="fab fa-telegram"></i> {{host.telegram_handle}}</a>
+    </td>
   </tr>
   <tr>
     <td>Hotel Primary:</td>
@@ -72,4 +74,8 @@
     </td>
   </tr>
 </table>
+<div>
+  <h2>Convention Master</h2>
+  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{host.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+</div>
 {% endblock %}

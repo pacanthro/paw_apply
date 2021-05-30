@@ -25,6 +25,15 @@
       </div>
     </div>
     <div class="form-group row">
+      <label for="competitor_name" class="col-sm-2 col-form-label">Competitor Name</label>
+      <div class="col-sm-10">
+        <input name="competitor_name" type="text" class="form-control" id="competitor_name">
+        <small class="form-text text-muted">
+          Please specify the name you want to compete under, otherwise we will use your Fan Name.
+        </small>
+      </div>
+    </div>
+    <div class="form-group row">
       <label for="email" class="col-sm-2 col-form-label">Email</label>
       <div class="col-sm-10">
         <input name="email" type="email" class="form-control" id="email" required>
@@ -59,9 +68,23 @@
       </div>
     </div>
     <div class="form-group row">
+      <label for="music_url" class="col-sm-2 col-form-label">Music Url</label>
+      <div class="col-sm-10">
+        <input name="music_url" type="url" class="form-control" id="music_url" />
+        <small class="form-text text-muted">
+          Please provide us with a link to the music for your performance.
+          Something like a DropBox or Box link will be fine.
+        </small>
+      </div>
+    </div>
+    <div class="form-group row">
       <label for="is_group" class="col-sm-2 col-form-label">Individual or Group</label>
       <div class="col-sm-10">
         <input name="is_group" type="checkbox" class="form-control" value="True" id="is_group">
+        <small class="form-text text-muted">
+          Check this if you are entering as a group and provide the names of the
+          other competitors below.
+        </small>
       </div>
   </fieldset>
   <fieldset>
