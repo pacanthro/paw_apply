@@ -56,22 +56,10 @@ def new(request):
         }
         return render(request, 'volunteer-apply.html', context)
     else:
-        volunteer = Volunteer()
-        volunteer.event = event
-        volunteer.email = request.POST['email']
-        volunteer.legal_name = request.POST['legal_name']
-        volunteer.fan_name = request.POST['fan_name']
-        volunteer.phone_number = request.POST['phone']
-        volunteer.twitter_handle = request.POST['twitter']
-        volunteer.telegram_handle = request.POST['telegram']
-        volunteer.volunteer_history = request.POST['history']
-        volunteer.special_skills = request.POST['skills']
-        volunteer.avail_setup = request.POST.get('setup', default=False)
-        volunteer.avail_teardown = request.POST.get('teardown',default=False)
+        email = request.POST['email']
+        voltuneer_count = Volunteer.objects.filter(email=email,event=event).count()
 
-        try:
-            volunteer.save()
-        except (IntegrityError):
+        if (volunteer_count > 0):
             event = get_current_event()
             departments = Department.objects.order_by('order')
             days = DaysAvailable.objects.order_by('order')
@@ -85,6 +73,20 @@ def new(request):
                 'error': 'Email has already applied.'
             }
             return render(request, 'volunteer-apply.html', context)
+
+        volunteer = Volunteer()
+        volunteer.event = event
+        volunteer.email = email
+        volunteer.legal_name = request.POST['legal_name']
+        volunteer.fan_name = request.POST['fan_name']
+        volunteer.phone_number = request.POST['phone']
+        volunteer.twitter_handle = request.POST['twitter']
+        volunteer.telegram_handle = request.POST['telegram']
+        volunteer.volunteer_history = request.POST['history']
+        volunteer.special_skills = request.POST['skills']
+        volunteer.avail_setup = request.POST.get('setup', default=False)
+        volunteer.avail_teardown = request.POST.get('teardown',default=False)
+        volunteer.save()
 
         for department in departments:
             volunteer.department_interest.add(department)

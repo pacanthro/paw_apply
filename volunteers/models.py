@@ -12,7 +12,7 @@ class TimesAvailable(models.Model):
 
 class Volunteer(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    email = models.CharField(max_length=100,unique=True)
+    email = models.CharField(max_length=100)
     legal_name = models.CharField(max_length=200)
     fan_name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=15)

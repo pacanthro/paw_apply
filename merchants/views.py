@@ -62,22 +62,10 @@ def new(request):
         }
         return render(request, 'merch-apply.html', context)
     else:
-        merchant = Merchant()
-        merchant.event = event
-        merchant.email = request.POST['email']
-        merchant.legal_name = request.POST['legal_name']
-        merchant.fan_name = request.POST['fan_name']
-        merchant.phone_number = request.POST['phone']
-        merchant.table_size = table
-        merchant.business_name = request.POST['business_name']
-        merchant.wares_description = request.POST['wares_description']
-        merchant.helper_legal_name = request.POST['helper_legal_name']
-        merchant.helper_fan_name = request.POST['helper_fan_name']
-        merchant.special_requests = request.POST['special_requests']
+        email = request.POST['email']
+        email_registered = Merchant.objects.filter(email=email,event=event).count()
 
-        try:
-            merchant.save()
-        except (IntegrityError):
+        if (email_registered > 0):
             event = get_current_event()
             tables = Table.objects.order_by('order')
             context = {
@@ -87,6 +75,20 @@ def new(request):
                 'error': 'Email has already applied.'
             }
             return render(request, 'merch-apply.html', context)
+
+        merchant = Merchant()
+        merchant.event = event
+        merchant.email = email
+        merchant.legal_name = request.POST['legal_name']
+        merchant.fan_name = request.POST['fan_name']
+        merchant.phone_number = request.POST['phone']
+        merchant.table_size = table
+        merchant.business_name = request.POST['business_name']
+        merchant.wares_description = request.POST['wares_description']
+        merchant.helper_legal_name = request.POST['helper_legal_name']
+        merchant.helper_fan_name = request.POST['helper_fan_name']
+        merchant.special_requests = request.POST['special_requests']
+        merchant.save()
 
         context = {
             'is_merchants': True

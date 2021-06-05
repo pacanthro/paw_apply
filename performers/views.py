@@ -32,9 +32,20 @@ def new(request):
         }
         return render(request, 'performer-apply.html', context)
     else:
+        email = request.POST['email']
+        performer_count = Performer.objects.filter(email=email,event=event).count()
+
+        if (performer_count > 0):
+            context = {
+                'is_djs': True,
+                'event': event,
+                'error': 'Email has already applied.'
+            }
+            return render(request, 'performer-apply.html', context)
+
         performer = Performer()
         performer.event = event
-        performer.email = request.POST['email']
+        performer.email = email
         performer.legal_name = request.POST['legal_name']
         performer.fan_name = request.POST['fan_name']
         performer.phone_number = request.POST['phone']
@@ -43,16 +54,7 @@ def new(request):
         performer.biography = request.POST['bio']
         performer.dj_history = request.POST['history']
         performer.set_link = request.POST['set_url']
-
-        try:
-            performer.save()
-        except(IntegrityError):
-            context = {
-                'is_djs': True,
-                'event': event,
-                'error': 'Email has already applied.'
-            }
-            return render(request, 'performer-apply.html', context)
+        performer.save()
 
         send_paw_email('email-performers-confirm.html', {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
         return HttpResponseRedirect(reverse('performers:confirm'))

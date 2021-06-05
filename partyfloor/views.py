@@ -37,9 +37,23 @@ def new(request):
         }
         return render(request, 'partyfloor-apply.html', context)
     else:
+        email = request.POST['email']
+        host_count = PartyHost.objects.filter(email=email,event=event).count()
+
+        if (host_count > 0):
+            event = get_current_event()
+            days_available = DaysAvailable.objects.filter(available_party=True)
+            context =  {
+                'is_partyfloor': True,
+                'event': event,
+                'days': days_available,
+                'error': "Email or Hotel Reservation has already applied."
+            }
+            return render(request, 'partyfloor-apply.html', context)
+
         host = PartyHost()
         host.event = event
-        host.email = request.POST['email']
+        host.email = email
         host.legal_name = request.POST['legal_name']
         host.fan_name = request.POST['fan_name']
         host.phone_number = request.POST['phone']
@@ -53,19 +67,8 @@ def new(request):
         host.ack_wristbands = request.POST.get('ack_wristbands', default=False)
         host.ack_closure_time = request.POST.get('ack_closure_time', default=False)
         host.ack_suspension_policy = request.POST.get('ack_suspension_policy', default=False)
+        host.save()
 
-        try:
-            host.save()
-        except(IntegrityError):
-            event = get_current_event()
-            days_available = DaysAvailable.objects.filter(available_party=True)
-            context =  {
-                'is_partyfloor': True,
-                'event': event,
-                'days': days_available,
-                'error': "Email or Hotel Reservation has already applied."
-            }
-            return render(request, 'partyfloor-apply.html', context)
         for day in days:
             host.party_days.add(day)
 
