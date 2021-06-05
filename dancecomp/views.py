@@ -41,10 +41,23 @@ def new(request):
                     'error': 'If applying as a group you must specify at least one other performer name.'
                 }
                 return render(request, 'dancecomp-apply.html', context)
+        email = request.POST['email']
+        competitor_count = Competitor.objects.filter(email=email, event=event).count()
+
+        if (competitor_count > 0):
+            event = get_current_event()
+            context = {
+                'is_dancecomp': True,
+                'event': event,
+                'error': 'That email has already applied.'
+            }
+
+            return render(request, 'dancecomp-apply.html', context)
+
 
         competitor = Competitor()
         competitor.event = event
-        competitor.email = request.POST['email']
+        competitor.email = email
         competitor.legal_name = request.POST['legal_name']
         competitor.fan_name = request.POST['fan_name']
         competitor.competitor_name = request.POST['competitor_name']
@@ -60,17 +73,7 @@ def new(request):
             competitor.performer_four = request.POST['performer_four']
             competitor.performer_five = request.POST['performer_five']
 
-        try:
-            competitor.save()
-        except(IntegrityError):
-            event = get_current_event()
-            context = {
-                'is_dancecomp': True,
-                'event': event,
-                'error': 'That email has already applied.'
-            }
-
-            return render(request, 'dancecomp-apply.html', context)
+        competitor.save()
 
         send_paw_email('email-dance-confirm.html', {'competitor':competitor}, subject='PAWCon Damce Comp Submission', recipient_list=[competitor.email], reply_to=settings.DANCE_EMAIL)
 
