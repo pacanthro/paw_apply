@@ -1,5 +1,6 @@
 import csv, datetime
 from core.models import get_current_event
+from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
@@ -201,10 +202,10 @@ def merchant_payment(request, merchant_id):
     if merchant.payment_requested is None:
         merchant.payment_requested = True
         merchant.save()
-        send_paw_email('email-merchant-payment.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to='merchant@pacanthro.org')
+        send_paw_email('email-merchant-payment.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
     else:
         merchant.save()
-        send_paw_email('email-merchant-payment-remind.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to='merchant@pacanthro.org')
+        send_paw_email('email-merchant-payment-remind.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
     data = {
         'status': 'Success'
@@ -219,13 +220,21 @@ def merchant_confirmed(request, merchant_id):
         merchant.payment_confirmed = True
         merchant.confirmation_sent = datetime.date.today()
         merchant.save()
-        send_paw_email('email-merchant-payment-confirmed.html', {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to='merchant@pacanthro.org')
+        send_paw_email('email-merchant-payment-confirmed.html', {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
         data = {
             'status': 'Success'
         }
         return JsonResponse(data)
     else:
         return HttpResponseBadRequest()
+
+@login_required
+@permission_required('merchants.view_merchant')
+def merchant_reg_reminder(request, merchant_id):
+    merchant = get_object_or_404(Merchant, pk=merchant_id)
+    send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+    return JsonResponse({'status': 'success'})
 
 @login_required
 @permission_required('merchants.view_merchant')
