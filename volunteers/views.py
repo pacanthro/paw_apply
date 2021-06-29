@@ -57,7 +57,7 @@ def new(request):
         return render(request, 'volunteer-apply.html', context)
     else:
         email = request.POST['email']
-        voltuneer_count = Volunteer.objects.filter(email=email,event=event).count()
+        volunteer_count = Volunteer.objects.filter(email=email,event=event).count()
 
         if (volunteer_count > 0):
             event = get_current_event()
