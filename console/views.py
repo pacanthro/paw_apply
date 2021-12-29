@@ -114,7 +114,7 @@ def panel_detail(request, panel_id):
 # All of the volunteer tools
 #
 @login_required
-@permission_required('volunteers.view_panel')
+@permission_required('volunteers.view_volunteer')
 def volunteers(request):
     event = get_current_event()
     volunteers = Volunteer.objects.filter(event=event)
@@ -124,7 +124,7 @@ def volunteers(request):
     return render(request, 'console-volunteers-list.html', __build_context(request.user, context))
 
 @login_required
-@permission_required('volunteers.view_panel')
+@permission_required('volunteers.view_volunteer')
 def volunteer_detail(request, volunteer_id):
     volunteer = get_object_or_404(Volunteer, pk=volunteer_id)
     context = {
