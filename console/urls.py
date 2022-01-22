@@ -30,6 +30,9 @@ urlpatterns = [
     # Party Hosts
     path('hosts', views.hosts, name='hosts'),
     path('hosts/<int:host_id>', views.host_detail, name='host-detail'),
+    path('hosts/<int:host_id>/assign', views.host_assign, name='host-assign'),
+    path('hosts/<int:host_id>/confirm', views.host_confirm, name='host-confirm'),
+    path('hosts/<int:host_id>/waitlist', views.host_waitlist, name='host-waitlist'),
 
     # Competitors
     path('competitors', views.competitors, name='competitors'),

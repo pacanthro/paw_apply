@@ -25,7 +25,11 @@
     approve your application.</li>
   <li>By applying you agree that you understand all of the above.</li>
 </ul>
-{% if is_merchants_full %}
+{% if max_merchants == 0 %}
+<div class="alert alert-danger" role="alert">
+  Merchants applications is currently closed. :(
+</div>
+{% elif is_merchants_full %}
 <div class="alert alert-danger" role="alert">
   Merchants is currently full. :(
 </div>

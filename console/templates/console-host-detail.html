@@ -73,9 +73,87 @@
       {% endif %}
     </td>
   </tr>
+  {% if host.room_assigned %}
+  <tr>
+    <td>Room Details:</td>
+    <td>
+      {{host.room_number}}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Confirmation Sent:
+    </td>
+    <td>
+      {{host.confirmation_sent}}
+    </td>
+  </tr>
+  {% endif %}
+  {% if host.waitlist_sent != None %}
+  <tr>
+    <td>
+      Waitlist Sent:
+    </td>
+    <td>
+      {{host.waitlist_sent}}
+    </td>
+  </tr>
+  {% endif %}
 </table>
+<div>
+  <h2>Actions</h2>
+  {% if host.room_assigned %}
+  <a href="{% url 'console:host-assign' host.id %}" class="btn btn-primary">Edit Room Assignment</a>
+  {% else %}
+  <a href="{% url 'console:host-assign' host.id %}" class="btn btn-primary">Assign Room</a>
+  <button onclick="$.fn.sendWaitlistEmail()" class="btn btn-primary">Send Waitlist</button>
+  {% endif %}
+</div>
 <div>
   <h2>Convention Master</h2>
   <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{host.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
 </div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-confirmation-sent" style="position: absolute; top: 0; right: 0;">
+  <div class="toast-header">
+    <strong class="mr-auto">PAWConsole</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Confirmation email sent to {{host.email}}!
+  </div>
+</div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-waitlist-sent" style="position: absolute; top: 0; right: 0;">
+  <div class="toast-header">
+    <strong class="mr-auto">PAWConsole</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Waitlist email sent to {{host.email}}!
+  </div>
+</div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-error" style="position: absolute; top: 0; right: 0;">
+  <div class="toast-header">
+    <strong class="mr-auto">PAWConsole</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Something went wrong... I'm very very sorry. Contact Laveur!
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+jQuery.fn.sendWaitlistEmail = function() {
+  $.get('{% url 'console:host-waitlist' host.id %}').done(function(data) {
+    $('#toast-waitlist-sent').toast('show');
+  }).fail(function() {
+    $('#toast-error').toast('show')
+  });
+}
 {% endblock %}

@@ -12,18 +12,28 @@ import logging
 from .models import Event, Merchant, Table
 
 def __is_merchants_full():
+    max_merchants = 0
+    merchant_count = 0
     event = get_current_event()
-    merchant_count = Merchant.objects.filter(event=event).count()
-    return (merchant_count >= event.max_merchants)
+    if (event):
+        max_merchants = event.max_merchants
+        merchant_count = Merchant.objects.filter(event=event).count()
+
+    return (merchant_count >= max_merchants)
 
 # Create your views here.
 def index(request):
+    max_merchants = 0
+    merchant_count = 0
     event = get_current_event()
-    merchant_count = Merchant.objects.filter(event=event).count()
+    if (event):
+        max_merchants = event.max_merchants
+        merchant_count = Merchant.objects.filter(event=event).count()
+
     context = {
         'is_merchants': True,
         'merchant_count': merchant_count,
-        'max_merchants': event.max_merchants,
+        'max_merchants': max_merchants,
         'is_merchants_full': __is_merchants_full()
     }
     return render(request, 'merchants.html', context)

@@ -2,7 +2,7 @@ import datetime
 from django.db import models
 
 def get_current_event():
-    return Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end')[:1].get()
+    return Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end').first()
 
 # Create your models here.
 class DaysAvailable(models.Model):
@@ -29,6 +29,7 @@ class Event(models.Model):
     event_start = models.DateField()
     event_end = models.DateField()
     max_merchants = models.IntegerField(default=0)
+    max_party_rooms = models.IntegerField(default=0)
 
     def __str__(self):
         return self.event_name
