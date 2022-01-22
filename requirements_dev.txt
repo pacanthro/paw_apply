@@ -1,6 +1,6 @@
 asgiref==3.2.10
 Click==7.0
-Django==3.1.13
+Django==3.1.14
 psycopg2==2.8.4
 python-dotenv==0.11.0
 python-http-client==3.2.4
