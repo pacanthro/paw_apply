@@ -1,0 +1,27 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Party Hosts{% endblock %}
+
+{% block tool %}
+<h1>Party Host Details</h1>
+<form action="{% url 'console:host-confirm' host.id %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="host" value="{{host.id}}">
+  <fieldset>
+    <legend>Room Info</legend>
+    <div class="form-group row">
+      <label for="twitter" class="col-sm-2 col-form-label">Room Number</label>
+      <div class="col-sm-10">
+        <input name="room_number" type="text" class="form-control" id="room_number" value="{{host.room_number}}">
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <div class="form-group row float-right">
+      <div class="col">
+        <input type="submit" class="btn btn-primary" value="Assign">
+      </div>
+    </div>
+  </fieldset>
+</form>
+{% endblock %}

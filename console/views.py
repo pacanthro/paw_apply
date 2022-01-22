@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from modules.email import send_paw_email
 
 from .models import Event, Merchant, Panel, Volunteer, Performer, PartyHost, Competitor
@@ -132,6 +133,7 @@ def volunteer_detail(request, volunteer_id):
     }
     return render(request, 'console-volunteers-detail.html', __build_context(request.user, context))
 
+# Performer Views
 @login_required
 @permission_required('performer.view_performer')
 def performers(request):
@@ -151,6 +153,7 @@ def performer_detail(request, performer_id):
     }
     return render(request, 'console-performer-detail.html', __build_context(request.user, context))
 
+# Host Views
 @login_required
 @permission_required('host.view_host')
 def hosts(request):
@@ -170,6 +173,31 @@ def host_detail(request, host_id):
     }
     return render(request, 'console-host-detail.html', __build_context(request.user, context))
 
+@login_required
+@permission_required('host.view_host')
+def host_assign(request, host_id):
+    host = get_object_or_404(PartyHost, pk=host_id)
+    context = {
+        'host': host
+    }
+    return render(request, 'console-host-assign.html', __build_context(request.user, context))
+
+@login_required
+@permission_required('host.view_host')
+def host_confirm(request, host_id):
+    host = get_object_or_404(PartyHost, pk=host_id)
+    host.room_number = request.POST['room_number']
+    host.room_assigned = True
+    host.confirmation_sent = datetime.date.today()
+    host.save()
+
+    send_paw_email('email-party-assigned.html', {'host': host}, subject='PAWCon Party Floor Confirmation', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+
+    return HttpResponseRedirect(reverse('console:host-detail', args=[host_id]))
+
+
+
+# Competitor Views
 @login_required
 @permission_required('competitors.view_host')
 def competitors(request):
@@ -250,6 +278,18 @@ def merchant_download_csv(request):
         writer.writerow([merchant.business_name, merchant.email, merchant.legal_name, merchant.fan_name])
 
     return response
+
+@login_required
+@permission_required('host.view_host')
+def host_waitlist(request, host_id):
+    host = get_object_or_404(PartyHost, pk=host_id)
+    host.waitlist_sent = datetime.date.today()
+    host.save()
+    context = {
+        'host': host
+    }
+    send_paw_email('email-party-waitlist.html', {'host': host}, subject='PAWCon Party Floor Waitlist', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+    return JsonResponse({'status': 'success'})
 
 # Private Functions
 def __build_context(user, extras):

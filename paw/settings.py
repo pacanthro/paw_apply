@@ -82,14 +82,15 @@ TEMPLATES = [
 
 # Email Config
 EMAIL_BACKEND = 'sgbackend.SendGridBackend'
-SENDGRID_API_KEY = os.getenv('SEND_GRID_API_KEY')
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+EMAIL_DOMAIN = os.getenv('EMAIL_DOMAIN')
 DEFAULT_FROM_EMAIL = 'noreply <noreply@pacanthro.org>'
-MERCHANT_EMAIL = 'merchant@pacanthro.org'
-PANEL_EMAIL = 'panel@pacanthro.org'
-VOLUNTEER_EMAIL = 'volunteer@pacanthro.org'
-PERFORMERS_EMAIL = 'dj@pacanthro.org'
-HOTEL_EMAIL = 'hotel@pacanthro.org'
-DANCE_EMAIL = 'dancecomp@pacanthro.org'
+MERCHANT_EMAIL = 'merchant@'+EMAIL_DOMAIN
+PANEL_EMAIL = 'panel@'+EMAIL_DOMAIN
+VOLUNTEER_EMAIL = 'volunteer@'+EMAIL_DOMAIN
+PERFORMERS_EMAIL = 'dj@'+EMAIL_DOMAIN
+HOTEL_EMAIL = 'hotel@'+EMAIL_DOMAIN
+DANCE_EMAIL = 'dancecomp@'+EMAIL_DOMAIN
 
 WSGI_APPLICATION = 'paw.wsgi.application'
 
