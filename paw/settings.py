@@ -83,8 +83,8 @@ TEMPLATES = [
 # Email Config
 EMAIL_BACKEND = 'sgbackend.SendGridBackend'
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-EMAIL_DOMAIN = os.getenv('EMAIL_DOMAIN')
-DEFAULT_FROM_EMAIL = 'noreply <noreply@pacanthro.org>'
+EMAIL_DOMAIN = os.getenv('EMAIL_DOMAIN') or 'pacanthro.org'
+DEFAULT_FROM_EMAIL = 'noreply@'+EMAIL_DOMAIN
 MERCHANT_EMAIL = 'merchant@'+EMAIL_DOMAIN
 PANEL_EMAIL = 'panel@'+EMAIL_DOMAIN
 VOLUNTEER_EMAIL = 'volunteer@'+EMAIL_DOMAIN

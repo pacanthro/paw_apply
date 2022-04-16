@@ -2,6 +2,10 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from python_http_client.exceptions import HTTPError
+import logging
+
+logger = logging.getLogger(__name__)
 
 def send_paw_email(template_name, template_context, subject, recipient_list, reply_to):
     email_from = settings.DEFAULT_FROM_EMAIL
@@ -10,4 +14,7 @@ def send_paw_email(template_name, template_context, subject, recipient_list, rep
     email = EmailMessage(subject, html_msg, email_from, recipient_list, [reply_to, ], reply_to=[reply_to])
     email.content_subtype = 'html'
 
-    email.send()
+    try:
+        email.send()
+    except HTTPError as e:
+        logger.error(e.to_dict)

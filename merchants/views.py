@@ -43,7 +43,7 @@ def apply(request):
         return HttpResponseRedirect(reverse('merchants:index'))
 
     event = get_current_event()
-    tables = Table.objects.order_by('order')
+    tables = Table.objects.filter(deleted=False).order_by('order')
     context = {
         'is_merchants': True,
         'event': event,
