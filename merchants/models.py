@@ -6,6 +6,7 @@ class Table(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=20)
     order = models.IntegerField(default=0)
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
