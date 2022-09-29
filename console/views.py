@@ -280,6 +280,29 @@ def merchant_download_csv(request):
     return response
 
 @login_required
+@permission_required('volunteers.view_volunteer')
+def volunteer_download_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="volunteers.csv"'
+    event = get_current_event()
+    volunteers = Volunteer.objects.filter(event=event)
+
+    writer = csv.writer(response)
+    writer.writerow(["Fan Name", "Email", "Legal Name", "Telegram Handle", "Departments", "Days Available", "Available Setup", "Available Teardown"])
+    for volunteer in volunteers:
+        departments = volunteer.department_interest.all()
+        dept_str = ""
+        for department in departments:
+            dept_str += department.department_name + ";"
+        days = volunteer.days_available.all()
+        days_str = ""
+        for day in days:
+            days_str += day.name + ";"
+        writer.writerow([volunteer.fan_name, volunteer.email, volunteer.legal_name, volunteer.telegram_handle, dept_str, days_str, volunteer.avail_setup, volunteer.avail_teardown])
+
+    return response
+
+@login_required
 @permission_required('host.view_host')
 def host_waitlist(request, host_id):
     host = get_object_or_404(PartyHost, pk=host_id)

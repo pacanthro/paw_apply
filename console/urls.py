@@ -21,6 +21,7 @@ urlpatterns = [
 
     # Volunteers
     path('volunteers', views.volunteers, name='volunteers'),
+    path('volunteers/download_csv', views.volunteer_download_csv, name='volunteer-download'),
     path('volunteers/<int:volunteer_id>', views.volunteer_detail, name='volunteer-detail'),
 
     # Performers
