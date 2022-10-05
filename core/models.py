@@ -30,6 +30,10 @@ class Event(models.Model):
     event_end = models.DateField()
     max_merchants = models.IntegerField(default=0)
     max_party_rooms = models.IntegerField(default=0)
+    submissions_end = models.DateField()
+
+    def is_submissions_closed(self):
+        return self.submissions_end < datetime.date.today()
 
     def __str__(self):
         return self.event_name

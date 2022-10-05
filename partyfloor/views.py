@@ -10,7 +10,12 @@ from .models import Event, PartyHost
 
 # Create your views here.
 def index(request):
-    return render(request, 'partyfloor.html', {'is_partyfloor': True})
+    event = get_current_event()
+    context =  {
+        'is_partyfloor': True,
+        'event': event,
+    }
+    return render(request, 'partyfloor.html', context)
 
 def apply(request):
     event = get_current_event()

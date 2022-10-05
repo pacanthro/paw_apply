@@ -34,7 +34,8 @@ def index(request):
         'is_merchants': True,
         'merchant_count': merchant_count,
         'max_merchants': max_merchants,
-        'is_merchants_full': __is_merchants_full()
+        'is_merchants_full': __is_merchants_full(),
+        'event': event
     }
     return render(request, 'merchants.html', context)
 

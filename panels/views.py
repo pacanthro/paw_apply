@@ -10,7 +10,12 @@ from .models import Event, DaysAvailable, Panel, PanelDuration, PanelSlot
 
 # Create your views here.
 def index(request):
-    return render(request, 'panels.html', {'is_panels': True})
+    event = get_current_event()
+    context = {
+        'is_panels': True,
+        'event': event
+    }
+    return render(request, 'panels.html', context)
 
 def apply(request):
     event = get_current_event()
