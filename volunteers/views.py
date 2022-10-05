@@ -11,7 +11,11 @@ from .models import Department, DaysAvailable, Event, TimesAvailable, Volunteer
 
 # Create your views here.
 def index(request):
-    context = {'is_volunteers': True}
+    event = get_current_event()
+    context = {
+        'is_volunteers': True,
+        'event': event
+    }
     return render(request, 'volunteers.html', context)
 
 def apply(request):

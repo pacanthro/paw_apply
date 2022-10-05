@@ -10,7 +10,12 @@ from .models import Competitor, Event
 
 # Create your views here.
 def index(request):
-    return render(request, 'dancecomp.html', {'is_dancecomp': True})
+    event = get_current_event()
+    context = {
+        'is_dancecomp': True,
+        'event': event
+    }
+    return render(request, 'dancecomp.html', context)
 
 def apply(request):
     event = get_current_event()

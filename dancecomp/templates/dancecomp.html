@@ -16,5 +16,7 @@
       not approve your application.</li>
   <li>By applying you agree that you understand all of the above.</li>
 </ul>
+{% if event.is_submissions_closed == False %}
 <a href="{% url 'dancecomp:apply' %}" class="btn btn-primary btn-lg">Apply</a>
+{% endif %}
 {% endblock %}

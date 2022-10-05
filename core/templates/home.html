@@ -5,6 +5,9 @@
 {% block content %}
 <h1>Welcome! I would like to...</h1>
 <div class="row">
+  {% if event.is_submissions_closed %}
+  <h2>Submissions are now closed</h2>
+  {% else %}
   <div class="col-sm-4">
     <div class="card">
       <div class="card-body">
@@ -61,5 +64,6 @@
       </div>
     </div>
   </div>
+  {% endif %}
 </div>
 {% endblock %}
