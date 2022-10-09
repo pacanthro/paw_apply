@@ -25,3 +25,4 @@ class PartyHost(models.Model):
     room_assigned = models.BooleanField(default=False)
     confirmation_sent = models.DateField(null=True, blank=True)
     waitlist_sent = models.DateField(null=True, blank=True)
+    declined = models.BooleanField(default=False)

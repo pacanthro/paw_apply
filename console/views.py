@@ -158,7 +158,7 @@ def performer_detail(request, performer_id):
 @permission_required('host.view_host')
 def hosts(request):
     event = get_current_event()
-    hosts = PartyHost.objects.filter(event=event)
+    hosts = PartyHost.objects.filter(event=event, declined=False)
     context = {
         'hosts': hosts
     }
@@ -195,7 +195,14 @@ def host_confirm(request, host_id):
 
     return HttpResponseRedirect(reverse('console:host-detail', args=[host_id]))
 
+@login_required
+@permission_required('hosts.view_host')
+def host_decline(request, host_id):
+    host = get_object_or_404(PartyHost, pk=host_id)
+    host.declined = True
+    host.save()
 
+    return HttpResponseRedirect(reverse('console:hosts'))
 
 # Competitor Views
 @login_required
