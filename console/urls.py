@@ -34,6 +34,7 @@ urlpatterns = [
     path('hosts/<int:host_id>/assign', views.host_assign, name='host-assign'),
     path('hosts/<int:host_id>/confirm', views.host_confirm, name='host-confirm'),
     path('hosts/<int:host_id>/waitlist', views.host_waitlist, name='host-waitlist'),
+    path('hosts/<int:host_id>/decline', views.host_decline, name='host-decline'),
 
     # Competitors
     path('competitors', views.competitors, name='competitors'),

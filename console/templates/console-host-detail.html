@@ -102,6 +102,7 @@
 </table>
 <div>
   <h2>Actions</h2>
+  <a href="{% url 'console:host-decline' host.id %}" class="btn btn-primary">Decline</a>
   {% if host.room_assigned %}
   <a href="{% url 'console:host-assign' host.id %}" class="btn btn-primary">Edit Room Assignment</a>
   {% else %}
