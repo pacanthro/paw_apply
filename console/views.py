@@ -191,7 +191,7 @@ def host_confirm(request, host_id):
     host.confirmation_sent = datetime.date.today()
     host.save()
 
-    send_paw_email('email-party-assigned.html', {'host': host}, subject='PAWCon Party Floor Confirmation', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+    send_paw_email('email-party-assigned.html', {'host': host}, subject='PAWCon Party Floor Room Assigned', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
     return HttpResponseRedirect(reverse('console:host-detail', args=[host_id]))
 
