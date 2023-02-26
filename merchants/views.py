@@ -16,8 +16,11 @@ def __is_merchants_full():
     merchant_count = 0
     event = get_current_event()
     if (event):
-        max_merchants = event.max_merchants
-        merchant_count = Merchant.objects.filter(event=event).count()
+        max_merchants = event.max_merchants + 10
+        full_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="FULL")).count()
+        double_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
+
+        merchant_count = full_table_count + double_table_count >= max_merchants;
 
     return (merchant_count >= max_merchants)
 

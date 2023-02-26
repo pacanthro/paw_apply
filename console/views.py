@@ -9,12 +9,25 @@ from django.urls import reverse
 from modules.email import send_paw_email
 
 from .models import Event, Merchant, Panel, Volunteer, Performer, PartyHost, Competitor
+from merchants.models import Table
+
+def __merchant_table_count():
+    max_merchants = 0
+    merchant_count = 0
+    event = get_current_event()
+    if (event):
+        full_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="FULL")).count()
+        double_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
+
+        merchant_count = full_table_count + double_table_count
+
+    return merchant_count
 
 # Create your views here.
 @login_required
 def index(request):
     event = get_current_event()
-    merchant_count = Merchant.objects.filter(event=event).count()
+    merchant_count = __merchant_table_count()
     panel_count = Panel.objects.filter(event=event).count()
     volunteer_count = Volunteer.objects.filter(event=event).count()
     performer_count = Performer.objects.filter(event=event).count()
