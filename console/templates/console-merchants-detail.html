@@ -72,6 +72,7 @@
   <button onclick="$.fn.sendConfirmationEmail()" class="btn btn-primary">Send Confirmation</button>
   <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
   {% endif %}
+  <a href="{% url 'console:merchant-delete' merchant.id %}" class="btn btn-danger">Delete Merchant</a>
 </div>
 <div>
   <h2>Convention Master</h2>
