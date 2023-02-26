@@ -296,7 +296,7 @@ def merchant_waitlisted(request, merchant_id):
     if merchant.waitlisted is None:
         merchant.waitlisted = True
         merchant.save()
-        send_paw_email('email-merchant-waitlist.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+        send_paw_email('email-merchant-waitlist.html', {'merchant': merchant}, subject='PAWCon Merchant Waitlist', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
     return JsonResponse({'status': 'success'})
 
