@@ -69,11 +69,13 @@ def logout(request):
 @permission_required('merchants.view_merchant')
 def merchants(request):
     event = get_current_event()
-    merchants = Merchant.objects.filter(event=event).filter(payment_requested__isnull=True)
+    merchants = Merchant.objects.filter(event=event).filter(payment_requested__isnull=True).filter(waitlisted__isnull=True)
+    waitlisted = Merchant.objects.filter(event=event).filter(waitlisted=True).filter(payment_requested__isnull=True).filter(payment_confirmed__isnull=True)
     processed = Merchant.objects.filter(event=event).filter(payment_requested=True).filter(payment_confirmed__isnull=True)
     confirmed = Merchant.objects.filter(event=event).filter(payment_confirmed=True)
     context = {
         'merchants': merchants,
+        'waitlisted': waitlisted,
         'processed': processed,
         'confirmed': confirmed,
     }
@@ -285,6 +287,18 @@ def merchant_download_csv(request):
         writer.writerow([merchant.business_name, merchant.email, merchant.legal_name, merchant.fan_name])
 
     return response
+
+@login_required
+@permission_required('merchants.view_merchant')
+def merchant_waitlisted(request, merchant_id):
+    merchant = get_object_or_404(Merchant, pk=merchant_id)
+    merchant.waitlist_sent = datetime.date.today()
+    if merchant.waitlisted is None:
+        merchant.waitlisted = True
+        merchant.save()
+        send_paw_email('email-merchant-waitlist.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+    return JsonResponse({'status': 'success'})
 
 @login_required
 @permission_required('volunteers.view_volunteer')
