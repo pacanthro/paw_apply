@@ -91,6 +91,24 @@ def merchant_detail(request, merchant_id):
     }
     return render(request, 'console-merchants-detail.html', __build_context(request.user, context))
 
+@login_required
+@permission_required('merchants.view_merchant')
+def merchant_delete(request, merchant_id):
+    merchant = get_object_or_404(Merchant, pk=merchant_id)
+
+    if request.method == 'GET':
+        context = {
+            'is_console': True,
+            'merchant': merchant
+        }
+        
+        return render(request, 'console-merchants-delete.html', __build_context(request.user, context))
+    elif request.method == 'POST':
+        merchant.delete()
+
+        return HttpResponseRedirect(reverse('console:merchants'))
+
+
 # Panel Views
 # All of the Panel Tools
 #

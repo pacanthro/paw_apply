@@ -1,0 +1,19 @@
+{% extends 'console.html' %}
+
+{% block title %}PAWConsole - Merchants{% endblock %}
+
+{% block tool %}
+<h1>Delete Merchant</h1>
+<form action="{% url 'console:merchant-delete' merchant.id %}" method="POST">
+    {% csrf_token %}
+    <div class="card">
+        <h5 class="card-header">Are you sure?</h5>
+        <div class="card-body">
+            <p class="card-text">Are you sure you want to delete {{merchant.name}}?</p>
+            <p class="card-text">This operation can not be undone.</p>
+            <button type="submit" class="btn btn-danger">I'm Sure!</button>
+            <a href="{% url 'console:merchant-detail' merchant.id %}" class="btn btn-primary">Go Back</a>
+        </div>
+    </div>
+</form>
+{% endblock %}
