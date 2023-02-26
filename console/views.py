@@ -160,9 +160,16 @@ def performer_detail(request, performer_id):
 @permission_required('host.view_host')
 def hosts(request):
     event = get_current_event()
-    hosts = PartyHost.objects.filter(event=event, declined=False)
+    unassigned_hosts = PartyHost.objects.filter(event=event).filter(room_assigned=False).filter(waitlisted=False).filter(declined=False)
+    waitlisted_hosts = PartyHost.objects.filter(event=event, room_assigned=False, waitlisted=True, declined=False)
+    assigned_hosts = PartyHost.objects.filter(event=event, room_assigned=True, waitlisted=False, declined=False)
+    declined_hosts = PartyHost.objects.filter(event=event, room_assigned=False, waitlisted=False, declined=True)
+
     context = {
-        'hosts': hosts
+        'unassigned_hosts': unassigned_hosts,
+        'waitlisted_hosts': waitlisted_hosts,
+        'assigned_hosts': assigned_hosts,
+        'declined_hosts': declined_hosts
     }
     return render(request, 'console-hosts-list.html', __build_context(request.user, context))
 
@@ -328,6 +335,7 @@ def volunteer_download_csv(request):
 def host_waitlist(request, host_id):
     host = get_object_or_404(PartyHost, pk=host_id)
     host.waitlist_sent = datetime.date.today()
+    host.waitlisted = True
     host.save()
     context = {
         'host': host
