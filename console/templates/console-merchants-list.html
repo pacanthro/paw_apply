@@ -20,7 +20,7 @@
   </thead>
   <tbody>
     <tr>
-      <td colspan="4" class="table-info">New</td>
+      <td colspan="4" class="table-info">New ({{merchants|length}})</td>
     </tr>
     {% for merchant in merchants %}
     <tr>
@@ -33,7 +33,7 @@
     </tr>
     {% endfor %}
     <tr>
-        <td colspan="4" class="table-info">Waitlisted</td>
+        <td colspan="4" class="table-info">Waitlisted ({{waitlisted|length}})</td>
     </tr>
     {% for merchant in waitlisted %}
     <tr>
@@ -46,7 +46,7 @@
     </tr>
     {% endfor %}
     <tr>
-      <td colspan="4" class="table-info">Payment Requested</td>
+      <td colspan="4" class="table-info">Payment Requested ({{processed|length}})</td>
     </tr>
     {% for merchant in processed %}
     <tr>
@@ -59,7 +59,7 @@
     </tr>
     {% endfor %}
     <tr>
-      <td colspan="4" class="table-info">Confirmed</td>
+      <td colspan="4" class="table-info">Confirmed ({{confirmed|length}})</td>
     </tr>
     {% for merchant in confirmed %}
     <tr>
