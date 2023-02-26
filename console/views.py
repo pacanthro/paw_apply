@@ -109,6 +109,30 @@ def merchant_delete(request, merchant_id):
         return HttpResponseRedirect(reverse('console:merchants'))
 
 
+@login_required
+@permission_required('merchants.view_merchant')
+def merchant_assign(request, merchant_id):
+    merchant = get_object_or_404(Merchant, pk=merchant_id)
+
+    if request.method == 'GET':
+        context = {
+            'is_console': True,
+            'merchant': merchant
+        }
+        
+        return render(request, 'console-merchants-assign.html', __build_context(request.user, context))
+    elif request.method == 'POST':
+        merchant.table_number = request.POST['table_number']
+        merchant.table_assigned = True
+
+        merchant.save();
+
+        send_paw_email('email-merchant-table-assigned.html', {'merchant': merchant}, subject='PAWCon Merchant Table Assigned', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+        return HttpResponseRedirect(reverse('console:merchant-detail', args=[merchant.id]))
+
+
+
 # Panel Views
 # All of the Panel Tools
 #
