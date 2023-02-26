@@ -15,7 +15,70 @@
     </tr>
   </thead>
   <tbody>
-    {% for host in hosts %}
+    <tr>
+      <td colspan="5" class="table-info">New</td>
+    </tr>
+    {% for host in unassigned_hosts %}
+    <tr>
+      <td>
+          <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
+      </td>
+      <td>
+        <a href="mailto:{{host.email}}"><i class="far fa-envelope"></i> {{host.email}}</a>
+      </td>
+      <td>{{host.legal_name}}</td>
+      <td>
+        <a href="tel:{{host.phone_number}}"><i class="fas fa-phone"></i> {{host.phone_number}}</a>
+      </td>
+      <td>
+        <a href="https://t.me/{{host.telegram_handle}}"><i class="fab fa-telegram"></i> {{host.telegram_handle}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="5" class="table-info">Waitlisted</td>
+    </tr>
+    {% for host in waitlisted_hosts %}
+    <tr>
+        <td>
+            <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
+        </td>
+        <td>
+            <a href="mailto:{{host.email}}"><i class="far fa-envelope"></i> {{host.email}}</a>
+        </td>
+        <td>{{host.legal_name}}</td>
+        <td>
+            <a href="tel:{{host.phone_number}}"><i class="fas fa-phone"></i> {{host.phone_number}}</a>
+        </td>
+        <td>
+            <a href="https://t.me/{{host.telegram_handle}}"><i class="fab fa-telegram"></i> {{host.telegram_handle}}</a>
+        </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="5" class="table-info">Assigned</td>
+    </tr>
+    {% for host in assigned_hosts %}
+    <tr>
+      <td>
+          <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
+      </td>
+      <td>
+        <a href="mailto:{{host.email}}"><i class="far fa-envelope"></i> {{host.email}}</a>
+      </td>
+      <td>{{host.legal_name}}</td>
+      <td>
+        <a href="tel:{{host.phone_number}}"><i class="fas fa-phone"></i> {{host.phone_number}}</a>
+      </td>
+      <td>
+        <a href="https://t.me/{{host.telegram_handle}}"><i class="fab fa-telegram"></i> {{host.telegram_handle}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="5" class="table-info">Declined</td>
+    </tr>
+    {% for host in declined_hosts %}
     <tr>
       <td>
           <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
