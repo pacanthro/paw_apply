@@ -15,6 +15,8 @@ urlpatterns = [
     path('merchants/<int:merchant_id>/confirm', views.merchant_confirmed, name='merchant-confirm'),
     path('merchants/download_csv', views.merchant_download_csv, name='merchant-download'),
     path('merchants/<int:merchant_id>/reg', views.merchant_reg_reminder, name='merchant-reg-remind'),
+    path('merchants/<int:merchant_id>/waitlist', views.merchant_waitlisted, name='merchant-waitlist'),
+
     # Panels
     path('panels', views.panels, name='panels'),
     path('panels/<int:panel_id>', views.panel_detail, name='panel-detail'),

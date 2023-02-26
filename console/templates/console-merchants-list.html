@@ -33,6 +33,19 @@
     </tr>
     {% endfor %}
     <tr>
+        <td colspan="4" class="table-info">Waitlisted</td>
+    </tr>
+    {% for merchant in waitlisted %}
+    <tr>
+        <td>
+            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+        </td>
+        <td>{{merchant.email}}</td>
+        <td>{{merchant.legal_name}}</td>
+        <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
       <td colspan="4" class="table-info">Payment Requested</td>
     </tr>
     {% for merchant in processed %}

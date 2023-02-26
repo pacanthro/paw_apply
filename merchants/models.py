@@ -25,8 +25,10 @@ class Merchant(models.Model):
     special_requests = models.TextField(blank=True)
     payment_requested = models.BooleanField(null=True, blank=True)
     payment_confirmed = models.BooleanField(null=True, blank=True)
+    waitlisted = models.BooleanField(null=True, blank=False)
     email_sent = models.DateField(null=True, blank=True)
     confirmation_sent = models.DateField(null=True, blank=True)
+    waitlist_sent = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return "{} ({})".format(self.legal_name, self.business_name)

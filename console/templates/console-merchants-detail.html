@@ -64,9 +64,10 @@
 </table>
 <div>
   <h2>Actions</h2>
-  {% if merchant.payment_requested is None %}
+  {% if merchant.payment_requested is None%}
   <button onclick="$.fn.sendPaymentEmail()" class="btn btn-primary">Request Payment</button>
   <button onclick="$.fn.sendRegReminderEmail()" class="btn btn-primary">Remind To Register</button>
+  <button onClick="$.fn.sendWaitlistEmail()" class="btn btn-primary">Waitlist</button>
   {% elif merchant.payment_confirmed is None %}
   <button onclick="$.fn.sendConfirmationEmail()" class="btn btn-primary">Send Confirmation</button>
   <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
@@ -111,6 +112,17 @@
     Registration reminder email sent to {{merchant.email}}!
   </div>
 </div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-waitlist style="position: absolute; top: 0; right: 0;">
+    <div class="toast-header">
+        <strong class="mr-auto">PAWConsole</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="toast-body">
+        Merchants waitlist email sent to {{merchant.email}}!
+    </div>
+</div>
 <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-error" style="position: absolute; top: 0; right: 0;">
   <div class="toast-header">
     <strong class="mr-auto">PAWConsole</strong>
@@ -147,5 +159,13 @@ jQuery.fn.sendRegReminderEmail = function() {
   }).fail(function() {
     $('#toast-error').toast('show')
   });
+}
+
+jQuery.fn.sendWaitlistEmail = function() {
+    $.get('{% url 'console:merchant-waitlist' merchant.id %}').done(function(data) {
+        $('#toast-reg-reminder-sent').toast('show');
+    }).fail(function() {
+        $('#toast-error').toast('show')
+    });
 }
 {% endblock %}
