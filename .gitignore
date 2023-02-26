@@ -131,3 +131,4 @@ dmypy.json
 # Custom Stuff
 **/migrations/**
 .DS_Store
+/paw.code-workspace
