@@ -161,9 +161,9 @@ def performer_detail(request, performer_id):
 def hosts(request):
     event = get_current_event()
     unassigned_hosts = PartyHost.objects.filter(event=event).filter(room_assigned=False).filter(waitlisted=False).filter(declined=False)
-    waitlisted_hosts = PartyHost.objects.filter(event=event, room_assigned=False, waitlisted=True, declined=False)
-    assigned_hosts = PartyHost.objects.filter(event=event, room_assigned=True, waitlisted=False, declined=False)
-    declined_hosts = PartyHost.objects.filter(event=event, room_assigned=False, waitlisted=False, declined=True)
+    waitlisted_hosts = PartyHost.objects.filter(event=event).filter(room_assigned=False).filter(waitlisted=True).filter(declined=False)
+    assigned_hosts = PartyHost.objects.filter(event=event).filter(room_assigned=True).filter(waitlisted=False).filter(declined=False)
+    declined_hosts = PartyHost.objects.filter(event=event).filter(room_assigned=False).filter(waitlisted=False).filter(declined=True)
 
     context = {
         'unassigned_hosts': unassigned_hosts,
