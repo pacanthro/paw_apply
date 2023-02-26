@@ -29,6 +29,8 @@ class Merchant(models.Model):
     email_sent = models.DateField(null=True, blank=True)
     confirmation_sent = models.DateField(null=True, blank=True)
     waitlist_sent = models.DateField(null=True, blank=True)
+    table_number = models.IntegerField(null=True, blank=True)
+    table_assigned = models.BooleanField(default=False)
 
     def __str__(self):
         return "{} ({})".format(self.legal_name, self.business_name)

@@ -61,6 +61,12 @@
     <td>{{merchant.confirmation_sent}}</td>
   </tr>
   {% endif %}
+  {% if merchant.table_assigned is True %}
+  <tr>
+    <td>Assigned Table:</td>
+    <td>{{merchant.table_number}}</td>
+  </tr>
+  {% endif %}
 </table>
 <div>
   <h2>Actions</h2>
@@ -71,6 +77,8 @@
   {% elif merchant.payment_confirmed is None %}
   <button onclick="$.fn.sendConfirmationEmail()" class="btn btn-primary">Send Confirmation</button>
   <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
+  {% else %}
+  <a href="{% url 'console:merchant-assign' merchant.id %}" class="btn btn-primary">Assign Table</a>
   {% endif %}
   <a href="{% url 'console:merchant-delete' merchant.id %}" class="btn btn-danger">Delete Merchant</a>
 </div>
