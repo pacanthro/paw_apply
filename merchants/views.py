@@ -11,6 +11,8 @@ import logging
 
 from .models import Event, Merchant, Table
 
+
+
 def __is_merchants_full():
     max_merchants = 0
     merchant_count = 0
@@ -19,8 +21,8 @@ def __is_merchants_full():
         max_merchants = event.max_merchants + 10
         full_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="FULL")).count()
         double_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
-        waitlist_full_table_count =  Merchant.objects.filter(event=event).filter(payment_confirmed=False).exclude(waitlist_sent=None).filter(table_size=Table.objects.get(key="FULL")).count()
-        waitlist_double_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=False).exclude(waitlist_sent=None).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
+        waitlist_full_table_count =  Merchant.objects.filter(event=event).filter(payment_confirmed__isnull=True).filter(waitlist_sent_isnull=False).filter(table_size=Table.objects.get(key="FULL")).count()
+        waitlist_double_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed__isnull=True).filter(waitlist_sent_isnull=False).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
 
         total_tables = full_table_count + double_table_count + waitlist_full_table_count + waitlist_double_table_count
 
