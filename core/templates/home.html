@@ -5,8 +5,16 @@
 {% block content %}
 <h1>Welcome! I would like to...</h1>
 <div class="row">
-  {% if event.is_submissions_closed %}
-  <h2>Submissions are now closed</h2>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Volunteer</h5>
+                <p class="card-text">Volunteers are key to PAW's success if you wish to help be part of that. Apply to
+                    volunteer with us.</p>
+                <a href="{% url 'volunteers:index' %}" class="btn btn-primary">Volunteer</a>
+            </div>
+        </div>
+    </div>
   {% else %}
   <div class="col-sm-4">
     <div class="card">
@@ -66,6 +74,6 @@
     </div>
     -->
   </div>
-  {% endif %}
+{% endif %}
 </div>
 {% endblock %}
