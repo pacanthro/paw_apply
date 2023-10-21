@@ -53,9 +53,11 @@
         <li class="nav-item {{ is_partyfloor|yesno:"active," }}">
           <a class="nav-link" href="/partyfloor">Party Floor</a>
         </li>
+	<!--
         <li class="nav-item {{ is_dancecomp|yesno:"active," }}">
           <a class="nav-link" href="/dancecomp">Dance Comp</a>
         </li>
+	-->
         {% if request.user.id != None %}
         <li class="nav-item {{ is_console|yesno:"active,"}}">
           <a class="nav-link" href="/console">Console</a>

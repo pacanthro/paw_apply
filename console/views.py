@@ -192,7 +192,7 @@ def volunteer_detail(request, volunteer_id):
 
 # Performer Views
 @login_required
-@permission_required('performer.view_performer')
+@permission_required('performers.view_performer')
 def performers(request):
     event = get_current_event()
     performers = Performer.objects.filter(event=event)
@@ -202,7 +202,7 @@ def performers(request):
     return render(request, 'console-performers-list.html', __build_context(request.user, context))
 
 @login_required
-@permission_required('performer.view_performer')
+@permission_required('performers.view_performer')
 def performer_detail(request, performer_id):
     performer = get_object_or_404(Performer, pk=performer_id)
     context = {
@@ -409,7 +409,7 @@ def __build_context(user, extras):
         context['has_merchant_permission'] = user.has_perm('merchants.view_merchant')
         context['has_panels_permission'] = user.has_perm('panels.view_panel')
         context['has_volunteers_permission'] = user.has_perm('volunteers.view_volunteer')
-        context['has_performer_permission'] = user.has_perm('performer.view_performer')
+        context['has_performer_permission'] = user.has_perm('performers.view_performer')
         context['has_host_permission'] = user.has_perm('partyhost.view_partyhost')
         context['has_competitor_permission'] = user.has_perm('competitor.view_competitor')
 
