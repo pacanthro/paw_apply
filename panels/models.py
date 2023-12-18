@@ -31,10 +31,10 @@ class Panel(models.Model):
     panel_description = models.TextField()
     panel_duration = models.ForeignKey(PanelDuration, on_delete=models.SET_NULL, null=True)
     equipment_needs = models.TextField()
-    mature_content = models.BooleanField()
+    mature_content = models.BooleanField('Does your panel contain mature content?')
     panel_day = models.ManyToManyField(DaysAvailable)
     panel_times = models.ManyToManyField(PanelSlot)
-    check_ids = models.BooleanField()
+    check_ids = models.BooleanField("I Agree to check ID's")
 
     def __str__(self):
         return "{} ({})".format(self.panel_name, self.legal_name)
