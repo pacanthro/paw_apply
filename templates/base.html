@@ -1,5 +1,5 @@
 {% load static %}
-{% load crispy_forms_tags %}
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -23,46 +23,49 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-purple fixed-top">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link {{ is_home|yesno:"active," }}" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{ is_volunteers|yesno:"active," }}" href="/volunteers">Volunteers</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{ is_panels|yesno:"active," }}" href="/panels">Panels</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{ is_merchants|yesno:"active," }}" href="/merchants">Merchants</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{ is_djs|yesno:"active," }}" href="/performers">DJs</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{ is_partyfloor|yesno:"active," }}" href="/partyfloor">Party Floor</a>
-        </li>
-	<!--
-        <li class="nav-item {{ is_dancecomp|yesno:"active," }}">
-          <a class="nav-link" href="/dancecomp">Dance Comp</a>
-        </li>
-	-->
-        {% if request.user.id != None %}
-        <li class="nav-item {{ is_console|yesno:"active,"}}">
-          <a class="nav-link" href="/console">Console</a>
-        </li>
-        {% endif %}
-      </ul>
-      {% if request.user.id != None %}
-      <span class="navbar-text">
-        <a href="/console/logout" class="nav-link">{{request.user.username}}</a>
-      </span>
-      {% endif %}
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link {{ is_home|yesno:" active," }}" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ is_volunteers|yesno:" active," }}" href="/volunteers">Volunteers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ is_panels|yesno:" active," }}" href="/panels">Panels</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ is_merchants|yesno:" active," }}" href="/merchants">Merchants</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ is_djs|yesno:" active," }}" href="/performers">DJs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ is_partyfloor|yesno:" active," }}" href="/partyfloor">Party Floor</a>
+                </li>
+                <!--
+                <li class="nav-item {{ is_dancecomp|yesno:"active," }}">
+                  <a class="nav-link" href="/dancecomp">Dance Comp</a>
+                </li>
+        	-->
+                {% if request.user.id != None %}
+                <li class="nav-item {{ is_console|yesno:" active,"}}">
+                    <a class="nav-link" href="/console">Console</a>
+                </li>
+                {% endif %}
+            </ul>
+            {% if request.user.id != None %}
+            <span class="navbar-text float-end">
+                <a href="/console/logout" class="nav-link">{{request.user.username}}</a>
+            </span>
+            {% endif %}
+        </div>
     </div>
   </nav>
 
