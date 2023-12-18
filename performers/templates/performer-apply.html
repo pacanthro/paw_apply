@@ -1,96 +1,11 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}PAW DJs - Application{% endblock %}
 
 {% block content %}
 <h1>DJ Application</h1>
 <form action="{% url 'performers:new' %}" method="post">
-  {% csrf_token %}
-  <input type="hidden" name="event" value="{{event.id}}">
-  {% if error %}
-  <div class="alert alert-danger" role="alert">{{error|safe}}</div>
-  {% endif %}
-  <fieldset>
-    <legend>Contact Info</legend>
-    <div class="form-group row">
-        <label for="legal_name" class="col-sm-2 col-form-label">Legal Name</label>
-        <div class="col-sm-10">
-          <input name="legal_name" type="text" class="form-control" id="legal_name" required>
-        </div>
-    </div>
-    <div class="form-group row">
-      <label for="fan_name" class="col-sm-2 col-form-label">Fan Name</label>
-      <div class="col-sm-10">
-        <input name="fan_name" type="text" class="form-control" id="fan_name" required>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="email" class="col-sm-2 col-form-label">Email</label>
-      <div class="col-sm-10">
-        <input name="email" type="email" class="form-control" id="email" required>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="phone" class="col-sm-2 col-form-label">Phone Number</label>
-      <div class="col-sm-10">
-        <input name="phone" type="phone" class="form-control" id="phone" required>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="twitter" class="col-sm-2 col-form-label">Twitter Handle</label>
-      <div class="col-sm-10">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">@</span>
-          </div>
-          <input name="twitter" type="text" class="form-control" id="twitter">
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="telegram" class="col-sm-2 col-form-label">Telegram Handle</label>
-      <div class="col-sm-10">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">@</span>
-          </div>
-          <input name="telegram" type="text" class="form-control" id="telegram">
-        </div>
-      </div>
-    </div>
-  </fieldset>
-  <fieldset>
-    <legend>Performance Info</legend>
-    <div class="form-group row">
-      <label for="bio" class="col-sm-2 col-form-label">Biography</label>
-      <div class="col-sm-10">
-        <textarea name="bio" class="form-control" id="bio" rows="8" cols="80"></textarea>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="history" class="col-sm-2 col-form-label">Performance History</label>
-      <div class="col-sm-10">
-        <textarea name="history" class="form-control" id="history" rows="8" cols="80"></textarea>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="set_url" class="col-sm-2 col-form-label">Set Url</label>
-      <div class="col-sm-10">
-        <input name="set_url" type="url" class="form-control" id="set_url" />
-        <small class="form-text text-muted">
-          Please provide a link to a set of music from your SoundCloud
-          or other similar service (DropBox, Box, YouTube, etc). It should be
-          at least 30 mins in length and showcase your unique style.
-        </small>
-      </div>
-    </div>
-  </fieldset>
-  <fieldset>
-    <div class="form-group row float-right">
-      <div class="col">
-        <input type="submit" class="btn btn-primary" value="Apply">
-      </div>
-    </div>
-  </fieldset>
+    {% crispy form %}
 </form>
 {% endblock %}
