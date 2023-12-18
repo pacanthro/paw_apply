@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from modules.email import send_paw_email
 
+from .forms import VolunteerForm
 from .models import Department, DaysAvailable, Event, TimesAvailable, Volunteer
 
 # Create your views here.
@@ -19,95 +20,30 @@ def index(request):
     return render(request, 'volunteers.html', context)
 
 def apply(request):
-    event = get_current_event()
-    departments = Department.objects.order_by('order')
-    days = DaysAvailable.objects.filter(party_only=False).order_by('order')
-    times = TimesAvailable.objects.order_by('order')
+    form = VolunteerForm()
     context = {
         'is_volunteers': True,
-        'event': event,
-        'departments': departments,
-        'days': days,
-        'times': times,
+        'form': form
     }
     return render(request, 'volunteer-apply.html', context)
 
 def new(request):
-    try:
-        # Event
-        event = Event.objects.get(pk=request.POST['event'])
+    event = get_current_event()
+    form = VolunteerForm(request.POST)
 
-        # Departments
-        departments = Department.objects.filter(id__in=request.POST.getlist('department'))
-
-        # Days available
-        days = DaysAvailable.objects.filter(key__in=request.POST.getlist('days'))
-
-        # Times available
-        times = TimesAvailable.objects.filter(key__in=request.POST.getlist('times'))
-    except (KeyError, Event.DoesNotExist, Department.DoesNotExist, DaysAvailable.DoesNotExist, TimesAvailable.DoesNotExist):
-        event = get_current_event()
-        departments = Department.objects.order_by('order')
-        days = DaysAvailable.objects.order_by('order')
-        times = TimesAvailable.objects.order_by('order')
-        context = {
-            'is_volunteers': True,
-            'event': event,
-            'departments': departments,
-            'days': days,
-            'times': times,
-            'error': 'Something has gone wrong, please contact us at <a href="mailto:feedback@pacanthro.org" class="alert-link">feedback@pacanthro.org</a>'
-        }
-        return render(request, 'volunteer-apply.html', context)
-    else:
-        email = request.POST['email']
-        volunteer_count = Volunteer.objects.filter(email=email,event=event).count()
-
-        if (volunteer_count > 0):
-            event = get_current_event()
-            departments = Department.objects.order_by('order')
-            days = DaysAvailable.objects.order_by('order')
-            times = TimesAvailable.objects.order_by('order')
-            context = {
-                'is_volunteers': True,
-                'event': event,
-                'departments': departments,
-                'days': days,
-                'times': times,
-                'error': 'Email has already applied.'
-            }
-            return render(request, 'volunteer-apply.html', context)
-
-        volunteer = Volunteer()
+    if form.is_valid():
+        volunteer = form.save(commit=False)
         volunteer.event = event
-        volunteer.email = email
-        volunteer.legal_name = request.POST['legal_name']
-        volunteer.fan_name = request.POST['fan_name']
-        volunteer.phone_number = request.POST['phone']
-        volunteer.twitter_handle = request.POST['twitter']
-        volunteer.telegram_handle = request.POST['telegram']
-        volunteer.volunteer_history = request.POST['history']
-        volunteer.special_skills = request.POST['skills']
-        volunteer.avail_setup = request.POST.get('setup', default=False)
-        volunteer.avail_teardown = request.POST.get('teardown',default=False)
         volunteer.save()
-
-        for department in departments:
-            volunteer.department_interest.add(department)
-
-        for day in days:
-            volunteer.days_available.add(day)
-
-        for time in times:
-            volunteer.time_availble.add(time)
-
-        context = {
-            'is_volunteers': True
-        }
-
-        send_paw_email('email-volunteers-confirm.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
-
+        form.save_m2m()
         return HttpResponseRedirect(reverse('volunteers:confirm'))
+    
+    context = {
+        'is_volunteers': True,
+        'form': form
+    }
+    return render(request, 'volunteer-apply.html', context)
+
 
 def confirm(request):
     return render(request, 'volunteer-confirm.html', {'is_volunteers': True})
