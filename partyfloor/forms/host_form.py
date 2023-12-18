@@ -1,4 +1,5 @@
-from crispy_forms.bootstrap import InlineCheckboxes, PrependedText
+from core.models import get_current_event
+from crispy_forms.bootstrap import PrependedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Fieldset, HTML, Layout, Submit
 from django import forms
@@ -36,7 +37,7 @@ class HostForm(forms.ModelForm):
         # Fields
         self.fields['twitter_handle'].required = False
         self.fields['telegram_handle'].required = False
-        self.fields['party_days'].queryset = DaysAvailable.objects.order_by('order')
+        self.fields['party_days'].queryset = DaysAvailable.objects.filter(available_party=True).order_by('order')
         self.fields['ack_no_smoking'].required = True
         self.fields['ack_amplified_sound'].required = True
         self.fields['ack_verify_age'].required = True
@@ -79,3 +80,11 @@ class HostForm(forms.ModelForm):
             )
         )
         self.helper.add_input(Submit('submit', 'Apply', css_class='float-end'))
+    
+    def clean_email(self):
+        event = get_current_event()
+        email = self.cleaned_data['email']
+
+        if PartyHost.objects.filter(event=event, email=email).exists():
+            raise forms.ValidationError("Email already exists")
+        return email

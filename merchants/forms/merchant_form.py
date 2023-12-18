@@ -1,6 +1,6 @@
-from crispy_forms.bootstrap import InlineCheckboxes, PrependedText
+from core.models import get_current_event
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Fieldset, HTML, Layout, Submit
+from crispy_forms.layout import Fieldset, Layout, Submit
 from django import forms
 
 from core.models import DaysAvailable
@@ -58,3 +58,11 @@ class MerchantForm(forms.ModelForm):
             )
         )
         self.helper.add_input(Submit('submit', 'Apply', css_class='float-end'))
+
+    def clean_email(self):
+        event = get_current_event()
+        email = self.cleaned_data['email']
+
+        if Merchant.objects.filter(event=event, email=email).exists():
+            raise forms.ValidationError("Email already exists")
+        return email

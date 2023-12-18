@@ -1,3 +1,4 @@
+from core.models import get_current_event
 from crispy_forms.bootstrap import PrependedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit
@@ -25,6 +26,11 @@ class VolunteerForm(forms.ModelForm):
             'avail_setup',
             'avail_teardown'
         )
+        widgets = {
+            'department_interest': forms.CheckboxSelectMultiple,
+            'days_available': forms.CheckboxSelectMultiple,
+            'time_availble': forms.CheckboxSelectMultiple
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -60,3 +66,11 @@ class VolunteerForm(forms.ModelForm):
             )
         )
         self.helper.add_input(Submit('submit', 'Apply', css_class='float-end'))
+
+    def clean_email(self):
+        event = get_current_event()
+        email = self.cleaned_data['email']
+
+        if Volunteer.objects.filter(event=event, email=email).exists():
+            raise forms.ValidationError("Email already exists")
+        return email
