@@ -1,10 +1,13 @@
-asgiref==3.2.10
+asgiref==3.7.2
 Click==7.0
-Django==3.1.14
+crispy-bootstrap5==2023.10
+Django==5.0
+django-crispy-forms==2.1
 psycopg2-binary==2.9.3
 python-dotenv==0.11.0
 python-http-client==3.2.4
 pytz==2020.1
 sendgrid==3.6.5
 sendgrid-django==4.2.0
-sqlparse==0.4.2
+sqlparse==0.4.4
+typing_extensions==4.9.0
