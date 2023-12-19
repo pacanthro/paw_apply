@@ -42,7 +42,7 @@ class PanelForm(forms.ModelForm):
         # Crispy
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-sm-2'
+        self.helper.label_class = 'col-sm-2 text-capitalize'
         self.helper.field_class = 'col-sm-10'
         self.helper.layout = Layout(
             Fieldset(
