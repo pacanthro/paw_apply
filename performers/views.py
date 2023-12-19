@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from modules.email import send_paw_email
 
+from .forms import PerformerForm
 from .models import Event, Performer
 
 # Create your views here.
@@ -18,51 +19,32 @@ def index(request):
     return render(request, "performer.html", context)
 
 def apply(request):
-    event = get_current_event()
+    form = PerformerForm()
     context = {
         'is_djs': True,
-        'event': event
+        'form': form
     }
     return render(request, 'performer-apply.html', context)
 
 def new(request):
-    try:
-        event = Event.objects.get(pk=request.POST['event'])
-    except (KeyError, Event.DoesNotExist):
-        event = get_current_event()
-        context = {
-            'is_djs': True,
-            'event': event,
-            'error': 'Something has gone wrong, please contact us at <a href="mailto:feedback@pacanthro.org" class="alert-link">feedback@pacanthro.org</a>'
-        }
-        return render(request, 'performer-apply.html', context)
-    else:
-        email = request.POST['email']
-        performer_count = Performer.objects.filter(email=email,event=event).count()
+    event = get_current_event()
+    form = PerformerForm(request.POST)
 
-        if (performer_count > 0):
-            context = {
-                'is_djs': True,
-                'event': event,
-                'error': 'Email has already applied.'
-            }
-            return render(request, 'performer-apply.html', context)
+    print(form.errors)
 
-        performer = Performer()
+    if form.is_valid():
+        performer = form.save(commit=False)
         performer.event = event
-        performer.email = email
-        performer.legal_name = request.POST['legal_name']
-        performer.fan_name = request.POST['fan_name']
-        performer.phone_number = request.POST['phone']
-        performer.twitter_handle = request.POST['twitter']
-        performer.telegram_handle = request.POST['telegram']
-        performer.biography = request.POST['bio']
-        performer.dj_history = request.POST['history']
-        performer.set_link = request.POST['set_url']
         performer.save()
 
         send_paw_email('email-performers-confirm.html', {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
         return HttpResponseRedirect(reverse('performers:confirm'))
+    
+    context = {
+        'is_djs': True,
+        'form': form
+    }
+    return render(request, 'performer-apply.html', context)
 
 def confirm(request):
     return render(request, 'performer-confirm.html', {'is_djs': True})

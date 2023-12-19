@@ -10,7 +10,7 @@ from modules.email import send_paw_email
 import logging
 
 from .models import Event, Merchant, Table
-
+from .forms import MerchantForm
 
 
 def __is_merchants_full():
@@ -33,6 +33,7 @@ def index(request):
     max_merchants = 0
     merchant_count = 0
     event = get_current_event()
+
     if (event):
         max_merchants = event.max_merchants
         merchant_count = Merchant.objects.filter(event=event).count()
@@ -50,12 +51,10 @@ def apply(request):
     if (__is_merchants_full()):
         return HttpResponseRedirect(reverse('merchants:index'))
 
-    event = get_current_event()
-    tables = Table.objects.filter(deleted=False).order_by('order')
+    form = MerchantForm()
     context = {
         'is_merchants': True,
-        'event': event,
-        'tables': tables
+        'form': form
     }
     return render(request, 'merch-apply.html', context)
 
@@ -63,58 +62,24 @@ def new(request):
     if (__is_merchants_full()):
         return HttpResponseRedirect(reverse('merchants:index'))
 
-    try:
-        # Event
-        event = Event.objects.get(pk=request.POST['event'])
+    event = get_current_event()
+    form = MerchantForm(request.POST)
 
-        # table
-        table = Table.objects.get(pk=request.POST['table_size'])
-    except (KeyError, Event.DoesNotExist, Table.DoesNotExist):
-        event = get_current_event()
-        tables = Table.objects.order_by('order')
-        context = {
-            'is_merchants': True,
-            'event': event,
-            'tables': tables,
-            'error': 'Something has gone wrong, please contact us at <a href="mailto:feedback@pacanthro.org" class="alert-link">feedback@pacanthro.org</a>'
-        }
-        return render(request, 'merch-apply.html', context)
-    else:
-        email = request.POST['email']
-        email_registered = Merchant.objects.filter(email=email,event=event).count()
-
-        if (email_registered > 0):
-            event = get_current_event()
-            tables = Table.objects.order_by('order')
-            context = {
-                'is_merchants': True,
-                'event': event,
-                'tables': tables,
-                'error': 'Email has already applied.'
-            }
-            return render(request, 'merch-apply.html', context)
-
-        merchant = Merchant()
+    if form.is_valid():
+        merchant = form.save(commit=False)
         merchant.event = event
-        merchant.email = email
-        merchant.legal_name = request.POST['legal_name']
-        merchant.fan_name = request.POST['fan_name']
-        merchant.phone_number = request.POST['phone']
-        merchant.table_size = table
-        merchant.business_name = request.POST['business_name']
-        merchant.wares_description = request.POST['wares_description']
-        merchant.helper_legal_name = request.POST['helper_legal_name']
-        merchant.helper_fan_name = request.POST['helper_fan_name']
-        merchant.special_requests = request.POST['special_requests']
         merchant.save()
-
-        context = {
-            'is_merchants': True
-        }
+        form.save_m2m()
 
         send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
         return HttpResponseRedirect(reverse('merchants:confirm'))
+    
+    context = {
+        'is_merchants': True,
+        'form': form
+    }
+    return render(request, 'merch-apply.html', context)
 
 def confirm(request):
     return render(request, 'merch-confirm.html', {'is_merchants': True})

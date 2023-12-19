@@ -12,4 +12,4 @@ class Performer(models.Model):
     telegram_handle = models.CharField(max_length=30)
     biography = models.TextField()
     dj_history = models.TextField()
-    set_link = models.URLField()
+    set_link = models.URLField(help_text="Please provide a link to a set of music from your SoundCloud or other similar service (DropBox, Box, YouTube, etc). It should be at least 30 mins in length and showcase your unique style.")
