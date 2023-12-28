@@ -4,7 +4,6 @@ crispy-bootstrap5==2023.10
 Django==5.0
 django-crispy-forms==2.1
 mysqlclient==1.4.6
-pkg-resources==0.0.0
 python-dotenv==0.11.0
 python-http-client==3.2.4
 pytz==2020.1
