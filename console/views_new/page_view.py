@@ -1,3 +1,4 @@
+from core.models import get_current_event
 from django.views.generic.base import TemplateView
 
 class PageView(TemplateView):
@@ -5,7 +6,9 @@ class PageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+        event = get_current_event()
         context['is_console'] = True
+        context['event'] = event
 
         if (user.is_superuser):
             context['is_superuser'] = True
