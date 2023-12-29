@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from . import views_new
 
 app_name='console'
 urlpatterns = [
@@ -20,8 +21,12 @@ urlpatterns = [
     path('merchants/<int:merchant_id>/assign', views.merchant_assign, name='merchant-assign'),
 
     # Panels
-    path('panels', views.panels, name='panels'),
-    path('panels/<int:panel_id>', views.panel_detail, name='panel-detail'),
+    path('panels', views_new.PanelsListPageView.as_view(), name='panels'),
+    path('panels/<int:panel_id>', views_new.PanelDetailsPageView.as_view(), name='panel-detail'),
+    path('panels/<int:panel_id>/accept', views_new.PanelActionAcceptRedirect.as_view(), name='panel-accept'),
+    path('panels/<int:panel_id>/waitlist', views_new.PanelActionWaitlistRedirect.as_view(), name='panel-waitlist'),
+    path('panels/<int:panel_id>/deny', views_new.PanelActionDenyRedirect.as_view(), name='panel-deny'),
+    path('panels/<int:panel_id>/delete', views_new.PanelActionDeleteRedirect.as_view(), name='panel-delete'),
 
     # Volunteers
     path('volunteers', views.volunteers, name='volunteers'),

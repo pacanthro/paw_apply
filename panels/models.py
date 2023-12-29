@@ -1,4 +1,4 @@
-from core.models import Event, DaysAvailable
+from core.models import ApplicationState, Event, DaysAvailable
 from django.db import models
 
 # Create your models here.
@@ -35,6 +35,8 @@ class Panel(models.Model):
     panel_day = models.ManyToManyField(DaysAvailable)
     panel_times = models.ManyToManyField(PanelSlot)
     check_ids = models.BooleanField("I Agree to check ID's")
+    panel_state = models.CharField(max_length=20, null=False, choices=ApplicationState, default=ApplicationState.STATE_NEW)
+    state_changed = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return "{} ({})".format(self.panel_name, self.legal_name)

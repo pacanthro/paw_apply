@@ -5,6 +5,15 @@ def get_current_event():
     return Event.objects.filter(event_end__gte=datetime.date.today()).order_by('event_end').first()
 
 # Create your models here.
+class ApplicationState(models.TextChoices):
+    STATE_NEW = "STATE_NEW", "New"
+    STATE_ACCEPTED = "STATE_ACCEPTED", "Accepted"
+    STATE_ASSIGNED = "STATE_ASSIGNED", "Assigned"
+    STATE_WAITLIST = "STATE_WAITLIST", "Waitlisted"
+    STATE_DENIED = "STATE_DENIED", "Denied"
+    STATE_DELETED = "STATE_DELETED", "Deleted"
+    STATE_OLD = "STATE_OLD", "Migrated Data"
+
 class DaysAvailable(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=50)
