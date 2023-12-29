@@ -377,8 +377,10 @@ def host_waitlist(request, host_id):
 
 # Private Functions
 def __build_context(user, extras):
+    event = get_current_event()
     context = {
         'is_console': True,
+        'event': event
     }
     if (user.is_superuser):
         context['is_superuser'] = True

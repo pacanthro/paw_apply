@@ -4,104 +4,106 @@
 
 {% block content %}
 <div class="row">
-  <div class="col">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Tools</h5>
-        <ul class="nav nav-pills flex-column">
-          {% if is_superuser or has_merchant_permission %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'console:merchants' %}">Merchants</a>
-          </li>
-          {% endif %}
-          {% if is_superuser or has_panels_permission %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'console:panels' %}">Panels</a>
-          </li>
-          {% endif %}
-          {% if is_superuser or has_volunteers_permission %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'console:volunteers' %}">Volunteers</a>
-          </li>
-          {% endif %}
-          {% if is_superuser or has_performer_permission %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'console:performers' %}">Performers</a>
-          </li>
-          {% endif %}
-          {% if is_superuser or has_partyhost_permission %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'console:hosts' %}">Party Hosts</a>
-          </li>
-          {% endif %}
-          {% if is_superuser or has_competitor_permission %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'console:competitors' %}">Competitors</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tools</h5>
+                <ul class="nav nav-pills flex-column">
+                    {% if is_superuser or has_volunteers_permission %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'console:volunteers' %}">Volunteers</a>
+                    </li>
+                    {% endif %}
+                    {% if event.module_merchants_enabled and is_superuser or has_merchant_permission %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'console:merchants' %}">Merchants</a>
+                    </li>
+                    {% endif %}
+                    {% if event.module_panels_enabled and is_superuser or has_panels_permission %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'console:panels' %}">Panels</a>
+                    </li>
+                    {% endif %}
+
+                    {% if event.module_performers_enabled and is_superuser or has_performer_permission %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'console:performers' %}">Performers</a>
+                    </li>
+                    {% endif %}
+                    {% if event.module_partyfloor_enabled and is_superuser or has_partyhost_permission %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'console:hosts' %}">Party Hosts</a>
+                    </li>
+                    {% endif %}
+                    {% if event.module_competitors_enabled and is_superuser or has_competitor_permission %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'console:competitors' %}">Competitors</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-10">
-    {% block tool %}
-    <div class="row">
-      {% if is_superuser or has_merchant_permission %}
-      <div class="card col-sm-2 m-1">
-        <div class="card-body">
-          <h5 class="card-title">Merchants</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{merchant_count.count}} / {{merchant_count.total}} have applied</h6>
-          <a href="{% url 'console:merchants' %}" class="card-link">View</a>
+    <div class="col-10">
+        {% block tool %}
+        <div class="row">
+            {% if is_superuser or has_volunteers_permission %}
+            <div class="card col-sm-2 m-1">
+                <div class="card-body">
+                    <h5 class="card-title">Volunteers</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{volunteer_count}} have applied</h6>
+                    <a href="{% url 'console:volunteers' %}" class="card-link">View</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if event.module_merchants_enabled and is_superuser or has_merchant_permission %}
+            <div class="card col-sm-2 m-1">
+                <div class="card-body">
+                    <h5 class="card-title">Merchants</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{merchant_count.count}} / {{merchant_count.total}} have
+                        applied</h6>
+                    <a href="{% url 'console:merchants' %}" class="card-link">View</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if event.module_panels_enabled and is_superuser or has_panels_permission %}
+            <div class="card col-sm-2 m-1">
+                <div class="card-body">
+                    <h5 class="card-title">Panels</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{panel_count}} have applied</h6>
+                    <a href="{% url 'console:panels' %}" class="card-link">View</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if event.module_performers_enabled and is_superuser or has_performer_permission %}
+            <div class="card col-sm-2 m-1">
+                <div class="card-body">
+                    <h5 class="card-title">Performers</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{performer_count}} have applied</h6>
+                    <a href="{% url 'console:performers' %}" class="card-link">View</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if event.module_partyfloor_enabled and is_superuser or has_partyhost_permission %}
+            <div class="card col-sm-2 m-1">
+                <div class="card-body">
+                    <h5 class="card-title">Party Hosts</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{host_count}} have applied</h6>
+                    <a href="{% url 'console:hosts' %}" class="card-link">View</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if event.module_competitors_enabled and is_superuser or has_competitor_permission %}
+            <div class="card col-sm-2 m-1">
+                <div class="card-body">
+                    <h5 class="card-title">Dance Comp</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{competitor_count}} have applied</h6>
+                    <a href="{% url 'console:competitors' %}" class="card-link">View</a>
+                </div>
+            </div>
+            {% endif %}
         </div>
-      </div>
-      {% endif %}
-      {% if is_superuser or has_panels_permission %}
-      <div class="card col-sm-2 m-1">
-        <div class="card-body">
-          <h5 class="card-title">Panels</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{panel_count}} have applied</h6>
-          <a href="{% url 'console:panels' %}" class="card-link">View</a>
-        </div>
-      </div>
-      {% endif %}
-      {% if is_superuser or has_volunteers_permission %}
-      <div class="card col-sm-2 m-1">
-        <div class="card-body">
-          <h5 class="card-title">Volunteers</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{volunteer_count}} have applied</h6>
-          <a href="{% url 'console:volunteers' %}" class="card-link">View</a>
-        </div>
-      </div>
-      {% endif %}
-      {% if is_superuser or has_performer_permission %}
-      <div class="card col-sm-2 m-1">
-        <div class="card-body">
-          <h5 class="card-title">Performers</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{performer_count}} have applied</h6>
-          <a href="{% url 'console:performers' %}" class="card-link">View</a>
-        </div>
-      </div>
-      {% endif %}
-      {% if is_superuser or has_partyhost_permission %}
-      <div class="card col-sm-2 m-1">
-        <div class="card-body">
-          <h5 class="card-title">Party Hosts</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{host_count}} have applied</h6>
-          <a href="{% url 'console:hosts' %}" class="card-link">View</a>
-        </div>
-      </div>
-      {% endif %}
-      {% if is_superuser or has_competitor_permission %}
-      <div class="card col-sm-2 m-1">
-        <div class="card-body">
-          <h5 class="card-title">Dance Comp</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{competitor_count}} have applied</h6>
-          <a href="{% url 'console:competitors' %}" class="card-link">View</a>
-        </div>
-      </div>
-      {% endif %}
+        {% endblock %}
     </div>
-    {% endblock %}
-  </div>
 </div>
 {% endblock %}
