@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Welcome! I would like to...</h1>
 <div class="row">
-{% if event.is_submissions_closed %}
+    {% if event.is_submissions_closed %}
     <div class="col-sm-4">
         <div class="card">
             <div class="card-body">
@@ -16,65 +16,79 @@
             </div>
         </div>
     </div>
-{% else %}
-  <div class="col-sm-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Volunteer</h5>
-        <p class="card-text">Volunteers are key to PAW's success if you wish to help be part of that. Apply to volunteer with us.</p>
-        <a href="{% url 'volunteers:index' %}" class="btn btn-primary">Volunteer</a>
-      </div>
+    {% else %}
+    <div class="col-sm-4 d-flex align-items-stretch">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Volunteer</h5>
+                <p class="card-text">Volunteers are key to PAW's success if you wish to help be part of that. Apply to
+                    volunteer with us.</p>
+                <a href="{% url 'volunteers:index' %}" class="btn btn-primary">Volunteer</a>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-sm-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Host A Panel</h5>
-        <p class="card-text">Panels are an important part of PAW's success. Panels allow us to educate, entertain and interact with our community.</p>
-        <a href="{% url 'panels:index' %}" class="btn btn-primary">Submit</a>
-      </div>
+    {% if event.module_panels_enabled %}
+    <div class="col-sm-4 d-flex align-items-stretch">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Host A Panel</h5>
+                <p class="card-text">Panels are an important part of PAW's success. Panels allow us to educate,
+                    entertain and interact with our community.</p>
+                <a href="{% url 'panels:index' %}" class="btn btn-primary">Submit</a>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-sm-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Become a Merchant</h5>
-        <p class="card-text">Our vibrant shopping district attracts merchants of all types, allowing them to share their wares with our attendees.</p>
-        <a href="{% url 'merchants:index' %}" class="btn btn-primary">Apply</a>
-      </div>
+    {% endif %}
+    {% if event.module_merchants_enabled %}
+    <div class="col-sm-4 d-flex align-items-stretch">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Become a Merchant</h5>
+                <p class="card-text">Our vibrant shopping district attracts merchants of all types, allowing them to
+                    share their wares with our attendees.</p>
+                <a href="{% url 'merchants:index' %}" class="btn btn-primary">Apply</a>
+            </div>
+        </div>
     </div>
-  </div>
+    {% endif %}
 </div>
 <div class="row mt-4">
-  <div class="col-sm-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Perform</h5>
-        <p class="card-text">DJ's are a critical element of con nightlife. Submit your demo for a chance to play on stage and showcase your unique sound!</p>
-        <a href="{% url 'performers:index' %}" class="btn btn-primary">Apply</a>
-      </div>
+    {% if event.module_performers_enabled %}
+    <div class="col-sm-4 d-flex align-items-stretch">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Perform</h5>
+                <p class="card-text">DJ's are a critical element of con nightlife. Submit your demo for a chance to play
+                    on stage and showcase your unique sound!</p>
+                <a href="{% url 'performers:index' %}" class="btn btn-primary">Apply</a>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-sm-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Throw a Party</h5>
-        <p class="card-text">Strut your stuff on the PAWCon party floor! Want to host a party? Or just be right in the middle of the action?</p>
-        <a href="{% url 'partyfloor:index' %}" class="btn btn-primary">Party!</a>
-      </div>
+    {% endif %}
+    {% if event.module_partyfloor_enabled %}
+    <div class="col-sm-4 d-flex align-items-stretch">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Throw a Party</h5>
+                <p class="card-text">Strut your stuff on the PAWCon party floor! Want to host a party? Or just be right
+                    in the middle of the action?</p>
+                <a href="{% url 'partyfloor:index' %}" class="btn btn-primary">Party!</a>
+            </div>
+        </div>
     </div>
-  </div>
-  <!--
-  <div class="col-sm-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Compete</h5>
-        <p class="card-text">No better way to show us your moves than by competing in our Dance Competition for free con membership and other prizes!</p>
-        <a href="{% url 'dancecomp:index' %}" class="btn btn-primary">Enter</a>
-      </div>
+    {% endif %}
+    {% if event.module_competitors_enabled %}
+    <div class="col-sm-4 d-flex align-items-stretch">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Compete</h5>
+                <p class="card-text">No better way to show us your moves than by competing in our Dance Competition for
+                    free con membership and other prizes!</p>
+                <a href="{% url 'dancecomp:index' %}" class="btn btn-primary">Enter</a>
+            </div>
+        </div>
     </div>
-    -->
-  </div>
-{% endif %}
+    {% endif %}
+    {% endif %}
 </div>
 {% endblock %}

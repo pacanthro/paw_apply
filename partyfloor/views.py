@@ -19,9 +19,11 @@ def index(request):
     return render(request, 'partyfloor.html', context)
 
 def apply(request):
+    event = get_current_event()
     form = HostForm()
     context =  {
         'is_partyfloor': True,
+        'event': event,
         'form': form
     }
     return render(request, 'partyfloor-apply.html', context)
@@ -42,10 +44,18 @@ def new(request):
     
     context =  {
         'is_partyfloor': True,
+        'event': event,
         'form': form
     }
 
     return render(request, 'partyfloor-apply.html', context)
 
 def confirm(request):
-    return render(request, 'partyfloor-confirm.html', {'is_partyfloor': True})
+    event = get_current_event()
+    
+    context =  {
+        'is_partyfloor': True,
+        'event': event,
+        'form': form
+    }
+    return render(request, 'partyfloor-confirm.html', context)

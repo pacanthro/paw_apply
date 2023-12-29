@@ -19,10 +19,12 @@ def index(request):
     return render(request, 'panels.html', context)
 
 def apply(request):
+    event = get_current_event()
     form = PanelForm()
     
     context = {
         'is_panels': True,
+        'event': event,
         'form': form
     }
     return render(request, 'panels-apply.html', context)
@@ -43,10 +45,16 @@ def new(request):
 
     context = {
         'is_panels': True,
+        'event': event,
         'form': form
     }
 
     return render(request, 'panels-apply.html', context)
 
 def confirm(request):
-    return render(request, 'panels-confirm.html', {'is_panels': True})
+    event = get_current_event()
+    context = {
+        'is_panels': True,
+        'event': event,
+    }
+    return render(request, 'panels-confirm.html', context)
