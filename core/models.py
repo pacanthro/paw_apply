@@ -40,6 +40,11 @@ class Event(models.Model):
     max_merchants = models.IntegerField(default=0)
     max_party_rooms = models.IntegerField(default=0)
     submissions_end = models.DateField()
+    module_panels_enabled = models.BooleanField(default=False)
+    module_merchants_enabled = models.BooleanField(default=False)
+    module_performers_enabled = models.BooleanField(default=False)
+    module_partyfloor_enabled = models.BooleanField(default=False)
+    module_competitors_enabled = models.BooleanField(default=False)
 
     def is_submissions_closed(self):
         return self.submissions_end < datetime.date.today()
