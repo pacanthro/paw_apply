@@ -51,9 +51,11 @@ def apply(request):
     if (__is_merchants_full()):
         return HttpResponseRedirect(reverse('merchants:index'))
 
+    event = get_current_event()
     form = MerchantForm()
     context = {
         'is_merchants': True,
+        'event': event,
         'form': form
     }
     return render(request, 'merch-apply.html', context)
@@ -77,9 +79,16 @@ def new(request):
     
     context = {
         'is_merchants': True,
+        'event': event,
         'form': form
     }
     return render(request, 'merch-apply.html', context)
 
 def confirm(request):
-    return render(request, 'merch-confirm.html', {'is_merchants': True})
+    event = get_current_event()
+    
+    context = {
+        'is_merchants': True,
+        'event': event,
+    }
+    return render(request, 'merch-confirm.html', context)

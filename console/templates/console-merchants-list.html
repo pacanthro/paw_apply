@@ -10,8 +10,8 @@
   </div>
 </div>
 <table class="table">
-  <thead class="thead-dark text-left">
-    <tr>
+  <thead class="text-left">
+    <tr class="table-dark">
       <th scope="col">Business Name</th>
       <th scope="col">Email</th>
       <th scope="col">Legal Name</th>
@@ -19,8 +19,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td colspan="4" class="table-info">New ({{merchants|length}})</td>
+    <tr class="table-info">
+      <td scope="row" colspan="4">New ({{merchants|length}})</td>
     </tr>
     {% for merchant in merchants %}
     <tr>

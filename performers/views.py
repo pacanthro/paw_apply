@@ -19,9 +19,11 @@ def index(request):
     return render(request, "performer.html", context)
 
 def apply(request):
+    event = get_current_event()
     form = PerformerForm()
     context = {
         'is_djs': True,
+        'event': event,
         'form': form
     }
     return render(request, 'performer-apply.html', context)
@@ -42,9 +44,16 @@ def new(request):
     
     context = {
         'is_djs': True,
+        'event': event,
         'form': form
     }
     return render(request, 'performer-apply.html', context)
 
 def confirm(request):
-    return render(request, 'performer-confirm.html', {'is_djs': True})
+    event = get_current_event()
+    
+    context = {
+        'is_djs': True,
+        'event': event
+    }
+    return render(request, 'performer-confirm.html', context)

@@ -15,6 +15,7 @@
     <style>
         body {
             padding-top: 5rem;
+            padding-bottom: 5rem;
         }
 
         .bg-purple {
@@ -39,23 +40,31 @@
                     <li class="nav-item">
                         <a class="nav-link {{ is_volunteers|yesno:" active," }}" href="/volunteers">Volunteers</a>
                     </li>
+                    {% if event.module_panels_enabled %}
                     <li class="nav-item">
                         <a class="nav-link {{ is_panels|yesno:" active," }}" href="/panels">Panels</a>
                     </li>
+                    {% endif %}
+                    {% if event.module_merchants_enabled %}
                     <li class="nav-item">
                         <a class="nav-link {{ is_merchants|yesno:" active," }}" href="/merchants">Merchants</a>
                     </li>
+                    {% endif %}
+                    {% if event.module_performers_enabled %}
                     <li class="nav-item">
                         <a class="nav-link {{ is_djs|yesno:" active," }}" href="/performers">DJs</a>
                     </li>
+                    {% endif %}
+                    {% if event.module_partyfloor_enabled %}
                     <li class="nav-item">
                         <a class="nav-link {{ is_partyfloor|yesno:" active," }}" href="/partyfloor">Party Floor</a>
                     </li>
-                    <!--
-                <li class="nav-item">
-                  <a class="nav-link {{ is_dancecomp|yesno:"active," }}" href="/dancecomp">Dance Comp</a>
-                </li>
-        	-->
+                    {% endif %}
+                    {% if event.module_competitors_enabled %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ is_dancecomp|yesno:"active," }}" href="/dancecomp">Dance Comp</a>
+                    </li>
+                    {% endif %}
                     {% if request.user.id != None %}
                     <li class="nav-item">
                         <a class="nav-link {{ is_console|yesno:" active,"}}" href="/console">Console</a>
