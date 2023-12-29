@@ -145,29 +145,6 @@ def merchant_assign(request, merchant_id):
         return HttpResponseRedirect(reverse('console:merchant-detail', args=[merchant.id]))
 
 
-
-# Panel Views
-# All of the Panel Tools
-#
-@login_required
-@permission_required('panels.view_panel')
-def panels(request):
-    event = get_current_event()
-    panels = Panel.objects.filter(event=event)
-    context = {
-        'panels': panels
-    }
-    return render(request, 'console-panels-list.html', __build_context(request.user, context))
-
-@login_required
-@permission_required('panels.view_panel')
-def panel_detail(request, panel_id):
-    panel = get_object_or_404(Panel, pk=panel_id)
-    context = {
-        'panel': panel
-    }
-    return render(request, 'console-panels-detail.html', __build_context(request.user, context))
-
 # Volunteer Views
 # All of the volunteer tools
 #
