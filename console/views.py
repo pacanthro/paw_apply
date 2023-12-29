@@ -227,7 +227,7 @@ def host_assign(request, host_id):
 @permission_required('host.view_host')
 def host_confirm(request, host_id):
     host = get_object_or_404(PartyHost, pk=host_id)
-    host.room_number = request.POST['room_number']
+    host.room_number = None if request.POST['room_number'] == '' else request.POST['room_number']
     host.room_assigned = True
     host.confirmation_sent = datetime.date.today()
     host.save()
