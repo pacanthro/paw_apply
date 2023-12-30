@@ -14,7 +14,11 @@
   <li>Party Floor rooms are prioritized to party hosts before buffer attendees. Party hosts have first access to the balcony-side rooms.</li>
   <li>By applying you agree that you understand all of the above.</li>
 </ul>
-{% if event.is_submissions_closed == False %}
+{% if is_partyfloor_full %}
+<div class="alert alert-danger" role="alert">
+    Party Floor is currently full. :(
+</div>
+{% elif event.is_submissions_closed == False %}
 <a href="{% url 'partyfloor:apply' %}" class="btn btn-primary btn-lg">Apply</a>
 {% endif %}
 {% endblock %}
