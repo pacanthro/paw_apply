@@ -1,4 +1,4 @@
-from core.models import DaysAvailable, Event
+from core.models import ApplicationState, DaysAvailable, Event
 from django.db import models
 from django.utils import timezone
 
@@ -22,8 +22,6 @@ class PartyHost(models.Model):
     ack_closure_time = models.BooleanField('The party floor closes to the public at 2AM, and normal hotel rules come into effect.', default=False)
     ack_suspension_policy = models.BooleanField('Failure to bide by Con Staff/Hotel Security requests will result in party suspension (zero tolerance)', default=False)
     room_number = models.IntegerField(null=True, blank=True)
-    room_assigned = models.BooleanField(default=False)
-    confirmation_sent = models.DateField(null=True, blank=True)
-    waitlist_sent = models.DateField(null=True, blank=True)
-    waitlisted = models.BooleanField(default=False)
-    declined = models.BooleanField(default=False)
+    host_state = models.CharField(max_length=20, choices=ApplicationState, default=ApplicationState.STATE_NEW)
+    state_changed = models.DateField(auto_now_add=True)
+
