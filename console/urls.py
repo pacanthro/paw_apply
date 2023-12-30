@@ -34,8 +34,12 @@ urlpatterns = [
     path('volunteers/<int:volunteer_id>', views.volunteer_detail, name='volunteer-detail'),
 
     # Performers
-    path('performers', views.performers, name='performers'),
-    path('performers/<int:performer_id>', views.performer_detail, name='performer-detail'),
+    path('performers', views_new.PerformersListPageView.as_view(), name='performers'),
+    path('performers/<int:performer_id>', views_new.PerformerDetailPageView.as_view(), name='performer-detail'),
+    path('performers/<int:performer_id>/accept', views_new.PerformerActionAcceptRedirect.as_view(), name='performer-accept'),
+    path('performers/<int:performer_id>/waitlist', views_new.PerformerActionWaitlistRedirect.as_view(), name='performer-waitlist'),
+    path('performers/<int:performer_id>/decline', views_new.PerformerActionDeclineRedirect.as_view(), name='performer-decline'),
+    path('performers/<int:performer_id>/delete', views_new.PerformerActionDeleteRedirect.as_view(), name='performer-delete'),
 
     # Party Hosts
     path('hosts', views_new.PartyHostListPageViewView.as_view(), name='hosts'),

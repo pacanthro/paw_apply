@@ -167,26 +167,6 @@ def volunteer_detail(request, volunteer_id):
     }
     return render(request, 'console-volunteers-detail.html', __build_context(request.user, context))
 
-# Performer Views
-@login_required
-@permission_required('performers.view_performer')
-def performers(request):
-    event = get_current_event()
-    performers = Performer.objects.filter(event=event)
-    context = {
-        'performers': performers
-    }
-    return render(request, 'console-performers-list.html', __build_context(request.user, context))
-
-@login_required
-@permission_required('performers.view_performer')
-def performer_detail(request, performer_id):
-    performer = get_object_or_404(Performer, pk=performer_id)
-    context = {
-        'performer': performer
-    }
-    return render(request, 'console-performer-detail.html', __build_context(request.user, context))
-
 # Competitor Views
 @login_required
 @permission_required('competitors.view_host')

@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
 from panels.models import Panel
 
-from django.utils import timezone
+from datetime import date
 
 decorators = [login_required, permission_required('panels.view_panel')]
 
@@ -52,7 +52,7 @@ class PanelActionAcceptRedirect(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
         panel.panel_state = ApplicationState.STATE_ACCEPTED
-        panel.state_changed = timezone.now()
+        panel.state_changed = date.today()
         panel.save()
         return super().get_redirect_url(*args, **kwargs)
     
@@ -64,7 +64,7 @@ class PanelActionWaitlistRedirect(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
         panel.panel_state = ApplicationState.STATE_WAITLIST
-        panel.state_changed = timezone.now()
+        panel.state_changed = date.today()
         panel.save()
         return super().get_redirect_url(*args, **kwargs)
 
@@ -76,7 +76,7 @@ class PanelActionDenyRedirect(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
         panel.panel_state = ApplicationState.STATE_DENIED
-        panel.state_changed = timezone.now()
+        panel.state_changed = date.today()
         panel.save()
         return super().get_redirect_url(*args, **kwargs)
 
@@ -88,6 +88,6 @@ class PanelActionDeleteRedirect(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
         panel.panel_state = ApplicationState.STATE_DELETED
-        panel.state_changed = timezone.now()
+        panel.state_changed = date.today()
         panel.save()
         return reverse('console:panels')
