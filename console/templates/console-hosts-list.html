@@ -5,8 +5,8 @@
 {% block tool %}
 <h1>Hosts</h1>
 <table class="table">
-  <thead class="thead-dark text-left">
-    <tr>
+  <thead class="text-left">
+    <tr class="table-dark">
       <th scope="col">Host Name</th>
       <th scope="col">Email</th>
       <th scope="col">Legal Name</th>
@@ -16,9 +16,9 @@
   </thead>
   <tbody>
     <tr>
-      <td colspan="5" class="table-info">New</td>
+      <td colspan="5" class="table-info">New ({{new_hosts|length}})</td>
     </tr>
-    {% for host in unassigned_hosts %}
+    {% for host in new_hosts %}
     <tr>
       <td>
           <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
@@ -36,7 +36,27 @@
     </tr>
     {% endfor %}
     <tr>
-        <td colspan="5" class="table-info">Waitlisted</td>
+        <td colspan="5" class="table-info">Accepted ({{accepted_hosts|length}})</td>
+    </tr>
+    {% for host in accepted_hosts %}
+    <tr>
+        <td>
+            <a href="{% url 'console:host-detail' host.id %}">{{host.fan_name}}</a>
+        </td>
+        <td>
+            <a href="mailto:{{host.email}}"><i class="far fa-envelope"></i> {{host.email}}</a>
+        </td>
+        <td>{{host.legal_name}}</td>
+        <td>
+            <a href="tel:{{host.phone_number}}"><i class="fas fa-phone"></i> {{host.phone_number}}</a>
+        </td>
+        <td>
+            <a href="https://t.me/{{host.telegram_handle}}"><i class="fab fa-telegram"></i> {{host.telegram_handle}}</a>
+        </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="5" class="table-info">Waitlisted ({{waitlisted_hosts|length}})</td>
     </tr>
     {% for host in waitlisted_hosts %}
     <tr>
@@ -56,7 +76,7 @@
     </tr>
     {% endfor %}
     <tr>
-      <td colspan="5" class="table-info">Assigned</td>
+      <td colspan="5" class="table-info">Assigned ({{assigned_hosts|length}})</td>
     </tr>
     {% for host in assigned_hosts %}
     <tr>
@@ -76,7 +96,7 @@
     </tr>
     {% endfor %}
     <tr>
-      <td colspan="5" class="table-info">Declined</td>
+      <td colspan="5" class="table-info">Declined ({{declined_hosts|length}})</td>
     </tr>
     {% for host in declined_hosts %}
     <tr>

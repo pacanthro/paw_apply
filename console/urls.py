@@ -38,12 +38,13 @@ urlpatterns = [
     path('performers/<int:performer_id>', views.performer_detail, name='performer-detail'),
 
     # Party Hosts
-    path('hosts', views.hosts, name='hosts'),
-    path('hosts/<int:host_id>', views.host_detail, name='host-detail'),
-    path('hosts/<int:host_id>/assign', views.host_assign, name='host-assign'),
-    path('hosts/<int:host_id>/confirm', views.host_confirm, name='host-confirm'),
-    path('hosts/<int:host_id>/waitlist', views.host_waitlist, name='host-waitlist'),
-    path('hosts/<int:host_id>/decline', views.host_decline, name='host-decline'),
+    path('hosts', views_new.PartyHostListPageViewView.as_view(), name='hosts'),
+    path('hosts/<int:host_id>', views_new.PartyHostDetailPageView.as_view(), name='host-detail'),
+    path('hosts/<int:host_id>/accept', views_new.PartyHostActionAcceptRedirect.as_view(), name='host-accept'),
+    path('hosts/<int:host_id>/assign', views_new.PartyHostActionAssignPageView.as_view(), name='host-assign'),
+    path('hosts/<int:host_id>/waitlist', views_new.PartyHostActionWaitlistRedirect.as_view(), name='host-waitlist'),
+    path('hosts/<int:host_id>/decline', views_new.PartyHostActionDeclineRedirect.as_view(), name='host-decline'),
+    path('hosts/<int:host_id>/delete', views_new.PartyHostActionDeleteRedirect.as_view(), name='host-delete'),
 
     # Competitors
     path('competitors', views.competitors, name='competitors'),
