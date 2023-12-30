@@ -29,9 +29,12 @@ urlpatterns = [
     path('panels/<int:panel_id>/delete', views_new.PanelActionDeleteRedirect.as_view(), name='panel-delete'),
 
     # Volunteers
-    path('volunteers', views.volunteers, name='volunteers'),
-    path('volunteers/download_csv', views.volunteer_download_csv, name='volunteer-download'),
-    path('volunteers/<int:volunteer_id>', views.volunteer_detail, name='volunteer-detail'),
+    path('volunteers', views_new.VolunteerListPageView.as_view(), name='volunteers'),
+    path('volunteers/download_csv', views_new.VolunteerCSVDownloadView.as_view(), name='volunteer-download'),
+    path('volunteers/<int:volunteer_id>', views_new.VolunteerDetailsPageView.as_view(), name='volunteer-detail'),
+    path('volunteers/<int:volunteer_id>/accept', views_new.VolunteerActionAcceptRedirect.as_view(), name='volunteer-accept'),
+    path('volunteers/<int:volunteer_id>/decline', views_new.VolunteerActionDeclinetRedirect.as_view(), name='volunteer-decline'),
+    path('volunteers/<int:volunteer_id>/delete', views_new.VolunteerActionDeleteRedirect.as_view(), name='volunteer-delete'),
 
     # Performers
     path('performers', views_new.PerformersListPageView.as_view(), name='performers'),

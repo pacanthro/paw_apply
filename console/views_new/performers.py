@@ -1,4 +1,3 @@
-from typing import Any
 from .page_view import PageView
 from core.models import get_current_event, ApplicationState
 from django.contrib.auth.decorators import login_required, permission_required
