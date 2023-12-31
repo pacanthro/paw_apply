@@ -81,6 +81,10 @@
             <td>Agrees to check ID's:</td>
             <td>{{panel.check_ids|yesno:"Yes,No"}}</td>
         </tr>
+        <tr>
+            <td>State:</td>
+            <td>{{panel.get_panel_state_display}} ({{panel.state_changed}})</td>
+        </tr>
     </table>
 </div>
 <div>
