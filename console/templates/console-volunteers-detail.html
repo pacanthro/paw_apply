@@ -5,81 +5,93 @@
 {% block tool %}
 <h1>Volunteer</h1>
 <table class="table">
-  <tr>
-    <td>Fan Name:</td>
-    <td>{{volunteer.fan_name}}</td>
-  </tr>
-  <tr>
-    <td>Email:</td>
-    <td>
-      <a href="mailto:{{volunteer.email}}">{{volunteer.email}} <i class="far fa-envelope"></i></a>
-    </td>
-  </tr>
-  <tr>
-    <td>Phone Number:</td>
-    <td>
-      <a href="tel:{{volunteer.phone_number}}">{{volunteer.phone_number}} <i class="fas fa-phone"></i></a>
-    </td>
-  </tr>
-  <tr>
-    <td>Twitter Handle:</td>
-    <td>{{volunteer.twitter_handle}}</td>
-  </tr>
-  <tr>
-    <td>Telegram Handle:</td>
-    <td>
-      <a href="https://t.me/{{volunteer.telegram_handle}}">{{volunteer.telegram_handle}} <i class="fab fa-telegram"></i></a>
-    </td>
-  </tr>
-  <tr>
-    <td>Department Interests:</td>
-    <td>
-      <ul class="px-0">
-        {% for department in volunteer.department_interest.all %}
-        <li>{{department.department_name}}</li>
-        {% endfor %}
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>Volunteer History:</td>
-    <td>{{volunteer.volunteer_history}}</td>
-  </tr>
-  <tr>
-    <td>Special Skills:</td>
-    <td>{{volunteer.special_skills}}</td>
-  </tr>
-  <tr>
-    <td>Days Available:</td>
-    <td>
-      <ul class="px-0">
-        {% for day in volunteer.days_available.all %}
-        <li>{{day.name}}</li>
-        {% endfor %}
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>Time Available</td>
-    <td>
-      <ul class="px-0">
-        {% for time in volunteer.time_availble.all %}
-        <li>{{time.name}}</li>
-        {% endfor %}
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>Available For Setup:</td>
-    <td>{{volunteer.avail_setup|yesno:"Yes,No"}}</td>
-  </tr>
-  <tr>
-    <td>Available For Teardown:</td>
-    <td>{{volunteer.avail_teardown|yesno:"Yes,No"}}</td>
-  </tr>
+    <tr>
+        <td>Fan Name:</td>
+        <td>{{volunteer.fan_name}}</td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td>
+            <a href="mailto:{{volunteer.email}}">{{volunteer.email}} <i class="far fa-envelope"></i></a>
+        </td>
+    </tr>
+    <tr>
+        <td>Phone Number:</td>
+        <td>
+            <a href="tel:{{volunteer.phone_number}}">{{volunteer.phone_number}} <i class="fas fa-phone"></i></a>
+        </td>
+    </tr>
+    <tr>
+        <td>Twitter Handle:</td>
+        <td>{{volunteer.twitter_handle}}</td>
+    </tr>
+    <tr>
+        <td>Telegram Handle:</td>
+        <td>
+            <a href="https://t.me/{{volunteer.telegram_handle}}">{{volunteer.telegram_handle}} <i
+                    class="fab fa-telegram"></i></a>
+        </td>
+    </tr>
+    <tr>
+        <td>Department Interests:</td>
+        <td>
+            <ul class="px-0">
+                {% for department in volunteer.department_interest.all %}
+                <li>{{department.department_name}}</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>Volunteer History:</td>
+        <td>{{volunteer.volunteer_history}}</td>
+    </tr>
+    <tr>
+        <td>Special Skills:</td>
+        <td>{{volunteer.special_skills}}</td>
+    </tr>
+    <tr>
+        <td>Days Available:</td>
+        <td>
+            <ul class="px-0">
+                {% for day in volunteer.days_available.all %}
+                <li>{{day.name}}</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>Time Available</td>
+        <td>
+            <ul class="px-0">
+                {% for time in volunteer.time_availble.all %}
+                <li>{{time.name}}</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>Available For Setup:</td>
+        <td>{{volunteer.avail_setup|yesno:"Yes,No"}}</td>
+    </tr>
+    <tr>
+        <td>Available For Teardown:</td>
+        <td>{{volunteer.avail_teardown|yesno:"Yes,No"}}</td>
+    </tr>
+    <tr>
+        <td>State:</td>
+        <td>{{volunteer.get_volunteer_state_display}} ({{volunteer.state_changed}})</td>
+    </tr>
 </table>
 <div>
-  <h2>Convention Master</h2>
-  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{volunteer.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+    <h2>Actions</h2>
+    <a href="{% url 'console:volunteer-accept' volunteer.id %}" class="btn btn-primary">Accept</a>
+    <a href="{% url 'console:volunteer-decline' volunteer.id %}" class="btn btn-primary">Decline</a>
+    <a href="{% url 'console:volunteer-delete' volunteer.id %}" class="btn btn-danger">Delete</a>
+</div>
+<div>
+    <h2>Convention Master</h2>
+    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{volunteer.email}}"
+        target="_blank" class="btn btn-outline-primary">CM Lookup</a>
 </div>
 {% endblock %}

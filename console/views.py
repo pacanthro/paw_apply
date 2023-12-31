@@ -144,29 +144,6 @@ def merchant_assign(request, merchant_id):
 
         return HttpResponseRedirect(reverse('console:merchant-detail', args=[merchant.id]))
 
-
-# Volunteer Views
-# All of the volunteer tools
-#
-@login_required
-@permission_required('volunteers.view_volunteer')
-def volunteers(request):
-    event = get_current_event()
-    volunteers = Volunteer.objects.filter(event=event)
-    context = {
-        'volunteers': volunteers
-    }
-    return render(request, 'console-volunteers-list.html', __build_context(request.user, context))
-
-@login_required
-@permission_required('volunteers.view_volunteer')
-def volunteer_detail(request, volunteer_id):
-    volunteer = get_object_or_404(Volunteer, pk=volunteer_id)
-    context = {
-        'volunteer': volunteer
-    }
-    return render(request, 'console-volunteers-detail.html', __build_context(request.user, context))
-
 # Competitor Views
 @login_required
 @permission_required('competitors.view_host')
@@ -260,29 +237,6 @@ def merchant_waitlisted(request, merchant_id):
         send_paw_email('email-merchant-waitlist.html', {'merchant': merchant}, subject='PAWCon Merchant Waitlist', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
     return JsonResponse({'status': 'success'})
-
-@login_required
-@permission_required('volunteers.view_volunteer')
-def volunteer_download_csv(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="volunteers.csv"'
-    event = get_current_event()
-    volunteers = Volunteer.objects.filter(event=event)
-
-    writer = csv.writer(response)
-    writer.writerow(["Fan Name", "Email", "Legal Name", "Telegram Handle", "Departments", "Days Available", "Available Setup", "Available Teardown"])
-    for volunteer in volunteers:
-        departments = volunteer.department_interest.all()
-        dept_str = ""
-        for department in departments:
-            dept_str += department.department_name + ";"
-        days = volunteer.days_available.all()
-        days_str = ""
-        for day in days:
-            days_str += day.name + ";"
-        writer.writerow([volunteer.fan_name, volunteer.email, volunteer.legal_name, volunteer.telegram_handle, dept_str, days_str, volunteer.avail_setup, volunteer.avail_teardown])
-
-    return response
 
 # Private Functions
 def __build_context(user, extras):

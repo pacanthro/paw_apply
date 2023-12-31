@@ -1,4 +1,4 @@
-from core.models import Event, DaysAvailable, Department
+from core.models import ApplicationState, Event, DaysAvailable, Department
 from django.db import models
 
 # Create your models here.
@@ -25,6 +25,8 @@ class Volunteer(models.Model):
     time_availble = models.ManyToManyField(TimesAvailable)
     avail_setup = models.BooleanField('Available Setup')
     avail_teardown = models.BooleanField('Available Teardown')
+    volunteer_state = models.CharField(max_length=20, choices=ApplicationState, default=ApplicationState.STATE_NEW, null=False)
+    state_changed = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return "{} ({})".format(self.fan_name, self.legal_name)
