@@ -1,4 +1,5 @@
 from .page_view import PageView
+from console.forms import LoginForm
 from core.models import get_current_event, ApplicationState
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, permission_required
@@ -23,26 +24,25 @@ class ConsoleLoginPageView(PageView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        form = LoginForm()
 
         context['redirect'] = self.request.GET.get('next', '/console')
+        context['form'] = form
 
         return context
     
     def post(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
+        form = LoginForm(data=request.POST)
 
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        context['form'] = form
 
-        if user is not None:
+        if form.is_valid():
+            user = form.get_user()
             auth_login(request, user)
-            return HttpResponseRedirect(request.POST['redirect'])
-        else:
-            context['redirect'] = request.POST.get('next', '/console')
-            context['error'] = 'Invalid username or password.'
+            return HttpResponseRedirect(request.GET['next'])
 
-            return self.render_to_response(context)     
+        return self.render_to_response(context)     
 
 class ConsoleLogoutRedirect(View):
     def get(self, request, *args, **kwargs):
