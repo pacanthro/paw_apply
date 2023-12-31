@@ -2,6 +2,17 @@ from core.models import Event
 from django.db import models
 
 # Create your models here.
+class MerchantState(models.TextChoices):
+    STATE_NEW = "STATE_NEW", "New",
+    STATE_ACCEPTED = "STATE_ACCEPTED", "Accepted"
+    STATE_PAYMENT = "STATE_PAYMENT", "Payment Requested"
+    STATE_CONFIRMED = "STATE_CONFIRMED", "Payment Confirmed"
+    STATE_ASSIGNED = "STATE_ASSIGNED", "Table Assigned"
+    STATE_WAITLISTED = "STATE_WAITLISTED", "Waitlisted"
+    STATE_DENIED = "STATE_DENIED", "Denied"
+    STATE_DELETED = "STATE_DELETED", "Deleted"
+    STATE_OLD = "STATE_OLD", "Migrated Data"
+
 class Table(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=20)
@@ -23,14 +34,9 @@ class Merchant(models.Model):
     helper_legal_name = models.CharField(max_length=200, blank=True)
     helper_fan_name = models.CharField(max_length=200, blank=True)
     special_requests = models.TextField(blank=True)
-    payment_requested = models.BooleanField(null=True, blank=True)
-    payment_confirmed = models.BooleanField(null=True, blank=True)
-    waitlisted = models.BooleanField(null=True, blank=False)
-    email_sent = models.DateField(null=True, blank=True)
-    confirmation_sent = models.DateField(null=True, blank=True)
-    waitlist_sent = models.DateField(null=True, blank=True)
     table_number = models.IntegerField(null=True, blank=True)
-    table_assigned = models.BooleanField(default=False)
+    merchant_state = models.CharField(max_length=20, choices=MerchantState, default=MerchantState.STATE_NEW, null=False)
+    state_changed = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return "{} ({})".format(self.legal_name, self.business_name)

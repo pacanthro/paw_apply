@@ -8,7 +8,7 @@ class TableAdmin(admin.ModelAdmin):
 
 class MerchantAdmin(admin.ModelAdmin):
     list_display = ('event', 'business_name', 'email', 'legal_name', 'fan_name')
-    list_filter = ('event', 'payment_confirmed')
+    list_filter = ('event', 'merchant_state')
 
 # Register your models here.
 admin.site.register(Table, TableAdmin)
