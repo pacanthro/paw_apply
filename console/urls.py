@@ -6,8 +6,8 @@ from . import views_new
 app_name='console'
 urlpatterns = [
     path('', views_new.ConsoleIndexPageView.as_view(), name='index'),
-    path('login', views.login, name='login'),
-    path('logout', views.logout, name='logout'),
+    path('login', views_new.ConsoleLoginPageView.as_view(), name='login'),
+    path('logout', views_new.ConsoleLogoutRedirect.as_view(), name='logout'),
 
     # Merchants
     path('merchants', views_new.MerchantsListPageView.as_view(), name='merchants'),

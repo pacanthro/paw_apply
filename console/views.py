@@ -1,7 +1,5 @@
 import csv, datetime
 from core.models import get_current_event
-from django.conf import settings
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -11,33 +9,6 @@ from modules.email import send_paw_email
 from .models import Competitor
 
 # Create your views here.
-
-def login(request):
-    if request.method == 'GET':
-        context = {
-            'is_console': True,
-            'redirect': request.GET.get('next', '/console')
-        }
-        return render(request, 'console-login.html', context)
-    elif request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            auth_login(request, user)
-            return HttpResponseRedirect(request.POST['redirect'])
-        else:
-            context = {
-                'is_console': True,
-                'redirect': request.POST.get('next', '/console'),
-                'error': 'Invalid username or password.'
-            }
-            return render(request, 'console-login.html', context)
-
-def logout(request):
-    auth_logout(request)
-    return HttpResponseRedirect('/')
-
 # Competitor Views
 @login_required
 @permission_required('competitors.view_host')
