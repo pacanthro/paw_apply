@@ -15,3 +15,5 @@ or request a payment. A lot of steps have automated emails sent as well.
 This was originally designed for Pacific Anthropomorphics Weekend ([PAWCon](https://pacanthro.org))
 
 If you are instered in using and contributing please contact Laveur
+
+Please Don't Open Issues or Pull Requests unless you've contacted Laveur already.
