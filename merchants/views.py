@@ -2,14 +2,14 @@ import datetime
 from core.models import get_current_event
 from django.conf import settings
 from django.db import IntegrityError
-from django.db.models import Count
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from modules.email import send_paw_email
 import logging
 
-from .models import Event, Merchant, Table
+from .models import Event, Merchant, MerchantState, Table
 from .forms import MerchantForm
 
 
@@ -19,10 +19,10 @@ def __is_merchants_full():
     event = get_current_event()
     if (event):
         max_merchants = event.max_merchants + 10
-        full_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="FULL")).count()
-        double_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed=True).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
-        waitlist_full_table_count =  Merchant.objects.filter(event=event).filter(payment_confirmed__isnull=True).filter(waitlist_sent__isnull=False).filter(table_size=Table.objects.get(key="FULL")).count()
-        waitlist_double_table_count = Merchant.objects.filter(event=event).filter(payment_confirmed__isnull=True).filter(waitlist_sent__isnull=False).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
+        full_table_count = Merchant.objects.filter(event=event).filter(Q(merchant_state=MerchantState.STATE_CONFIRMED) | Q(merchant_state=MerchantState.STATE_ASSIGNED)).filter(table_size=Table.objects.get(key="FULL")).count()
+        double_table_count = Merchant.objects.filter(event=event).filter(Q(merchant_state=MerchantState.STATE_CONFIRMED) | Q(merchant_state=MerchantState.STATE_ASSIGNED)).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
+        waitlist_full_table_count =  Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_WAITLISTED).filter(table_size=Table.objects.get(key="FULL")).count()
+        waitlist_double_table_count = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_WAITLISTED).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
 
         merchant_count = full_table_count + double_table_count + waitlist_full_table_count + waitlist_double_table_count
 
