@@ -5,176 +5,84 @@
 {% block tool %}
 <h1>Merchant Details</h1>
 <table class="table">
-  <tr>
-    <td>Business Name:</td>
-    <td>{{merchant.business_name}}</td>
-  </tr>
-  <tr>
-    <td>Email:</td>
-    <td>
-      <a href="mailto:{{merchant.email}}"><i class="far fa-envelope"></i>{{merchant.email}}</a>
-    </td>
-  </tr>
-  <tr>
-    <td>Legal Name:</td>
-    <td>{{merchant.legal_name}}</td>
-  </tr>
-  <tr>
-    <td>Fan Name:</td>
-    <td>{{merchant.fan_name}}</td>
-  </tr>
-  <tr>
-    <td>Phone Number:</td>
-    <td>
-      <a href="tel:{{merchant.phon_number}}"><i class="fas fa-phone"></i>{{merchant.phone_number}}</a>
-    </td>
-  </tr>
-  <tr>
-    <td>Table Size:</td>
-    <td>{{merchant.table_size.name}}</td>
-  </tr>
-  <tr>
-    <td>Description of Wares:</td>
-    <td>{{merchant.wares_description}}</td>
-  </tr>
-  <tr>
-    <td>Helper Legal Name:</td>
-    <td>{{merchant.helper_legal_name}}</td>
-  </tr>
-  <tr>
-    <td>Helper Fan Name:</td>
-    <td>{{merchant.helper_fan_name}}</td>
-  </tr>
-  <tr>
-    <td>Special Requests:</td>
-    <td>{{merchant.special_requests}}</td>
-  </tr>
-  {% if merchant.payment_requested is True %}
-  <tr>
-    <td>Payment Request:</td>
-    <td>{{merchant.email_sent}}</td>
-  </tr>
-  {% endif %}
-  {% if merchant.payment_confirmed is True %}
-  <tr>
-    <td>Payment Confirmed:</td>
-    <td>{{merchant.confirmation_sent}}</td>
-  </tr>
-  {% endif %}
-  {% if merchant.table_assigned is True %}
-  <tr>
-    <td>Assigned Table:</td>
-    <td>{{merchant.table_number}}</td>
-  </tr>
-  {% endif %}
+    <tr>
+        <td>Business Name:</td>
+        <td>{{merchant.business_name}}</td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td>
+            <a href="mailto:{{merchant.email}}"><i class="far fa-envelope"></i>{{merchant.email}}</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Legal Name:</td>
+        <td>{{merchant.legal_name}}</td>
+    </tr>
+    <tr>
+        <td>Fan Name:</td>
+        <td>{{merchant.fan_name}}</td>
+    </tr>
+    <tr>
+        <td>Phone Number:</td>
+        <td>
+            <a href="tel:{{merchant.phon_number}}"><i class="fas fa-phone"></i>{{merchant.phone_number}}</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Table Size:</td>
+        <td>{{merchant.table_size.name}}</td>
+    </tr>
+    <tr>
+        <td>Description of Wares:</td>
+        <td>{{merchant.wares_description}}</td>
+    </tr>
+    <tr>
+        <td>Helper Legal Name:</td>
+        <td>{{merchant.helper_legal_name}}</td>
+    </tr>
+    <tr>
+        <td>Helper Fan Name:</td>
+        <td>{{merchant.helper_fan_name}}</td>
+    </tr>
+    <tr>
+        <td>Special Requests:</td>
+        <td>{{merchant.special_requests}}</td>
+    </tr>
+    <tr>
+        <td>State:</td>
+        <td>{{merchant.get_merchant_state_display}} ({{merchant.state_changed}})</td>
+    </tr>
+    {% if merchant.merchant_state == 'STATE_ASSIGNED' %}
+    <tr>
+        <td>Assigned Table:</td>
+        <td>{{merchant.table_number}}</td>
+    </tr>
+    {% endif %}
 </table>
 <div>
-  <h2>Actions</h2>
-  {% if merchant.payment_requested is None%}
-  <button onclick="$.fn.sendPaymentEmail()" class="btn btn-primary">Request Payment</button>
-  <button onclick="$.fn.sendRegReminderEmail()" class="btn btn-primary">Remind To Register</button>
-  <button onClick="$.fn.sendWaitlistEmail()" class="btn btn-primary">Waitlist</button>
-  {% elif merchant.payment_confirmed is None %}
-  <button onclick="$.fn.sendConfirmationEmail()" class="btn btn-primary">Send Confirmation</button>
-  <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
-  {% else %}
-  <a href="{% url 'console:merchant-assign' merchant.id %}" class="btn btn-primary">Assign Table</a>
-  {% endif %}
-  <a href="{% url 'console:merchant-delete' merchant.id %}" class="btn btn-danger">Delete Merchant</a>
+    <h2>Actions</h2>
+    {% if merchant.merchant_state == 'STATE_NEW' or merchant.merchant_state == 'STATE_WAITLISTED' %}
+    <a href="{% url 'console:merchant-payment' merchant.id %}" class="btn btn-primary">Request Payment</a>
+    <a href="{% url 'console:merchant-reg-remind' merchant.id %}" class="btn btn-primary">Remind To Register</a>
+    {% if merchant.merchant_state != 'STATE_WAITLISTED' %}
+    <a href="{% url 'console:merchant-waitlist' merchant.id %}" class="btn btn-primary">Waitlist</a>
+    {% endif %}
+    {% elif merchant.merchant_state == 'STATE_PAYMENT' %}
+    <a href="{% url 'console:merchant-confirm' merchant.id %}" class="btn btn-primary">Send Confirmation</a>
+    <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
+    {% else %}
+    <a href="{% url 'console:merchant-assign' merchant.id %}" class="btn btn-primary">Assign Table</a>
+    {% endif %}
+    <a href="{% url 'console:merchant-delete' merchant.id %}" class="btn btn-danger">Delete Merchant</a>
 </div>
 <div>
-  <h2>Convention Master</h2>
-  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
-  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.legal_name}}" target="_blank" class="btn btn-outline-primary">CM Lookup (Name)</a>
-  <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.helper_fan_name}}" target="_blank" class="btn btn-outline-secondary">Helper CM Lookup</a>
-</div>
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-payment-sent" style="position: absolute; top: 0; right: 0;">
-  <div class="toast-header">
-    <strong class="mr-auto">PAWConsole</strong>
-    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="toast-body">
-    Payment email sent to {{merchant.email}}!
-  </div>
-</div>
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-confirmation-sent" style="position: absolute; top: 0; right: 0;">
-  <div class="toast-header">
-    <strong class="mr-auto">PAWConsole</strong>
-    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="toast-body">
-    Confirmation email sent to {{merchant.email}}!
-  </div>
-</div>
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-reg-reminder-sent" style="position: absolute; top: 0; right: 0;">
-  <div class="toast-header">
-    <strong class="mr-auto">PAWConsole</strong>
-    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="toast-body">
-    Registration reminder email sent to {{merchant.email}}!
-  </div>
-</div>
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-waitlist style="position: absolute; top: 0; right: 0;">
-    <div class="toast-header">
-        <strong class="mr-auto">PAWConsole</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="toast-body">
-        Merchants waitlist email sent to {{merchant.email}}!
-    </div>
-</div>
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-error" style="position: absolute; top: 0; right: 0;">
-  <div class="toast-header">
-    <strong class="mr-auto">PAWConsole</strong>
-    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="toast-body">
-    Something went wrong... I'm very very sorry. Contact Laveur!
-  </div>
+    <h2>Convention Master</h2>
+    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.legal_name}}" target="_blank" class="btn btn-outline-primary">CM Lookup (Name)</a>
+    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.helper_fan_name}}" target="_blank" class="btn btn-outline-secondary">Helper CM Lookup</a>
 </div>
 {% endblock %}
 
 {% block javascript %}
-jQuery.fn.sendPaymentEmail = function() {
-  $.get('{% url 'console:merchant-payment' merchant.id %}').done(function(data) {
-    $('#toast-payment-sent').toast('show');
-  }).fail(function(data) {
-    $('#toast-error').toast('show');
-  });
-}
-
-jQuery.fn.sendConfirmationEmail = function() {
-  $.get('{% url 'console:merchant-confirm' merchant.id %}').done(function(data) {
-    $('#toast-confirmation-sent').toast('show');
-  }).fail(function() {
-    $('#toast-error').toast('show')
-  });
-}
-
-jQuery.fn.sendRegReminderEmail = function() {
-  $.get('{% url 'console:merchant-reg-remind' merchant.id %}').done(function(data) {
-    $('#toast-reg-reminder-sent').toast('show');
-  }).fail(function() {
-    $('#toast-error').toast('show')
-  });
-}
-
-jQuery.fn.sendWaitlistEmail = function() {
-    $.get('{% url 'console:merchant-waitlist' merchant.id %}').done(function(data) {
-        $('#toast-reg-reminder-sent').toast('show');
-    }).fail(function() {
-        $('#toast-error').toast('show')
-    });
-}
 {% endblock %}

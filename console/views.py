@@ -75,75 +75,6 @@ def logout(request):
     auth_logout(request)
     return HttpResponseRedirect('/')
 
-# Merchant Views
-# All of the Merchant Tools
-#
-@login_required
-@permission_required('merchants.view_merchant')
-def merchants(request):
-    event = get_current_event()
-    merchants = Merchant.objects.filter(event=event).filter(payment_requested__isnull=True).filter(waitlisted__isnull=True)
-    waitlisted = Merchant.objects.filter(event=event).filter(waitlisted=True).filter(payment_requested__isnull=True).filter(payment_confirmed__isnull=True)
-    processed = Merchant.objects.filter(event=event).filter(payment_requested=True).filter(payment_confirmed__isnull=True)
-    confirmed = Merchant.objects.filter(event=event).filter(payment_confirmed=True)
-    context = {
-        'merchants': merchants,
-        'waitlisted': waitlisted,
-        'processed': processed,
-        'confirmed': confirmed,
-    }
-    return render(request, 'console-merchants-list.html', __build_context(request.user, context))
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_detail(request, merchant_id):
-    merchant = get_object_or_404(Merchant, pk=merchant_id)
-    context = {
-        'is_console': True,
-        'merchant': merchant
-    }
-    return render(request, 'console-merchants-detail.html', __build_context(request.user, context))
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_delete(request, merchant_id):
-    merchant = get_object_or_404(Merchant, pk=merchant_id)
-
-    if request.method == 'GET':
-        context = {
-            'is_console': True,
-            'merchant': merchant
-        }
-        
-        return render(request, 'console-merchants-delete.html', __build_context(request.user, context))
-    elif request.method == 'POST':
-        merchant.delete()
-
-        return HttpResponseRedirect(reverse('console:merchants'))
-
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_assign(request, merchant_id):
-    merchant = get_object_or_404(Merchant, pk=merchant_id)
-
-    if request.method == 'GET':
-        context = {
-            'is_console': True,
-            'merchant': merchant
-        }
-        
-        return render(request, 'console-merchants-assign.html', __build_context(request.user, context))
-    elif request.method == 'POST':
-        merchant.table_number = request.POST['table_number']
-        merchant.table_assigned = True
-
-        merchant.save();
-
-        send_paw_email('email-merchant-table-assigned.html', {'merchant': merchant}, subject='PAWCon Merchant Table Assigned', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
-
-        return HttpResponseRedirect(reverse('console:merchant-detail', args=[merchant.id]))
-
 # Competitor Views
 @login_required
 @permission_required('competitors.view_host')
@@ -157,7 +88,7 @@ def competitors(request):
     return render(request, 'console-competitors-list.html', __build_context(request.user, context))
 
 @login_required
-@permission_required('host.view_host')
+@permission_required('competitors.view_host')
 def competitor_detail(request, competitor_id):
     competitor = get_object_or_404(Competitor, pk=competitor_id)
     context = {
@@ -168,75 +99,6 @@ def competitor_detail(request, competitor_id):
 # API Style Methods
 # These are meant to be called by AJAX instead of directly by a user.
 #
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_payment(request, merchant_id):
-    merchant = get_object_or_404(Merchant, pk=merchant_id)
-    merchant.email_sent = datetime.date.today()
-    if merchant.payment_requested is None:
-        merchant.payment_requested = True
-        merchant.save()
-        send_paw_email('email-merchant-payment.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
-    else:
-        merchant.save()
-        send_paw_email('email-merchant-payment-remind.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
-
-    data = {
-        'status': 'Success'
-    }
-    return JsonResponse(data)
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_confirmed(request, merchant_id):
-    merchant = get_object_or_404(Merchant, pk=merchant_id)
-    if merchant.payment_requested is True:
-        merchant.payment_confirmed = True
-        merchant.confirmation_sent = datetime.date.today()
-        merchant.save()
-        send_paw_email('email-merchant-payment-confirmed.html', {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
-        data = {
-            'status': 'Success'
-        }
-        return JsonResponse(data)
-    else:
-        return HttpResponseBadRequest()
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_reg_reminder(request, merchant_id):
-    merchant = get_object_or_404(Merchant, pk=merchant_id)
-    send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
-
-    return JsonResponse({'status': 'success'})
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_download_csv(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="merchants.csv"'
-    event = get_current_event()
-    merchants = Merchant.objects.filter(event=event)
-
-    writer = csv.writer(response)
-
-    for merchant in merchants:
-        writer.writerow([merchant.business_name, merchant.email, merchant.legal_name, merchant.fan_name])
-
-    return response
-
-@login_required
-@permission_required('merchants.view_merchant')
-def merchant_waitlisted(request, merchant_id):
-    merchant = get_object_or_404(Merchant, pk=merchant_id)
-    merchant.waitlist_sent = datetime.date.today()
-    if merchant.waitlisted is None:
-        merchant.waitlisted = True
-        merchant.save()
-        send_paw_email('email-merchant-waitlist.html', {'merchant': merchant}, subject='PAWCon Merchant Waitlist', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
-
-    return JsonResponse({'status': 'success'})
 
 # Private Functions
 def __build_context(user, extras):

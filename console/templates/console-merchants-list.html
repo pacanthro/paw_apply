@@ -71,6 +71,32 @@
       <td>{{merchant.fan_name}}</td>
     </tr>
     {% endfor %}
+    <tr>
+        <td colspan="4" class="table-info">Table Assigned ({{assigned|length}})</td>
+    </tr>
+    {% for merchant in assigned %}
+    <tr>
+        <td>
+            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+        </td>
+        <td>{{merchant.email}}</td>
+        <td>{{merchant.legal_name}}</td>
+        <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="4" class="table-info">Denied ({{confirmed|length}})</td>
+    </tr>
+    {% for merchant in denied %}
+    <tr>
+        <td>
+            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+        </td>
+        <td>{{merchant.email}}</td>
+        <td>{{merchant.legal_name}}</td>
+        <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 {% endblock %}
