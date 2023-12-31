@@ -10,15 +10,15 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
 
     # Merchants
-    path('merchants', views.merchants, name='merchants'),
-    path('merchants/<int:merchant_id>', views.merchant_detail, name='merchant-detail'),
-    path('merchants/<int:merchant_id>/payment', views.merchant_payment,  name='merchant-payment'),
-    path('merchants/<int:merchant_id>/confirm', views.merchant_confirmed, name='merchant-confirm'),
-    path('merchants/download_csv', views.merchant_download_csv, name='merchant-download'),
-    path('merchants/<int:merchant_id>/reg', views.merchant_reg_reminder, name='merchant-reg-remind'),
-    path('merchants/<int:merchant_id>/waitlist', views.merchant_waitlisted, name='merchant-waitlist'),
-    path('merchants/<int:merchant_id>/delete', views.merchant_delete, name='merchant-delete'),
-    path('merchants/<int:merchant_id>/assign', views.merchant_assign, name='merchant-assign'),
+    path('merchants', views_new.MerchantsListPageView.as_view(), name='merchants'),
+    path('merchants/download_csv', views_new.MerchantCSVDownloadView.as_view(), name='merchant-download'),
+    path('merchants/<int:merchant_id>', views_new.MerchantDetailsPageView.as_view(), name='merchant-detail'),
+    path('merchants/<int:merchant_id>/payment', views_new.MerchantActionRequestPaymentRedirect.as_view(),  name='merchant-payment'),
+    path('merchants/<int:merchant_id>/confirm', views_new.MerchantActionPaymentConfirmedRedirect.as_view(), name='merchant-confirm'),
+    path('merchants/<int:merchant_id>/register', views_new.MerchantActionRegistrationReminderRedirect.as_view(), name='merchant-reg-remind'),
+    path('merchants/<int:merchant_id>/waitlist', views_new.MerchantActionWaitlistRedirect.as_view(), name='merchant-waitlist'),
+    path('merchants/<int:merchant_id>/delete', views_new.MerchantActionDeleteRedirect.as_view(), name='merchant-delete'),
+    path('merchants/<int:merchant_id>/assign', views_new.MerchantActionAssignPageView.as_view(), name='merchant-assign'),
 
     # Panels
     path('panels', views_new.PanelsListPageView.as_view(), name='panels'),
