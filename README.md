@@ -1,14 +1,17 @@
-# Deploy Instructions
+# PAWApply
+PAWApply is a Django based website for Furry Conventions to facilitate helping Attendees apply for:
 
-## Git
-1. `sudo git pull`
+* Dealers Den (Shopping District/Merchants)
+* Volunteering
+* Party Floor
+* Panels
+* Dance Comp
 
-## Activate VENV
-1. `source venv/bin/activate`
-1. `source .env`
-1. `pip3 install -r requirements.txt`
+With the exception of Volunteers all of these can be toggled on and off per event.
 
-## Django Stuff
-1. `python3 manage.py collectstatic`
-1. `python3 manage.py makemigrations`
-1. `python3. manage.py migrate`
+Additionaly it's designed to automate handling of each of them. With a robust management console its very easy to approve an application,
+or request a payment. A lot of steps have automated emails sent as well.
+
+This was originally designed for Pacific Anthropomorphics Weekend ([PAWCon](https://pacanthro.org))
+
+If you are instered in using and contributing please contact Laveur
