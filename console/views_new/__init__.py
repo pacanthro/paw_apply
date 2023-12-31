@@ -1,3 +1,4 @@
+from .console import ConsoleIndexPageView
 from .merchants import MerchantsListPageView, MerchantCSVDownloadView, MerchantDetailsPageView, MerchantActionRequestPaymentRedirect
 from .merchants import MerchantActionPaymentConfirmedRedirect, MerchantActionRegistrationReminderRedirect, MerchantActionWaitlistRedirect
 from .merchants import MerchantActionDeleteRedirect, MerchantActionAssignPageView

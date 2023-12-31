@@ -5,7 +5,7 @@ from . import views_new
 
 app_name='console'
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views_new.ConsoleIndexPageView.as_view(), name='index'),
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
 

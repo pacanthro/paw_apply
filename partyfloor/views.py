@@ -1,6 +1,7 @@
 from core.models import get_current_event, ApplicationState, DaysAvailable
 from django.conf import settings
 from django.db import IntegrityError
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -15,7 +16,7 @@ def __is_partyfloor_full():
     event = get_current_event()
     if (event):
         max_partyhosts = event.max_party_rooms + 5
-        partyhosts_count = PartyHost.objects.filter(event=event).exclude(host_state=[ApplicationState.STATE_DENIED, ApplicationState.STATE_DELETED, ApplicationState.STATE_OLD]).count()
+        partyhosts_count = PartyHost.objects.filter(event=event).exclude(Q(host_state=ApplicationState.STATE_DENIED) | Q(host_state=ApplicationState.STATE_DELETED) | Q(host_state=ApplicationState.STATE_OLD)).count()
 
     return (partyhosts_count >= max_partyhosts)
 
