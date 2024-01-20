@@ -36,6 +36,9 @@ def new(request):
         volunteer.event = event
         volunteer.save()
         form.save_m2m()
+
+        send_paw_email('email-volunteers-confirm.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
+
         return HttpResponseRedirect(reverse('volunteers:confirm'))
     
     context = {
