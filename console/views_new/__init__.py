@@ -7,4 +7,4 @@ from .partyfloor import PartyHostListPageViewView, PartyHostDetailPageView, Part
 from .partyfloor import PartyHostActionDeleteRedirect, PartyHostActionAssignPageView
 from .performers import PerformersListPageView, PerformerDetailPageView, PerformerActionAcceptRedirect, PerformerActionWaitlistRedirect, PerformerActionDeclineRedirect
 from .performers import PerformerActionDeleteRedirect
-from .volunteers import VolunteerListPageView, VolunteerCSVDownloadView, VolunteerDetailsPageView, VolunteerActionAcceptRedirect, VolunteerActionDeclinetRedirect, VolunteerActionDeleteRedirect
+from .volunteers import VolunteerListPageView, VolunteerCSVDownloadView, VolunteerDetailsPageView, VolunteerActionAcceptRedirect, VolunteerActionDeclinedRedirect, VolunteerActionDeleteRedirect
