@@ -79,7 +79,7 @@ class VolunteerActionAcceptRedirect(RedirectView):
         volunteer.state_changed = date.today()
         volunteer.save()
 
-         send_paw_email('email-volunteers-accepted.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
+        send_paw_email('email-volunteers-accepted.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -93,7 +93,7 @@ class VolunteerActionDeclinedRedirect(RedirectView):
         volunteer.state_changed = date.today()
         volunteer.save()
 
-         send_paw_email('email-volunteers-denied.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
+        send_paw_email('email-volunteers-denied.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
 
         return reverse('console:volunteers')
     
