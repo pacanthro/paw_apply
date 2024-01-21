@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
+from modules.email import send_paw_email
 from volunteers.models import Volunteer
 
 from datetime import date
@@ -78,10 +79,12 @@ class VolunteerActionAcceptRedirect(RedirectView):
         volunteer.state_changed = date.today()
         volunteer.save()
 
+         send_paw_email('email-volunteers-accepted.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
+
         return super().get_redirect_url(*args, **kwargs)
 
 @method_decorator(decorators, name="dispatch")
-class VolunteerActionDeclinetRedirect(RedirectView):
+class VolunteerActionDeclinedRedirect(RedirectView):
     permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
@@ -89,6 +92,8 @@ class VolunteerActionDeclinetRedirect(RedirectView):
         volunteer.volunteer_state = ApplicationState.STATE_DENIED
         volunteer.state_changed = date.today()
         volunteer.save()
+
+         send_paw_email('email-volunteers-denied.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
 
         return reverse('console:volunteers')
     

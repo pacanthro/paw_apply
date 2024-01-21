@@ -33,7 +33,7 @@ urlpatterns = [
     path('volunteers/download_csv', views_new.VolunteerCSVDownloadView.as_view(), name='volunteer-download'),
     path('volunteers/<int:volunteer_id>', views_new.VolunteerDetailsPageView.as_view(), name='volunteer-detail'),
     path('volunteers/<int:volunteer_id>/accept', views_new.VolunteerActionAcceptRedirect.as_view(), name='volunteer-accept'),
-    path('volunteers/<int:volunteer_id>/decline', views_new.VolunteerActionDeclinetRedirect.as_view(), name='volunteer-decline'),
+    path('volunteers/<int:volunteer_id>/decline', views_new.VolunteerActionDeclinedRedirect.as_view(), name='volunteer-decline'),
     path('volunteers/<int:volunteer_id>/delete', views_new.VolunteerActionDeleteRedirect.as_view(), name='volunteer-delete'),
 
     # Performers
