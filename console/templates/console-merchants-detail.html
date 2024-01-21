@@ -63,12 +63,14 @@
 <div>
     <h2>Actions</h2>
     {% if merchant.merchant_state == 'STATE_NEW' or merchant.merchant_state == 'STATE_WAITLISTED' %}
-    <a href="{% url 'console:merchant-payment' merchant.id %}" class="btn btn-primary">Request Payment</a>
-    <a href="{% url 'console:merchant-reg-remind' merchant.id %}" class="btn btn-primary">Remind To Register</a>
-    {% if merchant.merchant_state != 'STATE_WAITLISTED' %}
+    <a href="{% url 'console:merchant-accept' merchant.id %}" class="btn btn-primary">Accept</a>
     <a href="{% url 'console:merchant-waitlist' merchant.id %}" class="btn btn-primary">Waitlist</a>
     {% endif %}
-    {% elif merchant.merchant_state == 'STATE_PAYMENT' %}
+    {% if merchant.merchant_state == 'STATE_ACCEPTED' %}
+    <a href="{% url 'console:merchant-payment' merchant.id %}" class="btn btn-primary">Request Payment</a>
+    <a href="{% url 'console:merchant-reg-remind' merchant.id %}" class="btn btn-primary">Remind To Register</a>
+    {% endif %}
+    {% if merchant.merchant_state == 'STATE_PAYMENT' %}
     <a href="{% url 'console:merchant-confirm' merchant.id %}" class="btn btn-primary">Send Confirmation</a>
     <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
     {% else %}

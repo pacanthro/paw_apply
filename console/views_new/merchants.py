@@ -1,4 +1,5 @@
 import csv
+from typing import Any
 
 from .page_view import PageView
 from console.forms import MerchantAssignTableForm
@@ -70,6 +71,22 @@ class MerchantDetailsPageView(PageView):
         return context
 
 @method_decorator(decorators, name="dispatch")
+class MerchantActionAcceptedRedirect(RedirectView):
+    permanent = False
+    pattern_name = 'console:merchant-detail'
+
+    def get_redirect_url(self, *args, **kwargs):
+        merchant = get_object_or_404(Merchant, pk=kwargs['merchant_id'])
+        merchant.state_changed = date.today()
+
+        if merchant.merchant_state == MerchantState.STATE_NEW:
+            merchant.merchant_state = MerchantState.STATE_ACCEPTED
+            merchant.save()
+            send_paw_email('email-merchant-accepted.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+        
+        return super().get_redirect_url(*args, **kwargs)
+
+@method_decorator(decorators, name="dispatch")
 class MerchantActionRequestPaymentRedirect(RedirectView):
     permanent = False
     pattern_name = 'console:merchant-detail'
@@ -78,7 +95,7 @@ class MerchantActionRequestPaymentRedirect(RedirectView):
         merchant = get_object_or_404(Merchant, pk=kwargs['merchant_id'])
         merchant.state_changed = date.today()
 
-        if merchant.merchant_state == MerchantState.STATE_NEW or merchant.merchant_state == MerchantState.STATE_WAITLISTED:
+        if merchant.merchant_state == MerchantState.STATE_ACCEPTED or merchant.merchant_state == MerchantState.STATE_WAITLISTED:
             merchant.merchant_state = MerchantState.STATE_PAYMENT
             merchant.save()
             send_paw_email('email-merchant-payment.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
