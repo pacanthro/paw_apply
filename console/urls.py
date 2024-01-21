@@ -13,6 +13,7 @@ urlpatterns = [
     path('merchants', views_new.MerchantsListPageView.as_view(), name='merchants'),
     path('merchants/download_csv', views_new.MerchantCSVDownloadView.as_view(), name='merchant-download'),
     path('merchants/<int:merchant_id>', views_new.MerchantDetailsPageView.as_view(), name='merchant-detail'),
+    path('merchants/<int:merchant_id>/accept', views_new.MerchantActionAcceptedRedirect.as_view(), name='merchant-accept'),
     path('merchants/<int:merchant_id>/payment', views_new.MerchantActionRequestPaymentRedirect.as_view(),  name='merchant-payment'),
     path('merchants/<int:merchant_id>/confirm', views_new.MerchantActionPaymentConfirmedRedirect.as_view(), name='merchant-confirm'),
     path('merchants/<int:merchant_id>/register', views_new.MerchantActionRegistrationReminderRedirect.as_view(), name='merchant-reg-remind'),
