@@ -2,6 +2,7 @@ import csv
 
 from .page_view import PageView
 from core.models import get_current_event, ApplicationState
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
