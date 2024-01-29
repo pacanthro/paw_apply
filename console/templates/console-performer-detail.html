@@ -50,10 +50,15 @@
 </table>
 <div>
     <h2>Actions</h2>
+    {% if performer.performer_state == 'STATE_NEW' or performer.performer_state == 'STATE_WAITLISTED' %}
     <a href="{% url 'console:performer-accept' performer.id %}" class="btn btn-primary">Accept</a>
-    <a class="btn btn-primary">Assign</a>
+    {% if performer.performer_state == 'STATE_WAITLISTED' %}
     <a href="{% url 'console:performer-waitlist' performer.id %}" class="btn btn-primary">Waitlist</a>
     <a href="{% url 'console:performer-decline' performer.id %}" class="btn btn-primary">Decline</a>
+    {% endif %}
+    {% elif performer.performer_state == "STATE_ACCEPTED" %}
+    <a class="btn btn-primary">Assign</a>
+    {% endif %}
     <a href="{% url 'console:performer-delete' performer.id %}" class="btn btn-danger">Delete</a>
 </div>
 <div>
