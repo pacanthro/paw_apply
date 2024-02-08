@@ -71,6 +71,5 @@ def confirm(request):
     context =  {
         'is_partyfloor': True,
         'event': event,
-        'form': form
     }
     return render(request, 'partyfloor-confirm.html', context)
