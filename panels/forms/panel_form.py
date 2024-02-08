@@ -35,7 +35,7 @@ class PanelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Fields
-        self.fields['panel_day'].queryset = DaysAvailable.objects.filter(party_only=False).order_by('order')
+        self.fields['panel_day'].queryset = DaysAvailable.objects.filter(party_only=False).filter(available_scheduling=True).order_by('order')
         self.fields['panel_duration'].queryset = PanelDuration.objects.order_by('order')
         self.fields['panel_times'].queryset = PanelSlot.objects.order_by('order')
 

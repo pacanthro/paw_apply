@@ -20,9 +20,11 @@ def index(request):
     return render(request, 'volunteers.html', context)
 
 def apply(request):
+    event = get_current_event()
     form = VolunteerForm()
     context = {
         'is_volunteers': True,
+        'event': event,
         'form': form
     }
     return render(request, 'volunteer-apply.html', context)
@@ -43,10 +45,12 @@ def new(request):
     
     context = {
         'is_volunteers': True,
+        'event': event,
         'form': form
     }
     return render(request, 'volunteer-apply.html', context)
 
 
 def confirm(request):
-    return render(request, 'volunteer-confirm.html', {'is_volunteers': True})
+    event = get_current_event()
+    return render(request, 'volunteer-confirm.html', {'is_volunteers': True, 'event': event})
