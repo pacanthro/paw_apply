@@ -1,10 +1,12 @@
 from .page_view import PageView
 from core.models import get_current_event, ApplicationState
 from django.contrib.auth.decorators import login_required, permission_required
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
+from modules.email import send_paw_email
 from panels.models import Panel
 
 from datetime import date
@@ -54,6 +56,9 @@ class PanelActionAcceptRedirect(RedirectView):
         panel.panel_state = ApplicationState.STATE_ACCEPTED
         panel.state_changed = date.today()
         panel.save()
+
+        send_paw_email('email-panels-accepted.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+
         return super().get_redirect_url(*args, **kwargs)
     
 @method_decorator(decorators, name="dispatch")
@@ -66,6 +71,9 @@ class PanelActionWaitlistRedirect(RedirectView):
         panel.panel_state = ApplicationState.STATE_WAITLIST
         panel.state_changed = date.today()
         panel.save()
+
+        send_paw_email('email-panels-waitlisted.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+
         return super().get_redirect_url(*args, **kwargs)
 
 @method_decorator(decorators, name="dispatch")
@@ -78,6 +86,9 @@ class PanelActionDenyRedirect(RedirectView):
         panel.panel_state = ApplicationState.STATE_DENIED
         panel.state_changed = date.today()
         panel.save()
+
+        send_paw_email('email-panels-declined.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+
         return super().get_redirect_url(*args, **kwargs)
 
 @method_decorator(decorators, name="dispatch")

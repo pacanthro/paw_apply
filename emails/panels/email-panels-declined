@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <b>Greetings {{panelist.fan_name}} ({{panelist.legal_name}}),</b>
+    <p>
+        Thank you for your interest in hosting a panel at PAW. Currently all panel blocks are confirmed. We appreciate your
+        interest and wish you luck next time.
+    </p>
+    <p>Sincerely,</p>
+    <p>PAWCon Programming</p>
+</body>
+
+</html>
