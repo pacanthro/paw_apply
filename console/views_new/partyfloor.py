@@ -4,13 +4,14 @@ from console.forms import HostAssignRoomForm
 from core.models import get_current_event, ApplicationState
 from datetime import date
 from django.contrib.auth.decorators import login_required, permission_required
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
+from modules.email import send_paw_email
 from partyfloor.models import PartyHost
-
 
 decorators = [login_required, permission_required('host.view_host')]
 
@@ -27,7 +28,6 @@ class PartyHostListPageViewView(PageView):
         assigned_hosts = PartyHost.objects.filter(event=event).filter(host_state=ApplicationState.STATE_ASSIGNED)
         declined_hosts = PartyHost.objects.filter(event=event).filter(host_state=ApplicationState.STATE_DENIED)
 
-        
         context['new_hosts'] = new_hosts
         context['accepted_hosts'] = accepted_hosts
         context['waitlisted_hosts'] = waitlisted_hosts
@@ -59,6 +59,8 @@ class PartyHostActionDeclineRedirect(RedirectView):
         host.state_changed = date.today()
         host.save()
 
+        send_paw_email('email-party-declined.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+
         return reverse('console:hosts')
     
 @method_decorator(decorators, name="dispatch")
@@ -72,6 +74,8 @@ class PartyHostActionAcceptRedirect(RedirectView):
         host.state_changed = date.today()
         host.save()
 
+        send_paw_email('email-party-accepted.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+
         return super().get_redirect_url(*args, **kwargs)
     
 @method_decorator(decorators, name="dispatch")
@@ -84,6 +88,8 @@ class PartyHostActionWaitlistRedirect(RedirectView):
         host.host_state = ApplicationState.STATE_WAITLIST
         host.state_changed = date.today()
         host.save()
+
+        send_paw_email('email-party-waitlist.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -125,6 +131,8 @@ class PartyHostActionAssignPageView(PageView):
             host.host_state = ApplicationState.STATE_ASSIGNED
             host.state_changed = date.today()
             host.save()
+
+            send_paw_email('email-party-assigned.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
             return HttpResponseRedirect(reverse('console:host-detail', args=[kwargs['host_id']]))
         

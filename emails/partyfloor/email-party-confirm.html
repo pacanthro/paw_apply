@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <b>Greetings {{host.fan_name}} ({{host.legal_name}}),</b>
+    <p>
+        Thank you for submitting your application of interest to host a room on the party floor. Your application is in
+        line, and will be processed on a first come, first confirmed date and time receipt basis.
+    </p>
+    <p>Here’s what to know about the process:</p>
+    <ul>
+        <li>
+            Applications will be processed, at which point another email will be sent out confirming you hold a room on the party
+            floor.
+        </li>
+        <li>If all spots have already been confirmed, you will receive a waitlist confirmation instead.</li>
+        <li>
+            All applications are processed as quickly as reasonably possible to allow the greatest amount of time for planning and
+            preparation.
+        </li>
+    </ul>
+    <p>
+        If the hotel informs us that your reservation has been canceled, your application will be denied. Please inform us of
+        any changes to your reservation, or if you need to be removed from the party floor.
+    </p>
+    <b>Information you submitted:</b>
+    <p>Email: {{host.email}}</p>
+    <p>Phone Number: {{host.phone_number}}</p>
+    <p>Twitter: {{host.twitter_handle}}</p>
+    <p>Telegram: {{host.telegram_handle}}</p>
+    <p>Hotel Primary: {{host.hotel_primary}}</p>
+    <p>Hotel Reservation Number: {{host.hotel_ack_num}}</p>
+    <p>Party Days:</p>
+    <ul>
+        {% for time in host.party_days.all %}
+        <li>{{time.name}}</li>
+        {% endfor %}
+    </ul>
+    <p>If you have any questions, please don't hesitate to reach out at any time
+        to hotel@pacanthro.org</p>
+    <p>Sincerely,</p>
+    <p>PAWCon Partyfloor</p>
+</body>
+
+</html>
