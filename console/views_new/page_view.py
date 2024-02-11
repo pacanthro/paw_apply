@@ -17,7 +17,7 @@ class PageView(TemplateView):
             context['has_panels_permission'] = user.has_perm('panels.view_panel')
             context['has_volunteers_permission'] = user.has_perm('volunteers.view_volunteer')
             context['has_performer_permission'] = user.has_perm('performers.view_performer')
-            context['has_host_permission'] = user.has_perm('partyhost.view_partyhost')
+            context['has_partyhost_permission'] = user.has_perm('partyfloor.view_partyhost')
             context['has_competitor_permission'] = user.has_perm('competitor.view_competitor')
 
         return context
