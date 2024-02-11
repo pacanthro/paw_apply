@@ -2,11 +2,13 @@ from .page_view import PageView
 from console.forms import LoginForm
 from core.models import get_current_event, ApplicationState
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
@@ -43,6 +45,24 @@ class ConsoleLoginPageView(PageView):
             return HttpResponseRedirect(request.GET.get('next', '/console'))
 
         return self.render_to_response(context)     
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'console-password-reset.html'
+    email_template_name = 'console-email-reset-password.html'
+    subject_template_name = 'console-email-reset-password.txt'
+    success_message = "We've emailed you instructions for setting your password, " \
+                      "if an account exists with the email you entered. You should receive them shortly." \
+                      " If you don't receive an email, " \
+                      "please make sure you've entered the address you registered with, and check your spam folder."
+    success_url = reverse_lazy('console:index')
+
+class ResetPasswordConfirmView(PasswordResetConfirmView):
+    template_name = 'console-password-reset-confirm.html'
+    success_url = reverse_lazy('console:forgot-password-complete')
+    
+
+class ResetPasswordCompelteView(PasswordResetCompleteView):
+    template_name = 'console-password-reset-complete.html'
 
 class ConsoleLogoutRedirect(View):
     def get(self, request, *args, **kwargs):
