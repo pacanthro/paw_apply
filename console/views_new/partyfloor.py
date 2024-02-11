@@ -13,7 +13,7 @@ from django.views.generic.base import RedirectView
 from modules.email import send_paw_email
 from partyfloor.models import PartyHost
 
-decorators = [login_required, permission_required('host.view_host')]
+decorators = [login_required, permission_required('partyfloor.view_partyhost')]
 
 @method_decorator(decorators, name="dispatch")
 class PartyHostListPageViewView(PageView):
