@@ -32,6 +32,19 @@
       <td>{{merchant.fan_name}}</td>
     </tr>
     {% endfor %}
+    <tr class="table-info">
+        <td scope="row" colspan="4">Accepted ({{accepted|length}})</td>
+    </tr>
+    {% for merchant in accepted %}
+    <tr>
+        <td>
+            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+        </td>
+        <td>{{merchant.email}}</td>
+        <td>{{merchant.legal_name}}</td>
+        <td>{{merchant.fan_name}}</td>
+    </tr>
+    {% endfor %}
     <tr>
         <td colspan="4" class="table-info">Waitlisted ({{waitlisted|length}})</td>
     </tr>
@@ -85,7 +98,7 @@
     </tr>
     {% endfor %}
     <tr>
-        <td colspan="4" class="table-info">Denied ({{confirmed|length}})</td>
+        <td colspan="4" class="table-info">Denied ({{denied|length}})</td>
     </tr>
     {% for merchant in denied %}
     <tr>

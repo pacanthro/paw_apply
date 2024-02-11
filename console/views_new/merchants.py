@@ -28,6 +28,7 @@ class MerchantsListPageView(PageView):
         context = super().get_context_data(**kwargs)
         event = get_current_event()
         merchants = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_NEW)
+        accepted = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_ACCEPTED)
         waitlisted = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_WAITLISTED)
         processed = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_PAYMENT)
         confirmed = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_CONFIRMED)
@@ -35,6 +36,7 @@ class MerchantsListPageView(PageView):
         denied = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_DENIED)
         
         context['merchants'] = merchants
+        context['accepted'] = accepted
         context['waitlisted'] = waitlisted
         context['processed'] = processed
         context['confirmed'] = confirmed
