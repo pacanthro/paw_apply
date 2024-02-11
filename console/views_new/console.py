@@ -40,7 +40,7 @@ class ConsoleLoginPageView(PageView):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
-            return HttpResponseRedirect(request.GET['next'])
+            return HttpResponseRedirect(request.GET.get('next', '/console'))
 
         return self.render_to_response(context)     
 
