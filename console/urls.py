@@ -11,7 +11,7 @@ urlpatterns = [
     path('logout', views_new.ConsoleLogoutRedirect.as_view(), name='logout'),
     path('forgot-password', views_new.ResetPasswordView.as_view(), name='forgot-password'),
     path('forgot-password-confirm/<uidb64>/<token>', views_new.ResetPasswordConfirmView.as_view(), name='forgot-password-confirm'),
-    path('forgcot-password-complete', views_new.ResetPasswordCompelteView.as_view(), name='forgot-password-complete'),
+    path('forgcot-password-complete', views_new.ResetPasswordCompleteView.as_view(), name='forgot-password-complete'),
 
 
     # Merchants

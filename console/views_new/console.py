@@ -68,7 +68,7 @@ class ResetPasswordConfirmView(PasswordResetConfirmView):
     }
     
 
-class ResetPasswordCompelteView(PasswordResetCompleteView):
+class ResetPasswordCompleteView(PasswordResetCompleteView):
     template_name = 'console-password-reset-complete.html'
     extra_context = {
         'event': get_current_event()
