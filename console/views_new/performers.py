@@ -211,3 +211,15 @@ class PerformerActionAssignPageView(PageView):
         
         return days
 
+class PerformerActionUnscheduleRedirect(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        performer = get_object_or_404(Performer, pk=kwargs['performer_id'])
+        performer.scheduled_day = None
+        performer.scheduled_time = None
+        performer.performer_state = ApplicationState.STATE_ACCEPTED
+        performer.state_changed = date.today()
+        performer.save()
+
+        return reverse('console:performer-schedule')
