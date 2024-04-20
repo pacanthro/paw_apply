@@ -1,4 +1,4 @@
-from core.models import ApplicationState, Event
+from core.models import ApplicationState, DaysAvailable, Event
 from django.db import models
 
 # Create your models here.
@@ -15,3 +15,5 @@ class Performer(models.Model):
     set_link = models.URLField(help_text="Please provide a link to a set of music from your SoundCloud or other similar service (DropBox, Box, YouTube, etc). It should be at least 30 mins in length and showcase your unique style.")
     performer_state = models.CharField(max_length=20, choices=ApplicationState, default=ApplicationState.STATE_NEW)
     state_changed = models.DateField(auto_now_add=True)
+    scheduled_day = models.ForeignKey(DaysAvailable, on_delete=models.CASCADE, blank=True, null=True)
+    scheduled_time = models.DateTimeField(blank=True, null=True)

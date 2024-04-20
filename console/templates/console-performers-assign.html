@@ -1,0 +1,14 @@
+{% extends 'console.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}PAWConsole - Performers{% endblock %}
+
+{% block tool %}
+<h1>Performer Schedule</h1>
+<div class="col-md-6">
+    <form action="{% url 'console:performer-assign' performer.id %}" method="post" class="form">
+        {% crispy form %}
+        <input type="submit" value="Save" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}

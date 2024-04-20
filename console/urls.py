@@ -49,6 +49,8 @@ urlpatterns = [
     path('performers/<int:performer_id>/waitlist', views_new.PerformerActionWaitlistRedirect.as_view(), name='performer-waitlist'),
     path('performers/<int:performer_id>/decline', views_new.PerformerActionDeclineRedirect.as_view(), name='performer-decline'),
     path('performers/<int:performer_id>/delete', views_new.PerformerActionDeleteRedirect.as_view(), name='performer-delete'),
+    path('performers/schedule', views_new.PerformersSchedulePageView.as_view(), name='performer-schedule'),
+    path('performers/schedule/<int:performer_id>/assign', views_new.PerformerActionAssignPageView.as_view(), name='performer-assign'),
 
     # Party Hosts
     path('hosts', views_new.PartyHostListPageViewView.as_view(), name='hosts'),
