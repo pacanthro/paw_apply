@@ -43,21 +43,21 @@
 <div class="row">
     <h2>Unscheduled Performers</h2>
     {% for performer in performers %}
-    <form action="{% url 'console:performer-assign' performer.instance.id %}" method="post" class="form">
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h4 class="card-title">{{performer.instance.fan_name}}</h4>
-                </div>
-                <div class="card-body">
-                    {% crispy performer %}
-                </div>
-                <div class="card-footer">
-                    <input type="submit" value="Save" class="btn btn-primary">
-                </div>
+    <div class="col-md-2">
+        <form action="{% url 'console:performer-assign' performer.instance.id %}" method="post" class="form"></form>
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="card-title">{{performer.instance.fan_name}}</h4>
+            </div>
+            <div class="card-body">
+                {% crispy performer %}
+            </div>
+            <div class="card-footer">
+                <input type="submit" value="Save" class="btn btn-primary">
             </div>
         </div>
-    </form>
+        </form>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
