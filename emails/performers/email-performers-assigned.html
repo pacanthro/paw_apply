@@ -4,7 +4,7 @@
 <body>
     <h1>Scheduled</h1>
     <b>Hello {{performer.fan_name}} ({{performer.legal_name}}),</b>
-    <p>You have been scheduled to perform at: {{scheduled_time}}</p>
+    <p>You have been scheduled to perform at: {{performer.scheduled_day.name}}@{{performer.scheduled_time|time:'h:i A'}}</p>
     <p>We can't wait to have you on stage.</p>
     <p>PAWCon Programming</p>
 </body>

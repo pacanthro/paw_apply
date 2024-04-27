@@ -4,6 +4,11 @@
 
 {% block tool %}
 <h1>Performers</h1>
+<div class="row pb-1">
+    <div class="col">
+        <a href="{% url 'console:performer-schedule' %}" class="btn btn-primary">Schedule</a>
+    </div>
+</div>
 <table class="table">
   <thead class="table-dark text-left">
     <tr>
