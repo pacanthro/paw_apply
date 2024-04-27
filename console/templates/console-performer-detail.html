@@ -47,6 +47,14 @@
         <td>State:</td>
         <td>{{performer.get_performer_state_display}} ({{performer.state_changed}})</td>
     </tr>
+    {% if performer.performer_state == 'STATE_ASSIGNED' %}
+    <tr>
+        <td>Performance Schedule:</td>
+        <td>
+            {{performer.scheduled_day}}@{{performer.scheduled_time|time:'h:i A'}}
+        </td>
+    </tr>
+    {% endif %}
 </table>
 <div>
     <h2>Actions</h2>
@@ -57,7 +65,9 @@
     <a href="{% url 'console:performer-decline' performer.id %}" class="btn btn-primary">Decline</a>
     {% endif %}
     {% elif performer.performer_state == "STATE_ACCEPTED" %}
-    <a class="btn btn-primary">Assign</a>
+    <a href="{% url 'console:performer-assign' performer.id %}" class="btn btn-primary">Assign</a>
+    {% elif performer.performer_state == "STATE_ASSIGNED" %}
+    <a href="{% url 'console:performer-unassign' performer.id %}" class="btn btn-primary">Un-Assign</a>
     {% endif %}
     <a href="{% url 'console:performer-delete' performer.id %}" class="btn btn-danger">Delete</a>
 </div>

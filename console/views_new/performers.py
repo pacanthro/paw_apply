@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
@@ -15,6 +15,7 @@ from performers.models import Performer
 from django.conf import settings
 import django.utils.timezone
 
+from urllib.parse import urlparse
 from datetime import date, timedelta
 from datetimerange import DateTimeRange
 import logging
@@ -221,5 +222,10 @@ class PerformerActionUnscheduleRedirect(RedirectView):
         performer.performer_state = ApplicationState.STATE_ACCEPTED
         performer.state_changed = date.today()
         performer.save()
+
+        view_name = resolve(urlparse(self.request.META.get('HTTP_REFERER')).path).view_name
+        print(view_name)
+        if view_name == "console:performer-detail":
+            return reverse('console:performer-detail', args=[performer.id])
 
         return reverse('console:performer-schedule')

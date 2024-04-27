@@ -27,7 +27,7 @@
                             <td>
                                 {% for performer in item.filledSlots %}
                                 {% if slot == performer.scheduled_time %}
-                                {{performer.fan_name}} <a href="{% url 'console:performer-unassign' performer.id %}" class="text-right"><i class="bi bi-x-square-fill"></i></a>
+                                <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a> <a href="{% url 'console:performer-unassign' performer.id %}" class="text-right"><i class="bi bi-x-square-fill"></i></a>
                                 {% endif %}
                                 {% endfor %}
                             </td>
