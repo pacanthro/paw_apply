@@ -1,6 +1,7 @@
 asgiref==3.7.2
 Click==7.0
 crispy-bootstrap5==2023.10
+DateTimeRange==2.2.0
 Django==5.0.3
 django-crispy-forms==2.1
 mysqlclient==1.4.6
@@ -9,5 +10,5 @@ python-http-client==3.2.4
 pytz==2020.1
 sendgrid==3.6.5
 sendgrid-django==4.2.0
-sqlparse==0.4.4
+sqlparse==0.5.0
 typing_extensions==4.9.0

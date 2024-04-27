@@ -135,7 +135,7 @@ class MerchantActionRegistrationReminderRedirect(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         merchant = get_object_or_404(Merchant, pk=kwargs['merchant_id'])
-        send_paw_email('email-merchant-confirm.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+        send_paw_email('email-merchant-accepted.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 

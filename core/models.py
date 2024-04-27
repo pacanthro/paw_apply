@@ -51,3 +51,12 @@ class Event(models.Model):
 
     def __str__(self):
         return self.event_name
+
+class SchedulingConfig(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    day_available = models.ForeignKey(DaysAvailable, on_delete=models.CASCADE)
+    panels_start = models.DateTimeField()
+    panels_end = models.DateTimeField()
+    performers_start = models.DateTimeField()
+    performers_end = models.DateTimeField()
+    
