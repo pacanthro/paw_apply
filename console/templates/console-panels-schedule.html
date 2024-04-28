@@ -1,0 +1,75 @@
+{% extends 'console.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}PAWConsole - Panels{% endblock %}
+
+{% block tool %}
+<div class="row">
+    <h2>Panel Schedule</h2>
+    {% for event_room in event_rooms %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <div class="card-title">
+                    <h3>{{event_room.room_name}}</h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for day in days %}
+                    <div class="col">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td colspan="2"><h4>{{day.day.name}}</h4></td>
+                                </tr>
+                                <tr>
+                                    <td scope="col">Time</td>
+                                    <td scope="col">Panel</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for slot in day.slots %}
+                                <tr>
+                                    <td>{{slot|time:'h:i A'}}</td>
+                                    <td>
+                                        {% for panel in filled_slots %}
+                                        {% if event_room == panel.scheduled_room and slot == panel.scheduled_time %}
+                                        <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a> <a href="{% url 'console:panel-unassign' panel.id %}" class="text-right"><i
+                                                class="bi bi-x-square-fill"></i></a>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="row pb-2">
+    <h2>Unscheduled Panels</h2>
+    {% for panel in panels_unsched %}
+    <div class="col-md-2">
+        <form action="{% url 'console:panel-assign' panel.instance.id %}" method="post" class="form">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="card-title">{{panel.instance.panel_name}}</h4>
+            </div>
+            <div class="card-body">
+                {% crispy panel %}
+            </div>
+            <div class="card-footer">
+                <input type="submit" value="Save" class="btn btn-primary">
+            </div>
+        </div>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

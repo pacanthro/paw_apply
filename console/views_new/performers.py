@@ -150,7 +150,6 @@ class PerformerActionAssignPageView(PageView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        currentEvent = get_current_event()
         performer = get_object_or_404(Performer, pk=kwargs['performer_id'])
         form = PerformerScheduleDayForm(instance=performer)
 

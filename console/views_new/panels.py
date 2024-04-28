@@ -1,15 +1,19 @@
 from .page_view import PageView
-from core.models import get_current_event, ApplicationState
+from console.forms import PanelScheduleRoomDayForm, PanelScheduleSlotForm
+from core.models import get_current_event, ApplicationState, EventRoom, RoomType, SchedulingConfig
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
 from modules.email import send_paw_email
 from panels.models import Panel
 
-from datetime import date
+from urllib.parse import urlparse
+from datetime import date, timedelta
+from datetimerange import DateTimeRange
 
 decorators = [login_required, permission_required('panels.view_panel')]
 
@@ -102,3 +106,126 @@ class PanelActionDeleteRedirect(RedirectView):
         panel.state_changed = date.today()
         panel.save()
         return reverse('console:panels')
+
+@method_decorator(decorators, name="dispatch")
+class PanelSchedulePageView(PageView):
+    template_name="console-panels-schedule.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        event = get_current_event()
+        event_rooms = EventRoom.objects.filter(event=event).filter(room_type=RoomType.ROOM_PANELS)
+
+        panels_unsched = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ACCEPTED)
+
+        forms = []
+        for panel in panels_unsched:
+            form = PanelScheduleRoomDayForm(instance=panel)
+
+            forms.append(form)
+
+        schedulingConfigs = SchedulingConfig.objects.filter(event=event).order_by('day_available__order')
+
+        days = []
+        for config in schedulingConfigs:
+            slots = [] 
+            timeRange = DateTimeRange(config.panels_start, config.panels_end)
+            for value in timeRange.range(timedelta(minutes=30)):
+                slots.append(value)
+            
+            days.append({'day': config.day_available, 'slots': slots})
+
+
+        filledSlots = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ASSIGNED)
+
+        context['event_rooms'] = event_rooms
+        context['panels_unsched'] = forms
+        context['days'] = days
+        context['filled_slots'] = filledSlots
+
+        return context
+
+@method_decorator(decorators, name="dispatch")
+class PanelActionAssignPageView(PageView):
+    template_name="console-panels-assign.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
+        form = PanelScheduleRoomDayForm(instance=panel)
+
+        context['panel'] = panel
+        context['form'] = form
+
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        currentEvent = get_current_event()
+
+        if context['panel'].scheduled_day is None:
+            form = PanelScheduleRoomDayForm(request.POST, instance=context['panel'])
+
+            context['form'] = form
+
+            if form.is_valid():
+                panel = form.save()
+                context['panel'] = panel
+
+                days = self._get_slots(currentEvent, panel.scheduled_day)
+                form = PanelScheduleSlotForm(instance=context['panel'], options=days[0]['slots'])
+            
+                context['form'] = form
+                return self.render_to_response(context)
+
+            return self.render_to_response(context)
+        else:
+            days = self._get_slots(currentEvent, context['panel'].scheduled_day)
+            form = PanelScheduleSlotForm(request.POST, instance=context['panel'], options=days[0]['slots'])
+            
+            context['form'] = form
+
+            if form.is_valid():
+                panel = form.save(commit=False)
+                panel.panel_state = ApplicationState.STATE_ASSIGNED
+                panel.state_changed = date.today()
+                panel.save()
+
+                send_paw_email('email-panel-assigned.html', {'panel': panel}, subject='PAWCon Panel Application', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+
+                return HttpResponseRedirect(reverse('console:panels-schedule'))
+        
+            return self.render_to_response(context)
+        
+    def _get_slots(self, currentEvent, day):
+        schedulingConfigs = SchedulingConfig.objects.filter(event=currentEvent).filter(day_available=day).order_by('day_available__order')
+
+        days = []
+        for config in schedulingConfigs:
+            slots = [] 
+            timeRange = DateTimeRange(config.panels_start, config.panels_end)
+            for value in timeRange.range(timedelta(minutes=30)):
+                slots.append(value)
+            
+            days.append({'day': config.day_available, 'slots': slots})
+        
+        return days
+    
+class PanelActionUnscheduleRedirect(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
+        panel.scheduled_room = None
+        panel.scheduled_day = None
+        panel.scheduled_time = None
+        panel.panel_state = ApplicationState.STATE_ACCEPTED
+        panel.state_changed = date.today()
+        panel.save()
+
+        view_name = resolve(urlparse(self.request.META.get('HTTP_REFERER')).path).view_name
+        print(view_name)
+        if view_name == "console:panel-detail":
+            return reverse('console:panel-detail', args=[panel.id])
+
+        return reverse('console:panels-schedule')

@@ -85,17 +85,30 @@
             <td>State:</td>
             <td>{{panel.get_panel_state_display}} ({{panel.state_changed}})</td>
         </tr>
+        {% if panel.panel_state == "STATE_ASSIGNED" %}
+        <tr>
+            <td>Panel Schedule:</td>
+            <td>
+                {{panel.scheduled_room}} - {{panel.scheduled_day}}@{{panel.scheduled_time|time:'h:i A'}}
+            </td>
+        </tr>
+        {% endif %}
     </table>
 </div>
 <div>
     <h2>Actions</h2>
-    {% if panel.panel_state == "STATE_ACCEPTED" %}
-        <a href="" class="btn btn-primary">Schedule</a>
-    {% else %}
-        <a href="{% url 'console:panel-accept' panel.id %}" class="btn btn-primary">Accept</a>
-    {% endif %}
+    {% if panel.panel_state == "STATE_NEW" %}
+    <a href="{% url 'console:panel-accept' panel.id %}" class="btn btn-primary">Accept</a>
     <a href="{% url 'console:panel-waitlist' panel.id %}" class="btn btn-primary">Waitlist</a>
     <a href="{% url 'console:panel-deny' panel.id %}" class="btn btn-primary">Deny</a>
+    {% elif panel.panel_state == "STATE_WAITLISTED" %}
+    <a href="{% url 'console:panel-accept' panel.id %}" class="btn btn-primary">Accept</a>
+    <a href="{% url 'console:panel-deny' panel.id %}" class="btn btn-primary">Deny</a>
+    {% elif panel.panel_state == "STATE_ACCEPTED" %}
+    <a href="{% url 'console:panel-assign' panel.id %}" class="btn btn-primary">Schedule</a>
+    {% elif panel.panel_state == "STATE_ASSIGNED" %}
+    <a href="{% url 'console:panel-unassign' panel.id %}" class="btn btn-primary">Unschedule</a>
+    {% endif %}
     <a href="{% url 'console:panel-delete' panel.id %}" class="btn btn-danger">Delete</a>
 </div>
 <div>
