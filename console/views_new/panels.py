@@ -17,6 +17,9 @@ from datetimerange import DateTimeRange
 
 decorators = [login_required, permission_required('panels.view_panel')]
 
+def _toTimeDelta(duration):
+        if duration == 
+
 @method_decorator(decorators, name="dispatch")
 class PanelsListPageView(PageView):
     template_name="console-panels-list.html"
@@ -126,21 +129,29 @@ class PanelSchedulePageView(PageView):
 
         schedulingConfigs = SchedulingConfig.objects.filter(event=event).order_by('day_available__order')
 
-        days = []
+        items = []
         for config in schedulingConfigs:
             slots = [] 
             timeRange = DateTimeRange(config.panels_start, config.panels_end)
             for value in timeRange.range(timedelta(minutes=30)):
                 slots.append(value)
             
-            days.append({'day': config.day_available, 'slots': slots})
+            items.append({'day': config.day_available, 'slots': slots})
 
 
-        filledSlots = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ASSIGNED)
+        assignedPanels = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ASSIGNED)
+
+        filledSlots = []
+        for assignedPanel in assignedPanels:
+            timeDelta = 
+            filledSlots = {
+                'panel': assignedPanel,
+                'end_time'
+            }
 
         context['event_rooms'] = event_rooms
         context['panels_unsched'] = forms
-        context['days'] = days
+        context['items'] = items
         context['filled_slots'] = filledSlots
 
         return context

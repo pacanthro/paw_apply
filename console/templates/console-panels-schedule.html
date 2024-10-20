@@ -16,12 +16,12 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    {% for day in days %}
+                    {% for item in items %}
                     <div class="col">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <td colspan="2"><h4>{{day.day.name}}</h4></td>
+                                    <td colspan="2"><h4>{{item.day.name}}</h4></td>
                                 </tr>
                                 <tr>
                                     <td scope="col">Time</td>
