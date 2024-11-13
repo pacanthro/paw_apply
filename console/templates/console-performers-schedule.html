@@ -5,7 +5,7 @@
 
 {% block tool %}
 <div class="row">
-    <h2>Performance Schedule</h3>
+    <h2>Performance Schedule</h2>
     {% for item in items %}
     <div class="col-md-4">
         <div class="card">
@@ -26,7 +26,7 @@
                             <td>{{slot|time:'h:i A'}}</td>
                             <td>
                                 {% for performer in item.filledSlots %}
-                                {% if slot == performer.scheduled_time %}
+                                {% if slot == performer.scheduled_time%}
                                 <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a> <a href="{% url 'console:performer-unassign' performer.id %}" class="text-right"><i class="bi bi-x-square-fill"></i></a>
                                 {% endif %}
                                 {% endfor %}

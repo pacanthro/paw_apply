@@ -33,6 +33,9 @@ urlpatterns = [
     path('panels/<int:panel_id>/waitlist', views_new.PanelActionWaitlistRedirect.as_view(), name='panel-waitlist'),
     path('panels/<int:panel_id>/deny', views_new.PanelActionDenyRedirect.as_view(), name='panel-deny'),
     path('panels/<int:panel_id>/delete', views_new.PanelActionDeleteRedirect.as_view(), name='panel-delete'),
+    path('panels/schedule', views_new.PanelSchedulePageView.as_view(), name='panels-schedule'),
+    path('panels/schedule/<int:panel_id>/assign', views_new.PanelActionAssignPageView.as_view(), name='panel-assign'),
+    path('panels/schedule/<int:panel_id>/unassign', views_new.PanelActionUnscheduleRedirect.as_view(), name='panel-unassign'),
 
     # Volunteers
     path('volunteers', views_new.VolunteerListPageView.as_view(), name='volunteers'),

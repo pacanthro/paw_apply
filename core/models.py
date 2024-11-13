@@ -14,6 +14,9 @@ class ApplicationState(models.TextChoices):
     STATE_DELETED = "STATE_DELETED", "Deleted"
     STATE_OLD = "STATE_OLD", "Migrated Data"
 
+class RoomType(models.TextChoices):
+    ROOM_PANELS = "ROOM_PANELS", "Panel Space"
+
 class DaysAvailable(models.Model):
     key = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=50)
@@ -59,4 +62,13 @@ class SchedulingConfig(models.Model):
     panels_end = models.DateTimeField()
     performers_start = models.DateTimeField()
     performers_end = models.DateTimeField()
+
+class EventRoom(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    room_name = models.CharField(max_length=100)
+    room_type = models.CharField(max_length=20, choices=RoomType, default=RoomType.ROOM_PANELS)
+
+
+    def __str__(self):
+        return self.room_name
     

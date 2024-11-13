@@ -1,4 +1,4 @@
-from core.models import ApplicationState, Event, DaysAvailable
+from core.models import ApplicationState, Event, DaysAvailable, EventRoom
 from django.db import models
 
 # Create your models here.
@@ -37,6 +37,9 @@ class Panel(models.Model):
     check_ids = models.BooleanField("I Agree to check ID's")
     panel_state = models.CharField(max_length=20, null=False, choices=ApplicationState, default=ApplicationState.STATE_NEW)
     state_changed = models.DateField(auto_now_add=True)
+    scheduled_room = models.ForeignKey(EventRoom, on_delete=models.CASCADE, blank=True, null=True)
+    scheduled_day = models.ForeignKey(DaysAvailable, on_delete=models.CASCADE, blank=True, null=True, related_name="scheduled_day")
+    scheduled_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return "{} ({})".format(self.panel_name, self.legal_name)
