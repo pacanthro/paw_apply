@@ -18,7 +18,14 @@ from datetimerange import DateTimeRange
 decorators = [login_required, permission_required('panels.view_panel')]
 
 def _toTimeDelta(duration):
-        if duration == 
+    match duration.key:
+        case "60MN":
+            return timedelta(minutes=60)
+        case "90MN":
+            return timedelta(minutes=90)
+        case "120M":
+            return timedelta(minutes=120)
+
 
 @method_decorator(decorators, name="dispatch")
 class PanelsListPageView(PageView):
@@ -143,11 +150,11 @@ class PanelSchedulePageView(PageView):
 
         filledSlots = []
         for assignedPanel in assignedPanels:
-            timeDelta = 
-            filledSlots = {
+            timeDelta = _toTimeDelta(assignedPanel.panel_duration)
+            filledSlots.append({
                 'panel': assignedPanel,
-                'end_time'
-            }
+                'end_time': assignedPanel.scheduled_time + timeDelta
+            })
 
         context['event_rooms'] = event_rooms
         context['panels_unsched'] = forms
