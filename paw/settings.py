@@ -95,7 +95,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 CRISPY_FAIL_SILENTLY = not DEBUG
 
 # Email Config
-EMAIL_BACKEND = 'sgbackend.SendGridBackend'
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_FILE_PATH = "app-messages"
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 EMAIL_DOMAIN = os.getenv('EMAIL_DOMAIN') or 'pacanthro.org'
 DEFAULT_FROM_EMAIL = 'noreply@'+EMAIL_DOMAIN
@@ -115,8 +116,8 @@ DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE'),
         'NAME': 'paw_apply',
-        'USER': os.getenv('PG_USER'),
-        'PASSWORD': os.getenv('PG_PASSWORD'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '',
     }
