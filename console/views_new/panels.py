@@ -1,9 +1,11 @@
+from typing import Any
 from .page_view import PageView
 from console.forms import PanelScheduleRoomDayForm, PanelScheduleSlotForm
 from core.models import get_current_event, ApplicationState, EventRoom, RoomType, SchedulingConfig
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, resolve
 from django.utils.decorators import method_decorator
@@ -37,12 +39,14 @@ class PanelsListPageView(PageView):
         panels = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_NEW)
         panels_accepted = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ACCEPTED)
         panels_scheduled = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ASSIGNED)
+        panels_canceled = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_CANCELED)
         panels_waitlisted = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_WAITLIST)
         panels_denied = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_DENIED)
 
         context['panels'] = panels
         context['panels_accepted'] = panels_accepted
         context['panels_scheduled'] = panels_scheduled
+        context['panels_canceled'] = panels_canceled
         context['panels_waitlisted'] = panels_waitlisted
         context['panels_denied'] = panels_denied
 
@@ -71,7 +75,7 @@ class PanelActionAcceptRedirect(RedirectView):
         panel.state_changed = date.today()
         panel.save()
 
-        send_paw_email('email-panels-accepted.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+        send_paw_email('email-panels-accepted.html', {'panelist':panel}, subject='PAWCon Panel Accepted', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
     
@@ -86,7 +90,7 @@ class PanelActionWaitlistRedirect(RedirectView):
         panel.state_changed = date.today()
         panel.save()
 
-        send_paw_email('email-panels-waitlisted.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+        send_paw_email('email-panels-waitlisted.html', {'panelist':panel}, subject='PAWCon Panel Waitlisted', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -101,7 +105,7 @@ class PanelActionDenyRedirect(RedirectView):
         panel.state_changed = date.today()
         panel.save()
 
-        send_paw_email('email-panels-declined.html', {'panelist':panel}, subject='PAWCon Panel Submission', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+        send_paw_email('email-panels-declined.html', {'panelist':panel}, subject='PAWCon Panel Denied', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -146,7 +150,7 @@ class PanelSchedulePageView(PageView):
             schedules.append({'day': config.day_available, 'slots': slots})
 
 
-        assignedPanels = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ASSIGNED)
+        assignedPanels = Panel.objects.filter(event=event).filter(Q(panel_state=ApplicationState.STATE_ASSIGNED) | Q(panel_state=ApplicationState.STATE_CANCELED))
 
         filledSlots = []
         for assignedPanel in assignedPanels:
@@ -242,7 +246,21 @@ class PanelActionUnscheduleRedirect(RedirectView):
         panel.save()
 
         view_name = resolve(urlparse(self.request.META.get('HTTP_REFERER')).path).view_name
-        print(view_name)
+        if view_name == "console:panel-detail":
+            return reverse('console:panel-detail', args=[panel.id])
+
+        return reverse('console:panels-schedule')
+
+class PanelActionCancelRedirect(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
+        panel.panel_state = ApplicationState.STATE_CANCELED
+        panel.state_changed = date.today()
+        panel.save()
+
+        view_name = resolve(urlparse(self.request.META.get('HTTP_REFERER')).path).view_name
         if view_name == "console:panel-detail":
             return reverse('console:panel-detail', args=[panel.id])
 
