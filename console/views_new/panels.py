@@ -136,14 +136,14 @@ class PanelSchedulePageView(PageView):
 
         schedulingConfigs = SchedulingConfig.objects.filter(event=event).order_by('day_available__order')
 
-        items = []
+        schedules = []
         for config in schedulingConfigs:
             slots = [] 
             timeRange = DateTimeRange(config.panels_start, config.panels_end)
             for value in timeRange.range(timedelta(minutes=30)):
                 slots.append(value)
             
-            items.append({'day': config.day_available, 'slots': slots})
+            schedules.append({'day': config.day_available, 'slots': slots})
 
 
         assignedPanels = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ASSIGNED)
@@ -158,7 +158,7 @@ class PanelSchedulePageView(PageView):
 
         context['event_rooms'] = event_rooms
         context['panels_unsched'] = forms
-        context['items'] = items
+        context['schedules'] = schedules
         context['filled_slots'] = filledSlots
 
         return context
