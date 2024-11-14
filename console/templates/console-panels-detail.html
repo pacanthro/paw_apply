@@ -107,6 +107,7 @@
     {% elif panel.panel_state == "STATE_ACCEPTED" %}
     <a href="{% url 'console:panel-assign' panel.id %}" class="btn btn-primary">Schedule</a>
     {% elif panel.panel_state == "STATE_ASSIGNED" %}
+    <a href="{% url 'console:panel-assign' panel.id %}" class="btn btn-primary">Re-Scehdule</a>
     <a href="{% url 'console:panel-unassign' panel.id %}" class="btn btn-secondary">Unschedule</a>
     <a href="{% url 'console:panel-cancel' panel.id %}" class="btn btn-warning">Cancel</a>
     {% endif %}
