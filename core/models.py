@@ -9,6 +9,7 @@ class ApplicationState(models.TextChoices):
     STATE_NEW = "STATE_NEW", "New"
     STATE_ACCEPTED = "STATE_ACCEPTED", "Accepted"
     STATE_ASSIGNED = "STATE_ASSIGNED", "Assigned"
+    STATE_CANCELED = "STATE_CANCELED", "Canceled"
     STATE_WAITLIST = "STATE_WAITLIST", "Waitlisted"
     STATE_DENIED = "STATE_DENIED", "Denied"
     STATE_DELETED = "STATE_DELETED", "Deleted"

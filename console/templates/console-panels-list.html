@@ -10,116 +10,154 @@
     </div>
 </div>
 <table class="table">
-  <thead class="text-left">
-    <tr class="table-dark">
-      <th scope="col">Panel Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Legal Name</th>
-      <th scope="col">Phone Number</th>
-      <th scope="col">Telegram Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="table-info">
-        <td colspan="5" class="table-info">New ({{panels|length}})</td>
-    </tr>
-    {% for panel in panels %}
-    <tr>
-      <td>
-          <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
-      </td>
-      <td>
-        <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i> {{panel.email}}</a>
-      </td>
-      <td>{{panel.legal_name}}</td>
-      <td>
-        <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i> {{panel.phone_number}}</a>
-      </td>
-      <td>
-        <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i> {{panel.telegram_handle}}</a>
-      </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5" class="table-info">Accepted ({{panels_accepted|length}})</td>
-    </tr>
-    {% for panel in panels_accepted %}
-    <tr>
-        <td>
-            <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i> {{panel.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i> {{panel.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i> {{panel.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5" class="table-info">Scheduled ({{panels_scheduled|length}})</td>
-    </tr>
-    {% for panel in panels_scheduled %}
-    <tr>
-        <td>
-            <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i> {{panel.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i> {{panel.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i> {{panel.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5" class="table-info">Waitlisted ({{panels_waitlisted|length}})</td>
-    </tr>
-    {% for panel in panels_waitlisted %}
-    <tr>
-        <td>
-            <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i> {{panel.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i> {{panel.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i> {{panel.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5" class="table-info">Denied ({{panels_denied|length}})</td>
-    </tr>
-    {% for panel in panels_denied %}
-    <tr>
-        <td>
-            <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i> {{panel.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i> {{panel.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i> {{panel.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead class="text-left">
+        <tr class="table-dark">
+            <th scope="col">Panel Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Legal Name</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Telegram Handle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="table-info">
+            <td colspan="5" class="table-info">New ({{panels|length}})</td>
+        </tr>
+        {% for panel in panels %}
+        <tr>
+            <td>
+                <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i>
+                    {{panel.email}}</a>
+            </td>
+            <td>{{panel.legal_name}}</td>
+            <td>
+                <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i>
+                    {{panel.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+                    {{panel.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5" class="table-info">Waitlisted ({{panels_waitlisted|length}})</td>
+        </tr>
+        {% for panel in panels_waitlisted %}
+        <tr>
+            <td>
+                <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i>
+                    {{panel.email}}</a>
+            </td>
+            <td>{{panel.legal_name}}</td>
+            <td>
+                <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i>
+                    {{panel.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+                    {{panel.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5" class="table-info">Accepted ({{panels_accepted|length}})</td>
+        </tr>
+        {% for panel in panels_accepted %}
+        <tr>
+            <td>
+                <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i>
+                    {{panel.email}}</a>
+            </td>
+            <td>{{panel.legal_name}}</td>
+            <td>
+                <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i>
+                    {{panel.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+                    {{panel.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5" class="table-info">Scheduled ({{panels_scheduled|length}})</td>
+        </tr>
+        {% for panel in panels_scheduled %}
+        <tr>
+            <td>
+                <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i>
+                    {{panel.email}}</a>
+            </td>
+            <td>{{panel.legal_name}}</td>
+            <td>
+                <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i>
+                    {{panel.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+                    {{panel.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5" class="table-info">Cancleed ({{panels_canceled|length}})</td>
+        </tr>
+        {% for panel in panels_canceled %}
+        <tr>
+            <td>
+                <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i>
+                    {{panel.email}}</a>
+            </td>
+            <td>{{panel.legal_name}}</td>
+            <td>
+                <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i>
+                    {{panel.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+                    {{panel.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5" class="table-info">Denied ({{panels_denied|length}})</td>
+        </tr>
+        {% for panel in panels_denied %}
+        <tr>
+            <td>
+                <a href="{% url 'console:panel-detail' panel.id %}">{{panel.panel_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{panel.email}}"><i class="bi bi-envelope"></i>
+                    {{panel.email}}</a>
+            </td>
+            <td>{{panel.legal_name}}</td>
+            <td>
+                <a href="tel:{{panel.phone_number}}"><i class="bi bi-phone"></i>
+                    {{panel.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+                    {{panel.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
