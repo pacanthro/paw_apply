@@ -6,50 +6,57 @@
 {% block tool %}
 <div class="row">
     <h2>Panel Schedule</h2>
-    {% for event_room in event_rooms %}
-    <div class="col-md-6">
+    {% for schedule in schedules %}
+    <div class="col-md">
         <div class="card">
             <div class="card-header text-center">
                 <div class="card-title">
-                    <h3>{{event_room.room_name}}</h3>
+                    <h3>{{schedule.day.name}}</h3>
                 </div>
             </div>
             <div class="card-body">
                 <div class="row">
-                    {% for item in items %}
-                        <div class="col-sm-4">
-                            <table class="table small">
-                                <thead>
-                                    <tr>
-                                        <td colspan="2"><h4>{{item.day.name}}</h4></td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="col">Time</td>
-                                        <td scope="col">Panel</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for slot in item.slots %}
-                                    <tr>
-                                        <td>{{slot|time:'h:i A'}}</td>
-                                        <td>
-                                            {% for filled_slot in filled_slots %}
-                                                {% if event_room == filled_slot.panel.scheduled_room %}
-                                                    {% if slot >= filled_slot.panel.scheduled_time and  slot <= filled_slot.end_time %}
-                                                            <a href="{% url 'console:panel-detail' filled_slot.panel.id %}">{{filled_slot.panel.panel_name|truncatewords:3}}</a>
-                                                            {% if slot == filled_slot.panel.scheduled_time %}
-                                                            <a href="{% url 'console:panel-unassign' filled_slot.panel.id %}" class="text-right"><i class="bi bi-x-square-fill"></i></a>
-                                                            {% endif %}
-                                                        {% endif %}
+                    <div>
+                        <table class="table small">
+                            <thead>
+                                <tr>
+                                </tr>
+                                <tr>
+                                    <td scope="col">Time</td>
+                                    {% for event_room in event_rooms %}
+                                    <td>{{event_room.room_name}}</td>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for slot in schedule.slots %}
+                                <tr>
+                                    <td>{{slot|time:'h:i A'}}</td>
+                                        {% for event_room in event_rooms %}
+                                    <td>
+                                        {% for filled_slot in filled_slots %}
+                                            {% if event_room == filled_slot.panel.scheduled_room %}
+                                                {% if slot >= filled_slot.panel.scheduled_time and  slot <= filled_slot.end_time %}
+                                                    {% if filled_slot.panel.panel_state == "STATE_CANCELED" %}
+                                                    <s>
                                                     {% endif %}
-                                                {% endfor %}
-                                            </td>
-                                        </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endfor %}
+                                                    <a href="{% url 'console:panel-detail' filled_slot.panel.id %}">{{filled_slot.panel.panel_name|truncatewords:3}}</a>
+                                                    {% if filled_slot.panel.panel_state == "STATE_CANCELED" %}
+                                                    </s>
+                                                    {% endif %}
+                                                    {% if slot == filled_slot.panel.scheduled_time %}
+                                                    <a href="{% url 'console:panel-unassign' filled_slot.panel.id %}" class="text-right"><i class="bi bi-x-square-fill"></i></a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
