@@ -1,0 +1,2 @@
+-r requirements_postgres.txt
+coverage==7.6.7
