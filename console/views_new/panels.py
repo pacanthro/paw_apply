@@ -256,6 +256,7 @@ class PanelActionCancelRedirect(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         panel = get_object_or_404(Panel, pk=kwargs['panel_id'])
+        
         panel.panel_state = ApplicationState.STATE_CANCELED
         panel.state_changed = date.today()
         panel.save()
