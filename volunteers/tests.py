@@ -71,7 +71,7 @@ class Test_Volunteers(TestCase):
         with self.assertNumQueries(14):
             my_volunteer = {
                 'email': 'nina@scrunk.ly',
-                'legal_name': 'nina',
+                'legal_name': 'Nina McLegal',
                 'fan_name': 'nina',
                 'phone_number': 'nina',
                 'twitter_handle': 'nina',
@@ -95,6 +95,7 @@ class Test_Volunteers(TestCase):
         # one volunteer is created
         [created] = Volunteer.objects.all()
         self.assertEqual(created.email, my_volunteer['email'])
+        self.assertEqual(str(created), 'nina (Nina McLegal)')
         
         # the volunteer gets the acknowledgement email
         self.assertEqual(mail.outbox[0].to, [my_volunteer['email']])
