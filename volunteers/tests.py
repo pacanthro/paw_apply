@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from volunteers.models import *
 import datetime as dt
+from django.core import mail
 
 class Test_Volunteers(TestCase):
     def setUp(self):
@@ -95,6 +96,10 @@ class Test_Volunteers(TestCase):
         [created] = Volunteer.objects.all()
         self.assertEqual(created.email, my_volunteer['email'])
         
+        # the volunteer gets the acknowledgement email
+        self.assertEqual(mail.outbox[0].to, [my_volunteer['email']])
+        self.assertEqual(mail.outbox[0].subject, 'PAWCon Volunteer Application')
+        
         # volunteer's m2m relations are created
         self.assertEqual([day.key for day in created.days_available.all()], my_volunteer['days_available'])
         self.assertEqual([t.key for t in created.time_availble.all()], my_volunteer['time_availble'])
@@ -108,3 +113,6 @@ class Test_Volunteers(TestCase):
             
         # there is still only one volunteer
         [_] = Volunteer.objects.all()
+        
+        # in all, at most one email was sent
+        self.assertEqual(len(mail.outbox), 1)
