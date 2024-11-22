@@ -70,7 +70,7 @@ class VolunteerDetailsPageView(PageView):
         context = super().get_context_data(**kwargs)
         volunteer = get_object_or_404(Volunteer, pk=kwargs['volunteer_id'])
         tasks = VolunteerTask.objects.filter(volunteer=volunteer).annotate(task_hours=F('task_end') - F('task_start')).annotate(effective_hours=ExpressionWrapper(F('task_hours') * F('task_multiplier'), output_field=DurationField()))
-        total_hours = asyncio.run(VolunteerTask.objects.filter(volunteer=volunteer).annotate(task_hours=F('task_end') - F('task_start')).annotate(effective_hours=ExpressionWrapper(F('task_hours') * F('task_multiplier'), output_field=DurationField())).aaggregate(total_hours=Sum(F('effective_hours'))))
+        total_hours = VolunteerTask.objects.filter(volunteer=volunteer).annotate(task_hours=F('task_end') - F('task_start')).annotate(effective_hours=ExpressionWrapper(F('task_hours') * F('task_multiplier'), output_field=DurationField())).aggregate(total_hours=Sum(F('effective_hours')))
         print(total_hours, file=sys.stderr)
         context['volunteer'] = volunteer
         context['tasks'] = tasks
@@ -126,7 +126,7 @@ class VolunteerDashboardPageView(PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         event = get_current_event()
-        active_tasks = VolunteerTask.objects.filter(task_end=None)
+        active_tasks = VolunteerTask.objects.filter(event=event).filter(task_end=None)
         idle_volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_ACCEPTED).exclude(id__in=VolunteerTask.objects.filter(task_end=None).values_list('volunteer', flat=True))
 
         context['active_tasks'] = []
@@ -168,19 +168,34 @@ class VolunteerStartTaskRedirect(View):
         return HttpResponseRedirect(reverse('console:volunteer-dashboard'))
 
 @method_decorator(decorators, name="dispatch")
-class VolunteerEndTaskRedirect(View):
+class VolunteerEndTaskRedirect(PageView):
+    template_name = 'console-volunteer-end-task.html'
     permanent = False
 
-    def post(self, request, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         task = get_object_or_404(VolunteerTask, pk=kwargs['task_id'])
+        form = VolunteerTaskEndForm(instance=task)
 
-        form = VolunteerTaskEndForm(request.POST, instance=task)
+        context['task'] = task
+        context['form'] = form
+
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        form = VolunteerTaskEndForm(request.POST, instance=context['task'])
+        
+        context['form']  = form
 
         if form.is_valid():
             task = form.save(commit=False)
             task.save()
 
             return HttpResponseRedirect(reverse('console:volunteer-dashboard'))
+
+        return self.render_to_response(context)
 
 @method_decorator(decorators, name="dispatch")
 class VolunteerAddTaskPageView(PageView):
@@ -201,11 +216,10 @@ class VolunteerAddTaskPageView(PageView):
         context = self.get_context_data(**kwargs)
 
         form = VolunteerAddTaskForm(request.POST, volunteer=context['volunteer'], user=self.request.user)
+        context['form'] = form
 
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('console:volunteer-detail', kwargs={'volunteer_id': context['volunteer'].id}))
-        
-        context['form'] = form
 
         return  self.render_to_response(context)

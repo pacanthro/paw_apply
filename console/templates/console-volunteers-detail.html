@@ -93,8 +93,8 @@
 <div class="row">
     <div class="col-md">
         <h1>Volunteer Tasks</h1>
-        <table class="table">
-            <thead>
+        <table class="table table-striped">
+            <thead class="table-dark">
                 <tr>
                     <td>Recorded By</td>
                     <td>Task Name</td>
@@ -113,15 +113,27 @@
                     <td>{{task.task_notes}}</td>
                     <td>{{task.task_start}}</td>
                     <td>{{task.task_end|default_if_none:""}}</td>
-                    <td>{{task.task_hours|pretty_delta}}</td>
-                    <td>{{task.effective_hours|pretty_delta}}</td>
+                    <td>
+                        {% if task.task_hours != None %}
+                        {{task.task_hours|pretty_delta}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if task.effective_hours != None %}
+                        {{task.effective_hours|default_if_none:""|pretty_delta}}
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
-            <tfoot>
+            <tfoot class="table-dark">
                 <tr>
                     <td colspan="6" class="text-end">Total Hours</td>
-                    <td>{{total_hours.total_hours|pretty_delta}}</td>
+                    <td>
+                        {% if total_hours.total_hours != None %}
+                        {{total_hours.total_hours|pretty_delta}}
+                        {% endif %}
+                    </td>
                 </tr>
             </tfoot>
         </table>

@@ -1,12 +1,13 @@
-from django import template
 from datetime import timedelta
+from django import template
+from django.template.base import TemplateSyntaxError
 
 register = template.Library()
 
 @register.filter()
 def pretty_delta(timedeltaobj):
     """Convert a datetime.timedelta object into Days, Hours, Minutes, Seconds."""
-    if not isinstance(timedeltaobj, timedelta) or timedeltaobj == None: return ""
+    if not isinstance(timedeltaobj, timedelta): raise TemplateSyntaxError("pretty_delta requires a timedelta object.")
 
     secs = timedeltaobj.total_seconds()
     timetot = ""

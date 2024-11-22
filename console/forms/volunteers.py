@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.urls import reverse
 
@@ -49,10 +50,12 @@ class VolunteerTaskStartForm(forms.ModelForm):
             'task_start'
         )
     
-    def clean(self):
-        cleaned_data = super().clean()
-        if not cleaned_data.get('task_start'):
+    def clean_task_start(self):
+        cleaned_data = self.cleaned_data['task_start']
+        if not cleaned_data:
             cleaned_data['task_start'] = timezone.now()
+        elif cleaned_data > timezone.now():
+            raise ValidationError('task_start cannot be in the future.')
         return cleaned_data
 
 class VolunteerTaskEndForm(forms.ModelForm):
@@ -78,10 +81,13 @@ class VolunteerTaskEndForm(forms.ModelForm):
             Field('task_end')
         )
     
-    def clean(self):
-        cleaned_data = super().clean()
-        if not cleaned_data.get('task_end'):
-            cleaned_data['task_end'] = timezone.now()
+    def clean_task_end(self):
+        cleaned_data = self.cleaned_data['task_end']
+        if not cleaned_data:
+            cleaned_data = timezone.now()
+        elif cleaned_data > timezone.now():
+            raise(ValidationError('task_end cannot be in the future.'))
+        
         return cleaned_data
 
 class VolunteerAddTaskForm(forms.ModelForm):
@@ -127,4 +133,18 @@ class VolunteerAddTaskForm(forms.ModelForm):
             'task_start',
             'task_end'
         )
+
+    def clean_task_start(self):
+        cleaned_data = self.cleaned_data['task_start']
+        if cleaned_data > timezone.now():
+            raise(ValidationError('task_start cannot be in the future.'))
+        
+        return cleaned_data
+    
+    def clean_task_endt(self):
+        cleaned_data = self.cleaned_data['task_end']
+        if cleaned_data > timezone.now():
+            raise(ValidationError('task_end cannot be in the future.'))
+        
+        return cleaned_data
 
