@@ -120,7 +120,7 @@
                     </td>
                     <td>
                         {% if task.effective_hours != None %}
-                        {{task.effective_hours|default_if_none:""|pretty_delta}}
+                        {{task.effective_hours|pretty_delta}}
                         {% endif %}
                     </td>
                 </tr>
