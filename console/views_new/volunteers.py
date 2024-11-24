@@ -2,7 +2,7 @@ import asyncio
 import csv
 
 from .page_view import PageView
-from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm
+from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm
 from core.models import get_current_event, ApplicationState
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -223,3 +223,44 @@ class VolunteerAddTaskPageView(PageView):
             return HttpResponseRedirect(reverse('console:volunteer-detail', kwargs={'volunteer_id': context['volunteer'].id}))
 
         return  self.render_to_response(context)
+
+@method_decorator(decorators, name="dispatch")
+class VolunteerEditTaskPageView(PageView):
+    template_name = 'console-volunteer-edit-task.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        volunteer = get_object_or_404(Volunteer, pk=kwargs['volunteer_id'])
+        task = get_object_or_404(VolunteerTask, pk=kwargs['task_id'])
+
+        form = VolunteerEditTaskForm(instance=task)
+
+        context['form'] = form
+        context['task'] = task
+        context['volunteer'] = volunteer
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        form = VolunteerEditTaskForm(request.POST, instance=context['task'])
+        context['form'] = form
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('console:volunteer-detail', kwargs={'volunteer_id': kwargs['volunteer_id']}))
+
+        return  self.render_to_response(context)
+    
+@method_decorator(decorators, name="dispatch")
+class VolunteerActionDeleteTaskRedirect(RedirectView):
+    permanent = False
+    pattern_name = 'console:volunteer-detail'
+
+    def get_redirect_url(self, *args, **kwargs):
+        volunteer = get_object_or_404(Volunteer, pk=kwargs['volunteer_id'])
+        task = get_object_or_404(VolunteerTask, pk=kwargs.pop('task_id'))
+        task.delete()
+
+        return super().get_redirect_url(*args, **kwargs)

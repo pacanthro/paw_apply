@@ -148,3 +148,48 @@ class VolunteerAddTaskForm(forms.ModelForm):
         
         return cleaned_data
 
+class VolunteerEditTaskForm(forms.ModelForm):
+    task_start = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
+    task_end = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
+    
+    class Meta:
+        model = VolunteerTask
+        fields = (
+            'task_name',
+            'task_notes',
+            'task_multiplier',
+            'task_start',
+            'task_end'
+        )
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+         # Fields
+
+        # Crispy
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.label_class = 'text-capitalize'
+        self.helper.layout = Layout(
+            'task_name',
+            'task_notes',
+            'task_multiplier',
+            'task_start',
+            'task_end'
+        )
+
+    def clean_task_start(self):
+        cleaned_data = self.cleaned_data['task_start']
+        if cleaned_data > timezone.now():
+            raise(ValidationError('task_start cannot be in the future.'))
+        
+        return cleaned_data
+    
+    def clean_task_endt(self):
+        cleaned_data = self.cleaned_data['task_end']
+        if cleaned_data > timezone.now():
+            raise(ValidationError('task_end cannot be in the future.'))
+        
+        return cleaned_data
+
