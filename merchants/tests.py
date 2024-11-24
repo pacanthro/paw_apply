@@ -121,6 +121,13 @@ class Test_Merchants(TestCase):
                 state_changed = dt.datetime.now(dt.timezone.utc),
             )
         
+        # potential applicants are informed of the limit
         r = self.client.get(reverse("merchants:index"))
-        self.assertNotContains(r, 'alert')
-        self.assertNotContains(r, 'is currently full')
+        self.assertContains(r, 'alert')
+        self.assertContains(r, 'is currently full')
+        
+        r = self.client.get(reverse("merchants:apply"))
+        self.assertRedirects(r, reverse('merchants:index'))
+        
+        r = self.client.get(reverse("merchants:new"))
+        self.assertRedirects(r, reverse('merchants:index'))
