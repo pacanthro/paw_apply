@@ -1,5 +1,8 @@
 from core.models import ApplicationState, Event, DaysAvailable, Department
+from django.contrib.auth import get_user_model
 from django.db import models
+
+import sys
 
 # Create your models here.
 class TimesAvailable(models.Model):
@@ -30,3 +33,13 @@ class Volunteer(models.Model):
 
     def __str__(self):
         return "{} ({})".format(self.fan_name, self.legal_name)
+
+class VolunteerTask(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    volunteer = models.ForeignKey(Volunteer, on_delete=models.CASCADE)
+    recorded_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    task_name = models.CharField(max_length=200)
+    task_notes = models.TextField()
+    task_multiplier = models.FloatField(default=1)
+    task_start = models.DateTimeField()
+    task_end = models.DateTimeField(null=True, default=None)
