@@ -19,8 +19,15 @@ def __is_merchants_full():
     event = get_current_event()
     if (event):
         max_merchants = event.max_merchants + 10
-        full_table_count = Merchant.objects.filter(event=event).exclude(merchant_state=MerchantState.STATE_DELETED).filter(table_size=Table.objects.get(key="FULL")).count()
-        double_table_count = Merchant.objects.filter(event=event).exclude(merchant_state=MerchantState.STATE_DELETED).filter(table_size=Table.objects.get(key="DOUB")).count() * 2
+        full_table_count = Merchant.objects.filter(event=event) \
+            .exclude(merchant_state=MerchantState.STATE_DELETED) \
+            .exclude(merchant_state=MerchantState.STATE_DENIED) \
+            .filter(table_size=Table.objects.get(key="FULL")).count()
+        
+        double_table_count = Merchant.objects.filter(event=event) \
+            .exclude(merchant_state=MerchantState.STATE_DELETED) \
+            .exclude(merchant_state=MerchantState.STATE_DENIED) \
+            .filter(table_size=Table.objects.get(key="DOUB")).count() * 2
         
         merchant_count = full_table_count + double_table_count
 
