@@ -5,83 +5,85 @@
 {% block tool %}
 <h1>Volunteers</h1>
 <div class="row pb-1">
-  <div class="col">
-    <a href="{% url 'console:volunteer-download' %}" class="btn btn-primary">Export CSV</a>
-  </div>
+    <div class="col">
+        <a href="{% url 'console:volunteer-download' %}" class="btn btn-primary">Export CSV</a>
+        <a href="{% url 'console:volunteer-dashboard' %}" class="btn btn-primary">Dashboard</a>
+    </div>
 </div>
 <table class="table">
-  <thead class="table-dark text-left">
-    <tr>
-      <th scope="col">Fan Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Legal Name</th>
-      <th scope="col">Phone Number</th>
-      <th scope="col">Telegram Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="table-info">
-        <td colspan="5">New ({{volunteers|length}})</td>
-    </tr>
-    {% for volunteer in volunteers %}
-    <tr>
-      <td>
-        <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
-      </td>
-      <td>
-        <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i> {{volunteer.email}}</a>
-      </td>
-      <td>{{volunteer.legal_name}}</td>
-      <td>
-        <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i> {{volunteer.phone_number}}</a>
-      </td>
-      <td>
-        <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i> {{volunteer.telegram_handle}}</a>
-      </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5">Accepted ({{volunteers_accepted|length}})</td>
-    </tr>
-    {% for volunteer in volunteers_accepted %}
-    <tr>
-        <td>
-            <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i> {{volunteer.email}}</a>
-        </td>
-        <td>{{volunteer.legal_name}}</td>
-        <td>
-            <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i> {{volunteer.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
-                {{volunteer.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5">Declined ({{volunteers_declined|length}})</td>
-    </tr>
-    {% for volunteer in volunteers_declined %}
-    <tr>
-        <td>
-            <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i> {{volunteer.email}}</a>
-        </td>
-        <td>{{volunteer.legal_name}}</td>
-        <td>
-            <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i> {{volunteer.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
-                {{volunteer.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead class="table-dark text-left">
+        <tr>
+            <th scope="col">Fan Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Legal Name</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Telegram Handle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="table-info">
+            <td colspan="5">New ({{volunteers|length}})</td>
+        </tr>
+        {% for volunteer in volunteers %}
+        <tr>
+            <td>
+                <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i> {{volunteer.email}}</a>
+            </td>
+            <td>{{volunteer.legal_name}}</td>
+            <td>
+                <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i> {{volunteer.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
+                    {{volunteer.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5">Accepted ({{volunteers_accepted|length}})</td>
+        </tr>
+        {% for volunteer in volunteers_accepted %}
+        <tr>
+            <td>
+                <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i> {{volunteer.email}}</a>
+            </td>
+            <td>{{volunteer.legal_name}}</td>
+            <td>
+                <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i> {{volunteer.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
+                    {{volunteer.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5">Declined ({{volunteers_declined|length}})</td>
+        </tr>
+        {% for volunteer in volunteers_declined %}
+        <tr>
+            <td>
+                <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i> {{volunteer.email}}</a>
+            </td>
+            <td>{{volunteer.legal_name}}</td>
+            <td>
+                <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i> {{volunteer.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
+                    {{volunteer.telegram_handle}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

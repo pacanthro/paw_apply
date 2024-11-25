@@ -1,0 +1,77 @@
+{% extends 'console.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}PAWConsole - Volunteers{% endblock %}
+
+{% block tool %}
+<div class="row">
+    <h1>Volunteer Dashboard</h1>
+    <h2>Ongoing Tasks</h2>
+    {% for active_task in active_tasks %}
+    <div class="col-md-4">
+        <form action="{% url 'console:volunteer-task-end' active_task.task.id %}" method="post" class="form">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="card-title">
+                        <h3>{{active_task.task.volunteer.fan_name}}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h4>{{active_task.task.task_name}}</h4>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>Started By:</p>
+                        </div>
+                        <div class="col-sm">
+                            <p>{{active_task.task.recorded_by}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>Task Notes:</p>
+                        </div>
+                        <div class="col-sm">
+                            <p>{{active_task.task.task_notes}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>Started:</p>
+                        </div>
+                        <div class="col-sm">
+                            <p>{{active_task.task.task_start}}</p>
+                        </div>
+                    </div>
+                    {% crispy active_task.form %}
+                </div>
+                <div class="card-footer">
+                    <input type="submit" value="End Task" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+<div class="row">
+    <h2>Idle Volunteers</h2>
+    {% for idle_volunteer in idle_volunteers %}
+    <div class="col-md-4">
+        <form action="{% url 'console:volunteer-task-start' idle_volunteer.model.id %}" method="post" class="form">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="card-title">
+                        <h3>{{idle_volunteer.model.fan_name}}</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% crispy idle_volunteer.form %}
+                </div>
+                <div class="card-footer">
+                    <input type="submit" value="Start Task" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'console.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}PAWConsole - Volunteer{% endblock %}
+
+{% block tool %}
+<h1>{{volunteer.fan_name}}: Add Task</h1>
+<div class="col-md-6">
+    <form action="{% url 'console:volunteer-add-task' volunteer.id %}" method="post" class="form">
+        {% crispy form %}
+        <input type="submit" value="Save" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}

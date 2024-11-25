@@ -45,6 +45,12 @@ urlpatterns = [
     path('volunteers/<int:volunteer_id>/accept', views_new.VolunteerActionAcceptRedirect.as_view(), name='volunteer-accept'),
     path('volunteers/<int:volunteer_id>/decline', views_new.VolunteerActionDeclinedRedirect.as_view(), name='volunteer-decline'),
     path('volunteers/<int:volunteer_id>/delete', views_new.VolunteerActionDeleteRedirect.as_view(), name='volunteer-delete'),
+    path('volunteers/<int:volunteer_id>/task', views_new.VolunteerAddTaskPageView.as_view(), name='volunteer-add-task'),
+    path('volunteers/<int:volunteer_id>/task/<int:task_id>/edit', views_new.VolunteerEditTaskPageView.as_view(), name="volunteer-edit-task"),
+    path('volunteers/<int:volunteer_id>/task/<int:task_id>/delete', views_new.VolunteerActionDeleteTaskRedirect.as_view(), name="volunteer-delete-task"),
+    path('volunteers/dashboard', views_new.VolunteerDashboardPageView.as_view(), name="volunteer-dashboard"),
+    path('volunteers/dashboard/task/<int:volunteer_id>/start', views_new.VolunteerStartTaskRedirect.as_view(), name='volunteer-task-start'),
+    path('volunteers/dashboard/task/<int:task_id>/end', views_new.VolunteerEndTaskRedirect.as_view(), name='volunteer-task-end'),
 
     # Performers
     path('performers', views_new.PerformersListPageView.as_view(), name='performers'),

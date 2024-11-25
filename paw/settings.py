@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'console.templatetags',
     'sendgrid',
     'crispy_forms',
     'crispy_bootstrap5'
