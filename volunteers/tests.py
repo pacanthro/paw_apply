@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from console.templatetags.console_extras import pretty_delta
 from merchants.models import Table
 from volunteers.models import *
 import datetime as dt
@@ -43,14 +44,14 @@ class Test_Volunteers(TestCase):
             "testadmin"
         )
         
-    def assert_ok_with_link(self, r, view_name, view_kwargs=None):
+    def assert_ok_with_link(self, r, view_name, view_kwargs=None, attr='href'):
         self.assertContains(
-            r, F'href="{reverse(view_name, kwargs=view_kwargs)}"',
+            r, F'{attr}="{reverse(view_name, kwargs=view_kwargs)}"',
             status_code=200
         )
-    def assert_ok_without_link(self, r, view_name, view_kwargs=None):
+    def assert_ok_without_link(self, r, view_name, view_kwargs=None, attr='href'):
         self.assertNotContains(
-            r, F'href="{reverse(view_name, kwargs=view_kwargs)}"',
+            r, F'{attr}="{reverse(view_name, kwargs=view_kwargs)}"',
             status_code=200
         )
         
@@ -128,7 +129,7 @@ class Test_Volunteers(TestCase):
             self.assertNotEquals(r.status_code, 302)
             
         # there is still only one volunteer
-        [_] = Volunteer.objects.all()
+        [the_volunteer] = Volunteer.objects.all()
         
         # in all, at most one email was sent
         self.assertEqual(len(mail.outbox), 1)
@@ -171,28 +172,60 @@ class Test_Volunteers(TestCase):
         self.assert_ok_without_link(r, "console:volunteer-accept", {"volunteer_id": 1})
         self.assert_ok_without_link(r, "console:volunteer-decline", {"volunteer_id": 1})
         
+        # the dashboard shows the volunteer as idle and an action to start a task
+        r = self.client.get(reverse("console:volunteer-dashboard"))
+        self.assert_ok_with_link(r, "console:volunteer-task-start", {"volunteer_id": 1}, attr="action")
+        
         # record a volunteer beginning their task
         r = self.client.get(reverse(
             "console:volunteer-add-task", kwargs={"volunteer_id": 1}
         ))
         self.assertEquals(r.status_code, 200)
+        
+        task_start_time = dt.datetime.now(dt.timezone.utc)
         task_start_info = {
             'event': Event.objects.get().pk,
-            'volunteer': Volunteer.objects.get().pk,
+            'volunteer': the_volunteer.pk,
             'recorded_by': self.admin.pk,
             'task_name': 'Example task',
             'task_notes': '',
             'task_multiplier': 1.0,
-            'task_start': dt.datetime.now(dt.timezone.utc),
+            'task_start': task_start_time,
             'task_end': '',
         }
         r = self.client.post(reverse(
-            "console:volunteer-add-task", kwargs={"volunteer_id": 1}
+            "console:volunteer-add-task", kwargs={"volunteer_id": the_volunteer.pk}
         ), data = task_start_info)
-        print(r.context['form'].errors)
         self.assertRedirects(r, reverse(
-            "console:volunteer-detail", kwargs={"volunteer_id": 1}
+            "console:volunteer-detail", kwargs={"volunteer_id": the_volunteer.pk}
         ))
+        [the_task] = VolunteerTask.objects.all()
         
+        # the dashboard shows the volunteer with the task and an action to end it
+        r = self.client.get(reverse("console:volunteer-dashboard"))
+        self.assert_ok_with_link(r, "console:volunteer-task-end",
+                                 {"task_id": the_task.pk}, attr="action")
         
+        # the volunteer detail page has a link to edit the task
+        r = self.client.get(reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": the_volunteer.pk}
+        ))
+        self.assert_ok_with_link(r, "console:volunteer-edit-task", {
+            "volunteer_id": the_volunteer.pk, "task_id": the_task.pk
+        })
         
+        # marking the end of the task
+        task_end_time = dt.datetime.now(dt.timezone.utc)
+        task_end_info = {
+            'task_end': task_end_time,
+        }
+        r = self.client.post(reverse(
+            "console:volunteer-task-end", kwargs={"task_id": the_task.pk}
+        ), data = task_end_info)
+        self.assertRedirects(r, reverse("console:volunteer-dashboard"))
+        
+        # volunteer total hours is the same as the task hours, and is listed
+        r = self.client.get(reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": the_volunteer.pk}
+        ))
+        self.assertContains(r, pretty_delta(task_end_time - task_start_time))
