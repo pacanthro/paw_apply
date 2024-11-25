@@ -39,7 +39,7 @@ class VolunteerTask(models.Model):
     volunteer = models.ForeignKey(Volunteer, on_delete=models.CASCADE)
     recorded_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     task_name = models.CharField(max_length=200)
-    task_notes = models.TextField()
+    task_notes = models.TextField(blank=True)
     task_multiplier = models.FloatField(default=1)
     task_start = models.DateTimeField()
     task_end = models.DateTimeField(null=True, default=None)
