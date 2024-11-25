@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from merchants.models import Table
 from volunteers.models import *
 import datetime as dt
 from django.core import mail
@@ -35,20 +36,34 @@ class Test_Volunteers(TestCase):
             key="MORN", name="8AM ~ 11AM / Morning", order=1,
         )
         
+        Table.objects.create(key="FULL", name="Full")
+        Table.objects.create(key="DOUB", name="Double")
+        
+        self.admin = get_user_model().objects.create_superuser(
+            "testadmin"
+        )
+        
+    def assert_ok_with_link(self, r, view_name, view_kwargs=None):
+        self.assertContains(
+            r, F'href="{reverse(view_name, kwargs=view_kwargs)}"',
+            status_code=200
+        )
+    def assert_ok_without_link(self, r, view_name, view_kwargs=None):
+        self.assertNotContains(
+            r, F'href="{reverse(view_name, kwargs=view_kwargs)}"',
+            status_code=200
+        )
+        
     # the requests a volunteer is expected to made as they sign up
     def test_typical(self):
         
         # navigates to the volunteers home page
         with self.assertNumQueries(2): # once each for the current Event
             r = self.client.get(reverse("core:index"))
-            self.assertContains(
-                r, F'href="{reverse("volunteers:index")}"', status_code=200
-            )
+            self.assert_ok_with_link(r, "volunteers:index")
             
             r = self.client.get(reverse("volunteers:index"))
-            self.assertContains(
-                r, F'href="{reverse("volunteers:apply")}"', status_code=200
-            )
+            self.assert_ok_with_link(r, "volunteers:apply")
         
         # visits the blank form
         with self.assertNumQueries(4): # Event, Department, Days, Times
@@ -117,3 +132,67 @@ class Test_Volunteers(TestCase):
         
         # in all, at most one email was sent
         self.assertEqual(len(mail.outbox), 1)
+        
+        
+        # admins act on the new volunteer
+        
+        self.client.force_login(self.admin)
+        
+        # basic navigation
+        r = self.client.get(reverse("console:index"))
+        self.assert_ok_with_link(r, "console:volunteers")
+        
+        r = self.client.get(reverse("console:volunteers"))
+        self.assert_ok_with_link(r, "console:volunteer-download")
+        self.assert_ok_with_link(r, "console:volunteer-dashboard")
+        self.assert_ok_with_link(r, "console:volunteer-detail", {"volunteer_id": 1})
+        
+        r = self.client.get(reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": 1}
+        ))
+        self.assert_ok_with_link(r, "console:volunteer-accept", {"volunteer_id": 1})
+        self.assert_ok_with_link(r, "console:volunteer-decline", {"volunteer_id": 1})
+        self.assert_ok_with_link(r, "console:volunteer-delete", {"volunteer_id": 1})
+        self.assert_ok_without_link(r, "console:volunteer-add-task", {"volunteer_id": 1})
+        
+        # accept the volunteer
+        r = self.client.post(reverse("console:volunteer-accept", kwargs={"volunteer_id": 1}))
+        self.assertEquals(Volunteer.objects.get().volunteer_state, ApplicationState.STATE_ACCEPTED)
+        self.assertRedirects(r, reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": 1}
+        ))
+        
+        # actions available are now different to reflect the new state
+        r = self.client.get(reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": 1}
+        ))
+        self.assert_ok_with_link(r, "console:volunteer-add-task", {"volunteer_id": 1})
+        self.assert_ok_with_link(r, "console:volunteer-delete", {"volunteer_id": 1})
+        self.assert_ok_without_link(r, "console:volunteer-accept", {"volunteer_id": 1})
+        self.assert_ok_without_link(r, "console:volunteer-decline", {"volunteer_id": 1})
+        
+        # record a volunteer beginning their task
+        r = self.client.get(reverse(
+            "console:volunteer-add-task", kwargs={"volunteer_id": 1}
+        ))
+        self.assertEquals(r.status_code, 200)
+        task_start_info = {
+            'event': Event.objects.get().pk,
+            'volunteer': Volunteer.objects.get().pk,
+            'recorded_by': self.admin.pk,
+            'task_name': 'Example task',
+            'task_notes': '',
+            'task_multiplier': 1.0,
+            'task_start': dt.datetime.now(dt.timezone.utc),
+            'task_end': '',
+        }
+        r = self.client.post(reverse(
+            "console:volunteer-add-task", kwargs={"volunteer_id": 1}
+        ), data = task_start_info)
+        print(r.context['form'].errors)
+        self.assertRedirects(r, reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": 1}
+        ))
+        
+        
+        
