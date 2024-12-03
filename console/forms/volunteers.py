@@ -8,6 +8,13 @@ from django.urls import reverse
 from core.models import get_current_event
 from volunteers.models import VolunteerTask
 
+def _clean_task_time(data, key, default):
+    cleaned = data.get(key)
+    if cleaned and cleaned > timezone.now():
+        raise(ValidationError(F'{key} cannot be in the future.'))
+    
+    return cleaned or default
+
 class VolunteerTaskStartForm(forms.ModelForm):
     task_start = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
     class Meta:
@@ -51,12 +58,7 @@ class VolunteerTaskStartForm(forms.ModelForm):
         )
     
     def clean_task_start(self):
-        cleaned_data = self.cleaned_data['task_start']
-        if not cleaned_data:
-            cleaned_data['task_start'] = timezone.now()
-        elif cleaned_data > timezone.now():
-            raise ValidationError('task_start cannot be in the future.')
-        return cleaned_data
+        return _clean_task_time(self.cleaned_data, 'task_start', timezone.now())
 
 class VolunteerTaskEndForm(forms.ModelForm):
     task_end = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -82,13 +84,7 @@ class VolunteerTaskEndForm(forms.ModelForm):
         )
     
     def clean_task_end(self):
-        cleaned_data = self.cleaned_data['task_end']
-        if not cleaned_data:
-            cleaned_data = timezone.now()
-        elif cleaned_data > timezone.now():
-            raise(ValidationError('task_end cannot be in the future.'))
-        
-        return cleaned_data
+        return _clean_task_time(self.cleaned_data, 'task_end', None)
 
 class VolunteerAddTaskForm(forms.ModelForm):
     task_start = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -135,18 +131,10 @@ class VolunteerAddTaskForm(forms.ModelForm):
         )
 
     def clean_task_start(self):
-        cleaned_data = self.cleaned_data['task_start']
-        if cleaned_data > timezone.now():
-            raise(ValidationError('task_start cannot be in the future.'))
-        
-        return cleaned_data
+        return _clean_task_time(self.cleaned_data, 'task_start', None)
     
-    def clean_task_endt(self):
-        cleaned_data = self.cleaned_data['task_end']
-        if cleaned_data > timezone.now():
-            raise(ValidationError('task_end cannot be in the future.'))
-        
-        return cleaned_data
+    def clean_task_end(self):
+        return _clean_task_time(self.cleaned_data, 'task_end', None)
 
 class VolunteerEditTaskForm(forms.ModelForm):
     task_start = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -180,16 +168,8 @@ class VolunteerEditTaskForm(forms.ModelForm):
         )
 
     def clean_task_start(self):
-        cleaned_data = self.cleaned_data['task_start']
-        if cleaned_data > timezone.now():
-            raise(ValidationError('task_start cannot be in the future.'))
-        
-        return cleaned_data
+        return _clean_task_time(self.cleaned_data, 'task_start', None)
     
-    def clean_task_endt(self):
-        cleaned_data = self.cleaned_data['task_end']
-        if cleaned_data > timezone.now():
-            raise(ValidationError('task_end cannot be in the future.'))
-        
-        return cleaned_data
+    def clean_task_end(self):
+        return _clean_task_time(self.cleaned_data, 'task_end', None)
 
