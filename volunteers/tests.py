@@ -120,7 +120,7 @@ class Test_Volunteers(TestCase):
         # volunteer's m2m relations are created
         self.assertEqual([day.key for day in created.days_available.all()], my_volunteer['days_available'])
         self.assertEqual([t.key for t in created.time_availble.all()], my_volunteer['time_availble'])
-        self.assertEqual([dept.id for dept in created.department_interest.all()], [my_volunteer['department_interest']])
+        self.assertEqual([dept.pk for dept in created.department_interest.all()], [my_volunteer['department_interest']])
         
         # submitting the same volunteer again is considered invalid
         with self.assertNumQueries(9):
@@ -163,6 +163,42 @@ class Test_Volunteers(TestCase):
             "console:volunteer-detail", kwargs={"volunteer_id": 1}
         ))
         
+        self.assertEqual(mail.outbox[1].to, [my_volunteer['email']])
+        self.assertEqual(mail.outbox[1].subject, 'PAWCon Volunteer Application')
+        self.assertEqual(len(mail.outbox), 2)
+        
+        # deny another volunteer
+        deny_volunteer = {
+            'email': 'fail@example.com',
+            'legal_name': 'Doe S.',
+            'fan_name': 'd',
+            'phone_number': 'd',
+            'twitter_handle': 'd',
+            'telegram_handle': 'd',
+            'department_interest': 1, # str|int, database index of deparment
+            'volunteer_history': 'd',
+            'special_skills': 'd',
+            'days_available': ['MON', 'TUE'],
+            'time_availble': ['MORN'],
+            'avail_setup': True,
+            'avail_teardown': False,
+        }
+        r = self.client.post(reverse("volunteers:new"), data=deny_volunteer)
+        self.assertRedirects(r, reverse('volunteers:confirm'))
+        [deny_volunteer] = Volunteer.objects.filter(email='fail@example.com').all()
+        
+        r = self.client.post(reverse("console:volunteer-decline", kwargs={"volunteer_id": deny_volunteer.pk}))
+        self.assertRedirects(r, reverse("console:volunteers"))
+        deny_volunteer.refresh_from_db()
+        self.assertEquals(deny_volunteer.volunteer_state, ApplicationState.STATE_DENIED)
+        
+        r = self.client.post(reverse("console:volunteer-delete", kwargs={"volunteer_id": deny_volunteer.pk}))
+        self.assertRedirects(r, reverse("console:volunteers"))
+        
+        self.assertEqual(len(mail.outbox), 4) # interest, accept, interest, deny
+        
+        
+        
         # actions available are now different to reflect the new state
         r = self.client.get(reverse(
             "console:volunteer-detail", kwargs={"volunteer_id": 1}
@@ -190,9 +226,17 @@ class Test_Volunteers(TestCase):
             'task_name': 'Example task',
             'task_notes': '',
             'task_multiplier': 1.0,
-            'task_start': task_start_time,
+            'task_start': task_start_time + dt.timedelta(days=1),
             'task_end': '',
         }
+        # fails: task_start in future
+        r = self.client.post(reverse(
+            "console:volunteer-add-task", kwargs={"volunteer_id": the_volunteer.pk}
+        ), data = task_start_info)
+        [] = VolunteerTask.objects.all()
+        
+        task_start_info['task_start'] = task_start_time
+        # success
         r = self.client.post(reverse(
             "console:volunteer-add-task", kwargs={"volunteer_id": the_volunteer.pk}
         ), data = task_start_info)
@@ -221,11 +265,77 @@ class Test_Volunteers(TestCase):
         }
         r = self.client.post(reverse(
             "console:volunteer-task-end", kwargs={"task_id": the_task.pk}
+        ), data = {'task_end': 'wrong'})
+        self.assertEquals(VolunteerTask.objects.get().task_end, None)
+        
+        r = self.client.post(reverse(
+            "console:volunteer-task-end", kwargs={"task_id": the_task.pk}
         ), data = task_end_info)
         self.assertRedirects(r, reverse("console:volunteer-dashboard"))
+        self.assertNotEquals(VolunteerTask.objects.get().task_end, None)
         
         # volunteer total hours is the same as the task hours, and is listed
         r = self.client.get(reverse(
             "console:volunteer-detail", kwargs={"volunteer_id": the_volunteer.pk}
         ))
         self.assertContains(r, pretty_delta(task_end_time - task_start_time))
+        
+        # alternative page for starting a task
+        task_start_info2 = {
+            'event': Event.objects.get().pk,
+            'volunteer': the_volunteer.pk,
+            'recorded_by': self.admin.pk,
+            'task_name': 'task 2',
+            'task_notes': '',
+            'task_multiplier': 1.0,
+            'task_start': dt.datetime.now(dt.timezone.utc),
+        }
+        # failure:
+        r = self.client.post(reverse(
+            "console:volunteer-task-start", kwargs={"volunteer_id": the_volunteer.pk}
+        ), data = {})
+        self.assertRedirects(r, reverse("console:volunteer-dashboard"))
+        [_] = VolunteerTask.objects.all()
+        
+        # success: 
+        r = self.client.post(reverse(
+            "console:volunteer-task-start", kwargs={"volunteer_id": the_volunteer.pk}
+        ), data = task_start_info2)
+        self.assertRedirects(r, reverse("console:volunteer-dashboard"))
+        [_, task2] = VolunteerTask.objects.all()
+        
+        # edit
+        task_edit_info = {
+            **task_start_info2,
+            'task_multiplier': 2.0,
+        }
+        # failure, unchanged:
+        r = self.client.post(reverse(
+            "console:volunteer-edit-task", kwargs={"volunteer_id": the_volunteer.pk, "task_id": task2.pk}
+        ), data = {})
+        task2.refresh_from_db()
+        self.assertEquals(task2.task_multiplier, 1.0)
+        
+        # success:
+        r = self.client.post(reverse(
+            "console:volunteer-edit-task", kwargs={"volunteer_id": the_volunteer.pk, "task_id": task2.pk}
+        ), data = task_edit_info)
+        self.assertRedirects(r, reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": the_volunteer.pk}
+        ))
+        task2.refresh_from_db()
+        self.assertEquals(task2.task_multiplier, 2.0)
+        
+        # deletion
+        r = self.client.post(reverse(
+            "console:volunteer-delete-task", kwargs={"volunteer_id": the_volunteer.pk, "task_id": task2.pk}
+        ))
+        self.assertRedirects(r, reverse(
+            "console:volunteer-detail", kwargs={"volunteer_id": the_volunteer.pk}
+        ))
+        [_] = VolunteerTask.objects.all()
+        
+        
+        # the volunteer csv is at least not empty
+        r = self.client.get(reverse("console:volunteer-download"))
+        self.assertContains(r, the_volunteer.email)
