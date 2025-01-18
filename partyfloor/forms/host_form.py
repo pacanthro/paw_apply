@@ -17,9 +17,12 @@ class HostForm(forms.ModelForm):
             'phone_number',
             'twitter_handle',
             'telegram_handle',
+            'rbs_certification',
             'hotel_primary',
             'hotel_ack_num',
             'party_days',
+            'party_name',
+            'party_description',
             'ack_no_smoking',
             'ack_amplified_sound',
             'ack_verify_age',
@@ -37,7 +40,10 @@ class HostForm(forms.ModelForm):
         # Fields
         self.fields['twitter_handle'].required = False
         self.fields['telegram_handle'].required = False
+        self.fields['rbs_certification'].required = False
         self.fields['party_days'].queryset = DaysAvailable.objects.filter(available_party=True).order_by('order')
+        self.fields['party_name'].required = False
+        self.fields['party_description'].required = False
         self.fields['ack_no_smoking'].required = True
         self.fields['ack_amplified_sound'].required = True
         self.fields['ack_verify_age'].required = True
@@ -58,13 +64,19 @@ class HostForm(forms.ModelForm):
                 'fan_name',
                 'phone_number',
                 PrependedText('twitter_handle', '@'),
-                PrependedText('telegram_handle', '@')
+                PrependedText('telegram_handle', '@'),
+                'rbs_certification'
             ),
             Fieldset(
                 'Hotel Info',
                 'hotel_primary',
                 'hotel_ack_num',
-                'party_days'
+            ),
+            Fieldset(
+                'Party Info',
+                'party_days',
+                'party_name',
+                'party_description'
             ),
             Fieldset(
                 'Acknowledgements',
