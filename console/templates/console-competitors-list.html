@@ -5,8 +5,8 @@
 {% block tool %}
 <h1>Competitors</h1>
 <table class="table">
-  <thead class="thead-dark text-left">
-    <tr>
+  <thead class="text-left">
+    <tr class="table-dark">
       <th scope="col">Competitor Name</th>
       <th scope="col">Email</th>
       <th scope="col">Legal Name</th>
@@ -15,20 +15,72 @@
     </tr>
   </thead>
   <tbody>
-    {% for competitor in competitors %}
+    <tr>
+        <td colspan="5" class="table-info">New ({{new_competitors|length}})</td>
+    </tr>
+    {% for competitor in new_competitors %}
     <tr>
       <td>
-          <a href="{% url 'console:competitor-detail' competitor.id %}">{{competitor.fan_name}}</a>
+        <a href="{% url 'console:competitor-detail' competitor.id %}">{{competitor.fan_name}}</a>
       </td>
       <td>
-        <a href="mailto:{{competitor.email}}"><i class="far fa-envelope"></i> {{competitor.email}}</a>
+        <a href="mailto:{{competitor.email}}"><i class="far fa-envelope"></i>
+          {{competitor.email}}</a>
       </td>
       <td>{{competitor.legal_name}}</td>
       <td>
-        <a href="tel:{{competitor.phone_number}}"><i class="fas fa-phone"></i> {{competitor.phone_number}}</a>
+        <a href="tel:{{competitor.phone_number}}"><i class="fas fa-phone"></i>
+          {{competitor.phone_number}}</a>
       </td>
       <td>
-        <a href="https://t.me/{{competitor.telegram_handle}}"><i class="fab fa-telegram"></i> {{competitor.telegram_handle}}</a>
+        <a href="https://t.me/{{competitor.telegram_handle}}"><i class="fab fa-telegram"></i>
+          {{competitor.telegram_handle}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="5" class="table-info">Accepted ({{accepted_competitors|length}})</td>
+    </tr>
+    {% for competitor in accepted_competitors %}
+    <tr>
+      <td>
+        <a href="{% url 'console:competitor-detail' competitor.id %}">{{competitor.fan_name}}</a>
+      </td>
+      <td>
+        <a href="mailto:{{competitor.email}}"><i class="far fa-envelope"></i>
+          {{competitor.email}}</a>
+      </td>
+      <td>{{competitor.legal_name}}</td>
+      <td>
+        <a href="tel:{{competitor.phone_number}}"><i class="fas fa-phone"></i>
+          {{competitor.phone_number}}</a>
+      </td>
+      <td>
+        <a href="https://t.me/{{competitor.telegram_handle}}"><i class="fab fa-telegram"></i>
+          {{competitor.telegram_handle}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="5" class="table-info">Declined ({{declined_competitors|length}})</td>
+    </tr>
+    {% for competitor in declined_competitors %}
+    <tr>
+      <td>
+        <a href="{% url 'console:competitor-detail' competitor.id %}">{{competitor.fan_name}}</a>
+      </td>
+      <td>
+        <a href="mailto:{{competitor.email}}"><i class="far fa-envelope"></i>
+          {{competitor.email}}</a>
+      </td>
+      <td>{{competitor.legal_name}}</td>
+      <td>
+        <a href="tel:{{competitor.phone_number}}"><i class="fas fa-phone"></i>
+          {{competitor.phone_number}}</a>
+      </td>
+      <td>
+        <a href="https://t.me/{{competitor.telegram_handle}}"><i class="fab fa-telegram"></i>
+          {{competitor.telegram_handle}}</a>
       </td>
     </tr>
     {% endfor %}

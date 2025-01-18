@@ -1,5 +1,4 @@
 from typing import Any
-from .page_view import PageView
 from console.forms import PanelScheduleRoomDayForm, PanelScheduleSlotForm
 from core.models import get_current_event, ApplicationState, EventRoom, RoomType, SchedulingConfig
 from django.contrib.auth.decorators import login_required, permission_required
@@ -12,6 +11,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
 from modules.email import send_paw_email
 from panels.models import Panel
+
+from .page_view import PageView
 
 from urllib.parse import urlparse
 from datetime import date, timedelta

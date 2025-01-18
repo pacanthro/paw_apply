@@ -5,63 +5,76 @@
 {% block tool %}
 <h1>Competitor Details</h1>
 <table class="table">
-  <tr>
-    <td>Fan Name:</td>
-    <td>{{competitor.fan_name}}</td>
-  </tr>
-  <tr>
-    <td>Legal Name:</td>
-    <td>{{competitor.legal_name}}</td>
-  </tr>
-  <tr>
-    <td>Competitor Name:</td>
-    <td>{{competitor.competitor_name}}</td>
-  </tr>
-  <tr>
-    <td>Email:</td>
-    <td>{{competitor.email}}</td>
-  </tr>
-  <tr>
-    <td>Phone Number:</td>
-    <td>{{competitor.phone_number}}</td>
-  </tr>
-  <tr>
-    <td>Twitter Handle:</td>
-    <td>{{competitor.twitter_handle}}</td>
-  </tr>
-  <tr>
-    <td>Telegram Handle:</td>
-    <td>
-        <a href="https://t.me/{{competitor.telegram_handle}}"><i class="fab fa-telegram"></i> {{competitor.telegram_handle}}</a>
-    </td>
-  </tr>
-  <tr>
-    <td>Music Url:</td>
-    <td>
-      <a href="{{competitor.music_url}}">{{competitor.music_url}}</a>
-    </td>
-  </tr>
-  {% if competitor.is_group %}
-  <tr>
-    <td>Performer #2:</td>
-    <td>{{competitor.performer_two}}</td>
-  </tr>
-  <tr>
-    <td>Performer #3:</td>
-    <td>{{competitor.performer_three}}</td>
-  </tr>
-  <tr>
-    <td>Performer #4:</td>
-    <td>{{competitor.performer_four}}</td>
-  </tr>
-  <tr>
-    <td>Performer #5:</td>
-    <td>{{competitor.performer_five}}</td>
-  </tr>
-  {% endif %}
+    <tr>
+        <td>Fan Name:</td>
+        <td>{{competitor.fan_name}}</td>
+    </tr>
+    <tr>
+        <td>Legal Name:</td>
+        <td>{{competitor.legal_name}}</td>
+    </tr>
+    <tr>
+        <td>Competitor Name:</td>
+        <td>{{competitor.competitor_name}}</td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td>{{competitor.email}}</td>
+    </tr>
+    <tr>
+        <td>Phone Number:</td>
+        <td>{{competitor.phone_number}}</td>
+    </tr>
+    <tr>
+        <td>Twitter Handle:</td>
+        <td>{{competitor.twitter_handle}}</td>
+    </tr>
+    <tr>
+        <td>Telegram Handle:</td>
+        <td>
+            <a href="https://t.me/{{competitor.telegram_handle}}"><i class="fab fa-telegram"></i>
+                {{competitor.telegram_handle}}</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Music Url:</td>
+        <td>
+            <a href="{{competitor.music_url}}">{{competitor.music_url}}</a>
+        </td>
+    </tr>
+    {% if competitor.is_group %}
+    <tr>
+        <td>Performer #2:</td>
+        <td>{{competitor.performer_two|default:''}}</td>
+    </tr>
+    <tr>
+        <td>Performer #3:</td>
+        <td>{{competitor.performer_three|default:''}}</td>
+    </tr>
+    <tr>
+        <td>Performer #4:</td>
+        <td>{{competitor.performer_four|default:''}}</td>
+    </tr>
+    <tr>
+        <td>Performer #5:</td>
+        <td>{{competitor.performer_five|default:''}}</td>
+    </tr>
+    <tr>
+        <td>State:</td>
+        <td>{{competitor.get_competitor_state_display}} ({{competitor.state_changed}})</td>
+    </tr>
+    {% endif %}
 </table>
 <div>
-  <h2>Registration</h2>
-  <a href="{{registration_search_base}}{{competitor.email|urlencode}}" target="_blank" class="btn btn-outline-primary">{{registration_platform}} Lookup</a>
+    <h2>Actions</h2>
+    {% if competitor.competitor_state == "STATE_NEW" %}
+    <a href="{% url 'console:competitor-accept' competitor.id %}" class="btn btn-primary">Accept</a>
+    <a href="{% url 'console:competitor-decline' competitor.id %}" class="btn btn-primary">Deny</a>
+    {% endif %}
+    <a href="{% url 'console:competitor-delete' competitor.id %}" class="btn btn-danger">Delete</a>
+</div>
+<div>
+    <h2>Registration</h2>
+    <a href="{{registration_search_base}}{{competitor.email|urlencode}}" target="_blank" class="btn btn-outline-primary">{{registration_platform}} Lookup</a>
 </div>
 {% endblock %}
