@@ -108,6 +108,10 @@ PERFORMERS_EMAIL = 'dj@'+EMAIL_DOMAIN
 HOTEL_EMAIL = 'hotel@'+EMAIL_DOMAIN
 DANCE_EMAIL = 'dancecomp@'+EMAIL_DOMAIN
 
+# Registration Search
+REGISTRATION_PLATFORM = 'ConCat'
+REGISTRATION_SEARCH_BASE = 'https://reg.pacanthro.org/housekeeping/attendees/search?term='
+
 WSGI_APPLICATION = 'paw.wsgi.application'
 
 # Database

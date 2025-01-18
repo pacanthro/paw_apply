@@ -1,4 +1,5 @@
 from core.models import get_current_event
+from django.conf import settings
 from django.views.generic.base import TemplateView
 
 class PageView(TemplateView):
@@ -9,6 +10,8 @@ class PageView(TemplateView):
         event = get_current_event()
         context['is_console'] = True
         context['event'] = event
+        context['registration_search_base'] = settings.REGISTRATION_SEARCH_BASE
+        context['registration_platform'] = settings.REGISTRATION_PLATFORM
 
         if (user.is_superuser):
             context['is_superuser'] = True
@@ -20,4 +23,5 @@ class PageView(TemplateView):
             context['has_partyhost_permission'] = user.has_perm('partyfloor.view_partyhost')
             context['has_competitor_permission'] = user.has_perm('competitor.view_competitor')
 
+        
         return context

@@ -79,10 +79,10 @@
     <a href="{% url 'console:merchant-delete' merchant.id %}" class="btn btn-danger">Delete Merchant</a>
 </div>
 <div>
-    <h2>Convention Master</h2>
-    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
-    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.legal_name}}" target="_blank" class="btn btn-outline-primary">CM Lookup (Name)</a>
-    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{merchant.helper_fan_name}}" target="_blank" class="btn btn-outline-secondary">Helper CM Lookup</a>
+    <h2>Registration</h2>
+    <a href="{{registration_search_base}}{{merchant.email|urlencode}}" target="_blank" class="btn btn-outline-primary">{{registration_platform}} Lookup</a>
+    <a href="{{registration_search_base}}{{merchant.legal_name|urlencode}}" target="_blank" class="btn btn-outline-primary">{{registration_platform}} Lookup (Name)</a>
+    <a href={{registration_search_base}}{{merchant.helper_fan_name|urlencode}}" target="_blank" class="btn btn-outline-secondary">Helper {{registration_platform}} Lookup</a>
 </div>
 {% endblock %}
 
