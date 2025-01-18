@@ -4,7 +4,7 @@ crispy-bootstrap5==2024.10
 DateTimeRange==2.2.0
 Django==5.0.11
 django-crispy-forms==2.3
-psycopg2-binary==2.9.3
+psycopg2-binary==2.9.10
 python-dotenv==0.11.0
 python-http-client==3.2.4
 pytz==2020.1
