@@ -161,8 +161,8 @@
 </div>
 <div class="row">
   <div class="col-md-3">
-    <h2>Convention Master</h2>
-    <a href="https://reg.pacanthro.org/console/index.php?file=modules%2Fregistration%2Fquicksearch.inc.php&quicksearch={{volunteer.email}}" target="_blank" class="btn btn-outline-primary">CM Lookup</a>
+    <h2>Registration</h2>
+    <a href="{{registration_search_base}}{{volunteer.email|urlencode}}" target="_blank" class="btn btn-outline-primary">{{registration_platform}} Lookup</a>
   </div>
 </div>
 {% endblock %}
