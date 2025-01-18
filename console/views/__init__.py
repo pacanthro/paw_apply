@@ -1,4 +1,5 @@
 from .console import ConsoleLoginPageView, ConsoleLogoutRedirect, ConsoleIndexPageView, ResetPasswordView, ResetPasswordConfirmView, ResetPasswordCompleteView
+from .competitors import CompetitorsListPageView, CompetitorDetailPageView, CompetitorActionAcceptRedirect, CompetitorActionDeclineRedirect, CompetitorActionDeleteRedirect
 from .merchants import MerchantsListPageView, MerchantCSVDownloadView, MerchantDetailsPageView, MerchantActionRequestPaymentRedirect
 from .merchants import MerchantActionPaymentConfirmedRedirect, MerchantActionRegistrationReminderRedirect, MerchantActionWaitlistRedirect
 from .merchants import MerchantActionDeleteRedirect, MerchantActionAssignPageView, MerchantActionAcceptedRedirect
