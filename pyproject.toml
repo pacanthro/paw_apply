@@ -1,0 +1,13 @@
+[project]
+name = "paw-apply"
+version = "2.0.2"
+
+[tool.coverage.run]
+branch = true
+source = ['.']
+omit = ['manage.py']
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+skip_covered = false
