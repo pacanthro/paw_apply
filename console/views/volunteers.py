@@ -1,5 +1,5 @@
-import asyncio
 import csv
+import markdown
 
 from .page_view import PageView
 from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm
@@ -76,6 +76,46 @@ class VolunteerDetailsPageView(PageView):
         context['tasks'] = tasks
         context['total_hours'] = total_hours
 
+        return context
+
+@method_decorator(decorators, name="dispatch")
+class VolunteerComposeMassEmailPageView(PageView):
+    template_name = 'console-volunteers-email.html'
+
+    def post(self, request, *args, **kwargs):
+        event = get_current_event()
+        volunteer_group = request.POST.get('volunteer_group')
+        email_subject = request.POST.get('subject')
+        email_message = request.POST.get('message')
+        
+        volunteers = None
+        match volunteer_group:
+            case 'all':
+                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_NEW).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
+            case 'new':
+                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATTE_NEW)
+            case 'accepted':
+                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
+
+        volunteer_emails = []
+        for volunteer in volunteers:
+            volunteer_emails.append(volunteer.email)
+
+        message_content = markdown.markdown(email_message)
+
+        print(f'Volunteer Group: {volunteer_group}')
+        print(f'Email Subject: {email_subject}')
+        print(f'Email Message: {message_content}')
+
+        
+
+        send_paw_email('email-volunteers-mass.html', {'message_content': message_content}, subject=email_subject, recipient_list=volunteer_emails, reply_to=settings.VOLUNTEER_EMAIL)
+
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
         return context
 
 @method_decorator(decorators, name="dispatch")
