@@ -22,7 +22,7 @@
         <td>{{host.phone_number}}</td>
     </tr>
     <tr>
-        <td>Twitter Handle:</td>
+        <td>Twitter/BSky Handle:</td>
         <td>{{host.twitter_handle}}</td>
     </tr>
     <tr>
@@ -32,11 +32,16 @@
         </td>
     </tr>
     <tr>
+        <td>RBS Certification:</td>
+        <td>{{host.rbs_certification|default:'<strong>N/A</strong>'}}</td>
+    </tr>
+    <tr>
         <td>Hotel Primary:</td>
         <td>{{host.hotel_primary}}</td>
-    </tr <td>
-    <td>Hotel Ack. Number:</td>
-    <td>{{host.hotel_ack_num}}</td>
+    </tr>
+    <tr>
+        <td>Hotel Ack. Number:</td>
+        <td>{{host.hotel_ack_num}}</td>
     </tr>
     <tr>
         <td>Party Days:</td>
@@ -47,6 +52,14 @@
                 {% endfor %}
             </ul>
         </td>
+    </tr>
+    <tr>
+        <td>Party Name:</td>
+        <td>{{host.party_name}}</td>
+    </tr>
+    <tr>
+        <td>Party Description</td>
+        <td>{{host.party_description}}</td>
     </tr>
     <tr>
         <td>Acknowledgements:</td>
@@ -70,6 +83,7 @@
                 {% if host.ack_suspension_policy %}
                 <li>Acknowledged Suspension Policy</li>
                 {% endif %}
+            </ul>
         </td>
     </tr>
     <tr>
