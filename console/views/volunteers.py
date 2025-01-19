@@ -6,6 +6,7 @@ from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, Voluntee
 from core.models import get_current_event, ApplicationState
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -13,7 +14,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
-from modules.email import send_paw_email
+from modules.email import send_paw_email, send_mass_paw_email
 from volunteers.models import Volunteer, VolunteerTask
 
 from datetime import date
@@ -91,25 +92,27 @@ class VolunteerComposeMassEmailPageView(PageView):
         volunteers = None
         match volunteer_group:
             case 'all':
-                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_NEW).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
+                print('all')
+                volunteers = Volunteer.objects.filter(event=event).filter(Q(volunteer_state=ApplicationState.STATE_NEW) | Q(volunteer_state=ApplicationState.STATE_ACCEPTED))
             case 'new':
-                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATTE_NEW)
+                print('new')
+                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_NEW)
             case 'accepted':
+                print('accepted')
                 volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
 
+        print(f'volunteer size {len(volunteers)}')
         volunteer_emails = []
         for volunteer in volunteers:
             volunteer_emails.append(volunteer.email)
-
+        
         message_content = markdown.markdown(email_message)
 
-        print(f'Volunteer Group: {volunteer_group}')
+        print(f'Volunteer Emails: {volunteer_emails}')
         print(f'Email Subject: {email_subject}')
         print(f'Email Message: {message_content}')
 
-        
-
-        send_paw_email('email-volunteers-mass.html', {'message_content': message_content}, subject=email_subject, recipient_list=volunteer_emails, reply_to=settings.VOLUNTEER_EMAIL)
+        send_mass_paw_email('email-volunteers-mass.html', {'message_content': message_content}, subject=email_subject, recipient_list=volunteer_emails, reply_to=settings.VOLUNTEER_EMAIL)
 
         return self.render_to_response(self.get_context_data())
 
