@@ -92,13 +92,10 @@ class VolunteerComposeMassEmailPageView(PageView):
         volunteers = None
         match volunteer_group:
             case 'all':
-                print('all')
                 volunteers = Volunteer.objects.filter(event=event).filter(Q(volunteer_state=ApplicationState.STATE_NEW) | Q(volunteer_state=ApplicationState.STATE_ACCEPTED))
             case 'new':
-                print('new')
                 volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_NEW)
             case 'accepted':
-                print('accepted')
                 volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
 
         print(f'volunteer size {len(volunteers)}')
@@ -107,10 +104,6 @@ class VolunteerComposeMassEmailPageView(PageView):
             volunteer_emails.append(volunteer.email)
         
         message_content = markdown.markdown(email_message)
-
-        print(f'Volunteer Emails: {volunteer_emails}')
-        print(f'Email Subject: {email_subject}')
-        print(f'Email Message: {message_content}')
 
         send_mass_paw_email('email-volunteers-mass.html', {'message_content': message_content}, subject=email_subject, recipient_list=volunteer_emails, reply_to=settings.VOLUNTEER_EMAIL)
 
