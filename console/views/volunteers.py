@@ -1,11 +1,12 @@
-import asyncio
 import csv
+import markdown
 
 from .page_view import PageView
 from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm
 from core.models import get_current_event, ApplicationState
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -13,7 +14,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
-from modules.email import send_paw_email
+from modules.email import send_paw_email, send_mass_paw_email
 from volunteers.models import Volunteer, VolunteerTask
 
 from datetime import date
@@ -76,6 +77,41 @@ class VolunteerDetailsPageView(PageView):
         context['tasks'] = tasks
         context['total_hours'] = total_hours
 
+        return context
+
+@method_decorator(decorators, name="dispatch")
+class VolunteerComposeMassEmailPageView(PageView):
+    template_name = 'console-volunteers-email.html'
+
+    def post(self, request, *args, **kwargs):
+        event = get_current_event()
+        volunteer_group = request.POST.get('volunteer_group')
+        email_subject = request.POST.get('subject')
+        email_message = request.POST.get('message')
+        
+        volunteers = None
+        match volunteer_group:
+            case 'all':
+                volunteers = Volunteer.objects.filter(event=event).filter(Q(volunteer_state=ApplicationState.STATE_NEW) | Q(volunteer_state=ApplicationState.STATE_ACCEPTED))
+            case 'new':
+                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_NEW)
+            case 'accepted':
+                volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
+
+        print(f'volunteer size {len(volunteers)}')
+        volunteer_emails = []
+        for volunteer in volunteers:
+            volunteer_emails.append(volunteer.email)
+        
+        message_content = markdown.markdown(email_message)
+
+        send_mass_paw_email('email-volunteers-mass.html', {'message_content': message_content}, subject=email_subject, recipient_list=volunteer_emails, reply_to=settings.VOLUNTEER_EMAIL)
+
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
         return context
 
 @method_decorator(decorators, name="dispatch")

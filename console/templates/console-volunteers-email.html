@@ -1,0 +1,48 @@
+{% extends 'console.html' %}
+{% load console_extras %}
+
+{% block title %}PAWConsole - Volunteers{% endblock %}
+
+{% block tool %}
+<h1>Volunteer Mass Email</h1>
+<form class="form" action="" method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-8">
+            <label for="volunteer_group">Send To:</label>
+            <select class="form-control" name="volunteer_group" id="volunteer_group">
+                <option value="all">All</option>
+                <option value="new">New</option>
+                <option value="accepted">Accepted</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <label for="subject">Subject:</label>
+            <input type="text" class="form-control" name="subject" id="subject" required>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-8">
+            <label for="message">Message:</label>
+            <textarea name="message" class="form-control" rows="5" id="message"></textarea>
+            <script>
+            const easyMDE = new EasyMDE(Object.assign({
+                element: document.getElementById('message'),
+                hideIcons: ["side-by-side", "preview"],
+                spellChecker: false,
+                parsingConfig: {
+                    allowAtxHeaderWithoutSpace: true,
+                }
+            }));
+            </script>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

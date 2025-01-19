@@ -11,4 +11,4 @@ from .performers import PerformersListPageView, PerformerDetailPageView, Perform
 from .performers import PerformerActionDeleteRedirect, PerformersSchedulePageView, PerformerActionAssignPageView, PerformerActionUnscheduleRedirect
 from .volunteers import VolunteerListPageView, VolunteerCSVDownloadView, VolunteerDetailsPageView, VolunteerActionAcceptRedirect, VolunteerActionDeclinedRedirect, VolunteerActionDeleteRedirect
 from .volunteers import VolunteerDashboardPageView, VolunteerStartTaskRedirect, VolunteerEndTaskRedirect, VolunteerAddTaskPageView, VolunteerEditTaskPageView
-from .volunteers import VolunteerActionDeleteTaskRedirect
+from .volunteers import VolunteerActionDeleteTaskRedirect, VolunteerComposeMassEmailPageView

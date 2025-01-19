@@ -50,6 +50,7 @@ urlpatterns = [
     path('volunteers/dashboard', views.VolunteerDashboardPageView.as_view(), name="volunteer-dashboard"),
     path('volunteers/dashboard/task/<int:volunteer_id>/start', views.VolunteerStartTaskRedirect.as_view(), name='volunteer-task-start'),
     path('volunteers/dashboard/task/<int:task_id>/end', views.VolunteerEndTaskRedirect.as_view(), name='volunteer-task-end'),
+    path('volunteers/email', views.VolunteerComposeMassEmailPageView.as_view(), name='volunteer-email'),
 
     # Performers
     path('performers', views.PerformersListPageView.as_view(), name='performers'),
