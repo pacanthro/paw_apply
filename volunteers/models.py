@@ -19,7 +19,7 @@ class Volunteer(models.Model):
     legal_name = models.CharField(max_length=200)
     fan_name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=15)
-    twitter_handle = models.CharField(max_length=30)
+    twitter_handle = models.CharField('Twitter/BSky Handle', max_length=30)
     telegram_handle = models.CharField(max_length=30)
     department_interest = models.ManyToManyField(Department)
     volunteer_history = models.TextField()
