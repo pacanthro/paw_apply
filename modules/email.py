@@ -21,10 +21,9 @@ def send_paw_email(template_name, template_context, subject, recipient_list, rep
 
 def send_mass_paw_email(template_name, template_context, subject, recipient_list, reply_to):
     email_from = settings.DEFAULT_FROM_EMAIL
-    bcc_list = recipient_list
 
     html_msg = render_to_string(template_name, template_context)
-    email = EmailMessage(subject, html_msg, email_from, [reply_to, ], bcc_list, reply_to=[reply_to])
+    email = EmailMessage(subject, html_msg, email_from, [reply_to, ], recipient_list, reply_to=[reply_to])
     email.content_subtype = 'html'
 
     try:
