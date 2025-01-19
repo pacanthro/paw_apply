@@ -64,6 +64,8 @@
     <h2>Actions</h2>
     {% if merchant.merchant_state == 'STATE_NEW' or merchant.merchant_state == 'STATE_WAITLISTED' %}
     <a href="{% url 'console:merchant-accept' merchant.id %}" class="btn btn-primary">Accept</a>
+    {% endif %}
+    {% if merchant.merchant_state == 'STATE_NEW' %}
     <a href="{% url 'console:merchant-waitlist' merchant.id %}" class="btn btn-primary">Waitlist</a>
     {% endif %}
     {% if merchant.merchant_state == 'STATE_ACCEPTED' %}
@@ -72,8 +74,9 @@
     {% endif %}
     {% if merchant.merchant_state == 'STATE_PAYMENT' %}
     <a href="{% url 'console:merchant-confirm' merchant.id %}" class="btn btn-primary">Send Confirmation</a>
-    <button onclick="$.fn.sendPaymentEmail()" class="btn btn-secondary">Re-Request Payment</button>
-    {% else %}
+    <a href="{% url 'console:merchant-payment' merchant.id %}" class="btn btn-secondary">Re-Request Payment</a> 
+    {% endif %}
+    {% if merchant.merchant_state == 'STATE_CONFIRMED' %}
     <a href="{% url 'console:merchant-assign' merchant.id %}" class="btn btn-primary">Assign Table</a>
     {% endif %}
     <a href="{% url 'console:merchant-delete' merchant.id %}" class="btn btn-danger">Delete Merchant</a>
