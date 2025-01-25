@@ -116,13 +116,13 @@
           <td>{{task.task_end|default_if_none:""}}</td>
           <td>
             {% if task.task_hours != None %}
-                        {{task.task_hours|pretty_delta}}
-                        {% endif %}
+                {{task.task_hours|pretty_delta}}
+            {% endif %}
           </td>
           <td>
             {% if task.effective_hours != None %}
-                        {{task.effective_hours|pretty_delta}}
-                        {% endif %}
+                {{task.effective_hours|pretty_delta}}
+            {% endif %}
           </td>
           <td class="text-center">
             <a href="{% url 'console:volunteer-edit-task' volunteer.id task.id %}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i>
@@ -137,9 +137,9 @@
         <tr>
           <td colspan="6" class="text-end">Total Hours</td>
           <td>
-            {% if total_hours.total_hours != None %}
-                        {{total_hours.total_hours|pretty_delta}}
-                        {% endif %}
+            {% if total_hours != None %}
+                {{total_hours|pretty_delta}}
+            {% endif %}
           </td>
           <td></td>
         </tr>

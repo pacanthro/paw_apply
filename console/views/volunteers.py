@@ -1,5 +1,6 @@
 import csv
 import markdown
+import operator
 
 from .page_view import PageView
 from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm
@@ -14,6 +15,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
+from functools import reduce
 from modules.email import send_paw_email, send_mass_paw_email
 from volunteers.models import Volunteer, VolunteerTask
 
@@ -70,8 +72,8 @@ class VolunteerDetailsPageView(PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         volunteer = get_object_or_404(Volunteer, pk=kwargs['volunteer_id'])
-        tasks = VolunteerTask.objects.filter(volunteer=volunteer).annotate(task_hours=F('task_end') - F('task_start')).annotate(effective_hours=ExpressionWrapper(F('task_hours') * F('task_multiplier'), output_field=DurationField()))
-        total_hours = VolunteerTask.objects.filter(volunteer=volunteer).annotate(task_hours=F('task_end') - F('task_start')).annotate(effective_hours=ExpressionWrapper(F('task_hours') * F('task_multiplier'), output_field=DurationField())).aggregate(total_hours=Sum(F('effective_hours')))
+        tasks = VolunteerTask.objects.filter(volunteer=volunteer)
+        total_hours = reduce(operator.add, [task.effective_hours() for task in tasks]) if len(tasks) > 0 else None
         print(total_hours, file=sys.stderr)
         context['volunteer'] = volunteer
         context['tasks'] = tasks
