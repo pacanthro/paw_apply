@@ -1,3 +1,5 @@
+import datetime
+
 from core.models import ApplicationState, Event, DaysAvailable, Department
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -43,3 +45,12 @@ class VolunteerTask(models.Model):
     task_multiplier = models.FloatField(default=1)
     task_start = models.DateTimeField()
     task_end = models.DateTimeField(null=True, default=None)
+
+    def task_hours(self):
+        if self.task_end == None:
+            return datetime.timedelta(seconds=0)
+        
+        return self.task_end - self.task_start
+    
+    def effective_hours(self):
+        return self.task_hours() * self.task_multiplier
