@@ -33,6 +33,7 @@ class Department(models.Model):
     department_name = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
     order = models.IntegerField(default=0)
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.department_name

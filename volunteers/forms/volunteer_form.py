@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit
 from django import forms
 
-from core.models import DaysAvailable
+from core.models import DaysAvailable, Department
 from volunteers.models import TimesAvailable, Volunteer
 
 
@@ -36,6 +36,7 @@ class VolunteerForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Fields
+        self.fields['department_interest'].queryset = Department.objects.exclude(deleted=True).order_by('order')
         self.fields['days_available'].queryset = DaysAvailable.objects.filter(party_only=False).order_by('order')
         self.fields['time_availble'].queryset = TimesAvailable.objects.order_by('order')
 
