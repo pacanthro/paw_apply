@@ -5,7 +5,13 @@
 
 {% block content %}
 <h1>Party Floor Application</h1>
+{% if event.module_partyfloor_enabled %}
 <form action="{% url 'partyfloor:new' %}" method="post">
   {% crispy form %}
 </form>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    Sorry Applictions for the Party Floor are currently closed.
+</div>
+{% endif %}
 {% endblock %}

@@ -33,7 +33,7 @@
 <div class="alert alert-danger" role="alert">
   Merchants is currently full. :(
 </div>
-{% elif event.is_submissions_closed == False %}
+{% elif event.is_submissions_closed == False and event.module_merchants_enabled %}
 <a href="{% url 'merchants:apply' %}" class="btn btn-primary btn-lg">Apply Now</a>
 {% endif %}
 {% endblock %}
