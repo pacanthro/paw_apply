@@ -5,7 +5,13 @@
 
 {% block content %}
 <h1>Merchant Application</h1>
+{% if event.module_merchants_enabled %}
 <form action="{% url 'merchants:new' %}" method="post">
   {% crispy form %}
 </form>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    Sorry Applictions for the Shopping District are currently closed.
+</div>
+{% endif %}
 {% endblock %}

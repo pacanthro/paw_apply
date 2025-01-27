@@ -5,7 +5,13 @@
 
 {% block content %}
 <h1>DJ Application</h1>
+{% if event.module_performers_enabled %}
 <form action="{% url 'performers:new' %}" method="post">
     {% crispy form %}
 </form>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    Sorry DJ Applictions are currently closed.
+</div>
+{% endif %}
 {% endblock %}

@@ -5,7 +5,13 @@
 
 {% block content %}
 <h1>Panels Application</h1>
+{% if event.module_panels_enabled %}
 <form action="{% url 'panels:new' %}" method="post">
   {% crispy form %}
 </form>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    Sorry Applictions for Panels are currently closed.
+</div>
+{% endif %}
 {% endblock %}

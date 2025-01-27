@@ -5,7 +5,13 @@
 
 {% block content %}
 <h1>Dance Comp Application</h1>
+{% if event.module_competitors_enabled %}
 <form action="{% url 'dancecomp:new' %}" method="post">
   {% crispy form %}
 </form>
+{% else %}
+<div class="alert alert-danger" rolse="alert">
+    Sorry Applictions for the Dance Competition are currently closed.
+</div>
+{% endif %}
 {% endblock %}

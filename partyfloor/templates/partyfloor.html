@@ -18,7 +18,7 @@
 <div class="alert alert-danger" role="alert">
     Party Floor is currently full. :(
 </div>
-{% elif event.is_submissions_closed == False %}
+{% elif event.is_submissions_closed == False and event.module_partyfloor_enabled %}
 <a href="{% url 'partyfloor:apply' %}" class="btn btn-primary btn-lg">Apply</a>
 {% endif %}
 {% endblock %}
