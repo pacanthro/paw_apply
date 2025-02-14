@@ -102,6 +102,7 @@ class ConsoleIndexPageView(PageView):
         context = super().get_context_data(**kwargs)
         event = get_current_event()
         merchant_count = self.merchant_table_count()
+        merchants_applied = Merchant.objects.filter(event=event).exclude(merchant_state=MerchantState.STATE_DELETED).count()
         panel_count = Panel.objects.filter(event=event).count()
         volunteer_count = Volunteer.objects.filter(event=event).exclude(volunteer_state=ApplicationState.STATE_DELETED).count()
         performer_count = Performer.objects.filter(event=event).exclude(performer_state=ApplicationState.STATE_DELETED).count()
@@ -109,6 +110,7 @@ class ConsoleIndexPageView(PageView):
         competitor_count = Competitor.objects.filter(event=event).exclude(competitor_state=ApplicationState.STATE_DELETED).count()
         
         context['merchant_count'] = {
+            'merchants_applied': merchants_applied,
             'count': merchant_count,
             'total': event.max_merchants
         }
