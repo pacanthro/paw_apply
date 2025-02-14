@@ -109,10 +109,10 @@ class ConsoleIndexPageView(PageView):
         host_count = PartyHost.objects.filter(event=event).exclude(host_state=ApplicationState.STATE_DELETED).count()
         competitor_count = Competitor.objects.filter(event=event).exclude(competitor_state=ApplicationState.STATE_DELETED).count()
         
-        context['merchant_count'] = {
-            'merchants_applied': merchants_applied,
-            'count': merchant_count,
-            'total': event.max_merchants
+        context['merchants'] = {
+            'applied': merchants_applied,
+            'tables_count': merchant_count,
+            'tables_total': event.max_merchants
         }
 
         context['panel_count'] = panel_count

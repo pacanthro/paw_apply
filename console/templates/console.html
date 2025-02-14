@@ -60,8 +60,8 @@
             <div class="card col-sm-2 m-1">
                 <div class="card-body">
                     <h5 class="card-title">Merchants</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{merchant_count.merchants_applied}} have applied</h6>
-                    <div>{{merchant_count.count}} / {{merchant_count.total}} Tables Taken</div>
+                    <h6 class="card-subtitle mb-2 text-muted">{{merchants.applied}} have applied</h6>
+                    <div>{{merchants.tables_count}} / {{merchants.tables_total}} tables taken</div>
                     <a href="{% url 'console:merchants' %}" class="card-link">View</a>
                 </div>
             </div>
