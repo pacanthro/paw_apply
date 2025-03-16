@@ -12,7 +12,7 @@ def _clean_task_time(data, key, default):
     cleaned = data.get(key)
     if cleaned and cleaned > timezone.now():
         raise(ValidationError(F'{key} cannot be in the future.'))
-    
+
     return cleaned or default
 
 class VolunteerTaskStartForm(forms.ModelForm):
@@ -84,7 +84,13 @@ class VolunteerTaskEndForm(forms.ModelForm):
         )
     
     def clean_task_end(self):
-        return _clean_task_time(self.cleaned_data, 'task_end', None)
+        start_date = self.cleaned_data['task_start']
+        end_date = _clean_task_time(self.cleaned_data, 'task_end', None)
+
+        if end_date <= start_date:
+            raise(ValidationError("Task end cannot be before the task started."))
+        
+        return end_date
 
 class VolunteerAddTaskForm(forms.ModelForm):
     task_start = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -134,7 +140,13 @@ class VolunteerAddTaskForm(forms.ModelForm):
         return _clean_task_time(self.cleaned_data, 'task_start', None)
     
     def clean_task_end(self):
-        return _clean_task_time(self.cleaned_data, 'task_end', None)
+        start_date = self.cleaned_data['task_start']
+        end_date = _clean_task_time(self.cleaned_data, 'task_end', None)
+
+        if end_date <= start_date:
+            raise(ValidationError("Task end cannot be before the task started."))
+        
+        return end_date
 
 class VolunteerEditTaskForm(forms.ModelForm):
     task_start = forms.fields.DateTimeField(required=False, widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -171,5 +183,11 @@ class VolunteerEditTaskForm(forms.ModelForm):
         return _clean_task_time(self.cleaned_data, 'task_start', None)
     
     def clean_task_end(self):
-        return _clean_task_time(self.cleaned_data, 'task_end', None)
+        start_date = self.cleaned_data['task_start']
+        end_date = _clean_task_time(self.cleaned_data, 'task_end', None)
+
+        if end_date <= start_date:
+            raise(ValidationError("Task end cannot be before the task started."))
+        
+        return end_date
 
