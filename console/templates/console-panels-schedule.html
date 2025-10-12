@@ -36,7 +36,7 @@
                                     <td>
                                         {% for filled_slot in filled_slots %}
                                             {% if event_room == filled_slot.panel.scheduled_room %}
-                                                {% if slot >= filled_slot.panel.scheduled_time and  slot <= filled_slot.end_time %}
+                                                {% if slot >= filled_slot.panel.scheduled_time and  slot < filled_slot.end_time %}
                                                     {% if filled_slot.panel.panel_state == "STATE_CANCELED" %}
                                                     <s>
                                                     {% endif %}
