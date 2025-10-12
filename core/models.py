@@ -50,6 +50,8 @@ class Event(models.Model):
     module_performers_enabled = models.BooleanField(default=False)
     module_partyfloor_enabled = models.BooleanField(default=False)
     module_competitors_enabled = models.BooleanField(default=False)
+    voucher_performers = models.CharField(max_length=20, default="")
+    voucher_volunteer = models.CharField(max_length=20, default="")
 
     def is_submissions_closed(self):
         return self.submissions_end < datetime.date.today()
