@@ -56,23 +56,32 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
                       " If you don't receive an email, " \
                       "please make sure you've entered the address you registered with, and check your spam folder."
     success_url = reverse_lazy('console:index')
-    extra_context = {
-        'event': get_current_event()
-    }
+    
+    def get_extra_context(*args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event'] = get_current_event()
+
+        return context
 
 class ResetPasswordConfirmView(PasswordResetConfirmView):
     template_name = 'console-password-reset-confirm.html'
     success_url = reverse_lazy('console:forgot-password-complete')
-    extra_context = {
-        'event': get_current_event()
-    }
+
+    def get_extra_context(*args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event'] = get_current_event()
+
+        return context
     
 
 class ResetPasswordCompleteView(PasswordResetCompleteView):
     template_name = 'console-password-reset-complete.html'
-    extra_context = {
-        'event': get_current_event()
-    }
+
+    def get_extra_context(*args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event'] = get_current_event()
+
+        return context
 
 class ConsoleLogoutRedirect(View):
     def get(self, request, *args, **kwargs):
