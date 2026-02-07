@@ -84,7 +84,7 @@ class MerchantActionAcceptedRedirect(RedirectView):
         if merchant.merchant_state == MerchantState.STATE_NEW or merchant.merchant_state == MerchantState.STATE_WAITLISTED:
             merchant.merchant_state = MerchantState.STATE_ACCEPTED
             merchant.save()
-            send_paw_email('email-merchant-accepted.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+            send_paw_email('email-merchant-accepted.html', {'merchant': merchant}, subject='PAWCon Merchant Application Accepted', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
         
         return super().get_redirect_url(*args, **kwargs)
 
