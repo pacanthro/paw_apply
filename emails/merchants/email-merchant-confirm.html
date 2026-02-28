@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<head>
+    <style>
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+    <title></title>
+</head>
 <body>
     <h1>Thank You!</h1>
-    <p><b>Greetings {{merchant.fan_name}} ({{merchant.legal_name}}),</b></p>
+    <h3><span class="bold">Greetings {{merchant.fan_name}} ({{merchant.legal_name}}),</span></h3>
     <p>Thank you for submitting your application to vend in the PAWCon Shopping District. You will be contacted soon with futher instructions if chosen.</p>
-    <b>Information you submitted:</b>
-    <p>Email: {{merchant.email}}</p>
-    <p>Legal Name: {{merchant.legal_name}}</p>
-    <p>Fan Name: {{merchant.fan_name}}</p>
-    <p>Phone Number: {{merchant.phone_number}}</p>
-    <p>Table Size: {{merchant.table_size.name}}</p>
-    <p>Business Name: {{merchant.business_name}}</p>
-    <p>Description of Wares:</p>
+    <p><span class="bold">Information you submitted:</span></p>
+    <p><span class="bold">Email:</span> {{merchant.email}}</p>
+    <p><span class="bold">Legal Name:</span> {{merchant.legal_name}}</p>
+    <p><span class="bold">Fan Name:</span> {{merchant.fan_name}}</p>
+    <p><span class="bold">Phone Number:</span> {{merchant.phone_number}}</p>
+    <p><span class="bold">Table Size:</span> {{merchant.table_size.name}}</p>
+    <p><span class="bold">Business Name:</span> {{merchant.business_name}}</p>
+    <p><span class="bold">Description of Wares:</span></p>
     <p>{{merchant.wares_description}}</p>
-    <p>Helper Legal Name: {{merchant.helper_legal_name}}</p>
-    <p>Helper Fan Name: {{merchant.helper_fan_name}}</p>
-    <p>Special Requests:</p>
+    <p><span class="bold">Interested in underPAW: {{merchant.underpaw_interest}}</span></p>
+    <p><span class="bold">Helper Legal Name:</span> {{merchant.helper_legal_name}}</p>
+    <p><span class="bold">Helper Fan Name:</span> {{merchant.helper_fan_name}}</p>
+    <p><span class="bold">Special Requests:</span></p>
     <p>{{merchant.special_requests}}</p>
     <p>Thank You,</p>
     <p>PAWCon Shopping District coordinator. (Dooze)</p>
