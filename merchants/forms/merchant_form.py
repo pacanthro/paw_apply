@@ -17,6 +17,7 @@ class MerchantForm(forms.ModelForm):
             'table_size',
             'business_name',
             'wares_description',
+            'underpaw_interest',
             'helper_legal_name',
             'helper_fan_name',
             'special_requests',
@@ -46,6 +47,7 @@ class MerchantForm(forms.ModelForm):
                 'table_size',
                 'business_name',
                 'wares_description',
+                'underpaw_interest'
             ),
             Fieldset(
                 'Helper Info',

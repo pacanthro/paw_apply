@@ -31,6 +31,7 @@ class Merchant(models.Model):
     table_size = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
     business_name = models.CharField(max_length=200)
     wares_description = models.TextField('Description of Wares')
+    underpaw_interest = models.BooleanField("Interested in underPAW", default=False, help_text="underPAW is PAWCon's Night Market. You Can find information <a href=\"https://pacanthro.org/underpaw\">here</a>")
     helper_legal_name = models.CharField(max_length=200, blank=True)
     helper_fan_name = models.CharField(max_length=200, blank=True)
     special_requests = models.TextField(blank=True)
