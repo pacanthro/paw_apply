@@ -4,3 +4,6 @@ export DB_ENGINE="django.db.backends.postgresql" # Or DB_ENGINE="django.db.backe
 export DB_USER="username"
 export DB_PASSWORD="password"
 export EMAIL_BACKEND="django.core.mail.backends.filebased.EmailBackend"
+export CONCAT_CLIENT_ID="<concat_client_id>"
+export CONCAT_CLIENT_SECRET="<concat_client_secret>"
+export CONCAT_CLIENT_NAME="concat-test"

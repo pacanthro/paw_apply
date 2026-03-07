@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '.pacanthro.org',
-    '.moltenvisuals.com',
     'localhost'
 ]
 
@@ -151,7 +150,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LOGIN_URL = 'console:login'
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -161,7 +159,6 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -170,3 +167,24 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
 ]
+
+AUTHLIB_OAUTH_CLIENTS = {
+    'concat-test': {
+        'client_id': os.getenv('CONCAT_CLIENT_ID'),
+        'client_secret': os.getenv('CONCAT_CLIENT_SECRET'),
+        'access_token_url': 'https://reg-test.pacanthro.org/api/oauth/token',
+        'access_token_params': {'grant_type': 'client_credentials'},
+        'client_kwargs': { 'scope': 'registration:read user:roles:update user:read'},
+        'api_base_url': 'https://reg-test.pacanthro.org/api/v0',
+    },
+    'concat-prod': {
+        'client_id': os.getenv('CONCAT_CLIENT_ID'),
+        'client_secret': os.getenv('CONCAT_CLIENT_SECRET'),
+        'access_token_url': 'https://reg.pacanthro.org/api/oauth/token',
+        'access_token_params': {'grant_type': 'client_credentials'},
+        'client_kwargs': { 'scope': 'registration:read user:roles:update user:read'},
+        'api_base_url': 'https://reg.pacanthro.org/api/v0',
+    }
+}
+
+CONCAT_CLIENT_NAME = os.getenv('CONCAT_CLIENT_NAME', 'concat-test')

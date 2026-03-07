@@ -15,8 +15,13 @@ from django.views import View
 from django.views.generic.base import RedirectView
 from merchants.models import Merchant, MerchantState
 from modules.email import send_paw_email
+from modules.oauth import oauth
 
 from datetime import date
+
+import logging
+
+logger = logging.getLogger('django.server')
 
 decorators = [login_required, permission_required('merchants.view_merchant')]
 
@@ -123,10 +128,29 @@ class MerchantActionPaymentConfirmedRedirect(RedirectView):
             merchant.save()
 
             send_paw_email('email-merchant-payment-confirmed.html', {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+            self.concat_add_merchant_role(merchant)
         else:
             raise BadRequest("Invalid Merchant State for Confirming Payment.")
 
         return super().get_redirect_url(*args, **kwargs)
+
+    def concat_add_merchant_role(self, merchant):
+        client = oauth.create_client(settings.CONCAT_CLIENT_NAME)
+        token = client.fetch_access_token()
+
+        search_json = {
+            "limit": 1,
+            "filter": {
+                "email": merchant.email
+            }
+        }
+
+        oauth_response = client.post("v0/users/search", json=search_json, token=token)
+        resp_json = oauth_response.json()
+        user_id = resp_json["data"][0]["id"]
+        resp_add_role = client.put(f'v0/users/{user_id}/roles/18', json={"scope": "convention"}, token=token)
+        logger.info(f'response: {resp_add_role.content}')
 
 @method_decorator(decorators, name="dispatch")
 class MerchantActionRegistrationReminderRedirect(RedirectView):
