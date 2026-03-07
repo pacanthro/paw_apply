@@ -3,7 +3,7 @@ crispy-bootstrap5==2025.6
 DateTimeRange==2.3.2
 Django==5.2.11
 django-crispy-forms==2.5
-Markdown==3.7
+Markdown==3.8.1
 mysqlclient==2.2.8
 python-dotenv==1.2.1
 requests==2.32.5
