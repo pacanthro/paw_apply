@@ -2,6 +2,7 @@ import datetime
 from unittest import mock
 
 from django.test import TestCase, override_settings
+from django.utils import timezone
 from django.urls import reverse
 
 from core.models import DaysAvailable, Department, Event
@@ -197,7 +198,7 @@ class VolunteerTaskModelTests(TestCase):
             volunteer=self.volunteer,
             recorded_by=self.staff_user,
             task_name="Setup",
-            task_start=datetime.datetime(2026, 1, 1, 9, 0, 0),
+            task_start=timezone.make_aware(datetime.datetime(2026, 1, 1, 9, 0, 0)),
         )
         self.assertEqual(task.task_hours(), datetime.timedelta(seconds=0))
 
@@ -207,8 +208,8 @@ class VolunteerTaskModelTests(TestCase):
             volunteer=self.volunteer,
             recorded_by=self.staff_user,
             task_name="Teardown",
-            task_start=datetime.datetime(2026, 1, 1, 9, 0, 0),
-            task_end=datetime.datetime(2026, 1, 1, 11, 0, 0),
+            task_start=timezone.make_aware(datetime.datetime(2026, 1, 1, 9, 0, 0)),
+            task_end=timezone.make_aware(datetime.datetime(2026, 1, 1, 11, 0, 0)),
             task_multiplier=1.5,
         )
         self.assertEqual(task.task_hours(), datetime.timedelta(hours=2))
