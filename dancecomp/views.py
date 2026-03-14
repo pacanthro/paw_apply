@@ -43,10 +43,6 @@ def new(request):
 
         return HttpResponseRedirect(reverse('dancecomp:confirm'))
 
-    for field, errors in form.errors.items():
-        for error in errors:
-            print(f"Form Error: {field}: {error}")
-
     context = {
         'is_dancecomp': True,
         'event': event,
