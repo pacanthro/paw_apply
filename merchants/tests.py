@@ -102,6 +102,24 @@ class MerchantTests(TestCase):
         self.event.save()
         self.assertFalse(is_merchants_full())
 
+    def test_denied_deleted_do_not_count_toward_capacity(self):
+        self.event.max_merchants = 1
+        self.event.save()
+
+        self._create_merchant(
+            email="denied@example.com",
+            table_size=self.table_full,
+            merchant_state=MerchantState.STATE_DENIED,
+        )
+        self._create_merchant(
+            email="deleted@example.com",
+            table_size=self.table_double,
+            merchant_state=MerchantState.STATE_DELETED,
+        )
+
+        is_merchants_full = merchant_views.__dict__["__is_merchants_full"]
+        self.assertFalse(is_merchants_full())
+
     def test_apply_redirects_when_full(self):
         self.event.max_merchants = 0
         self.event.save()
@@ -121,3 +139,37 @@ class MerchantTests(TestCase):
         self.assertEqual(Merchant.objects.first().email, "merchant@example.com")
 
         mock_send_email.assert_called_once()
+
+    def test_index_renders_template_and_context(self):
+        response = self.client.get(reverse("merchants:index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "merchants.html")
+        self.assertEqual(response.context["event"], self.event)
+        self.assertEqual(response.context["merchant_count"], 0)
+        self.assertEqual(response.context["max_merchants"], self.event.max_merchants)
+
+    def test_apply_renders_template_when_open(self):
+        response = self.client.get(reverse("merchants:apply"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "merch-apply.html")
+        self.assertEqual(response.context["event"], self.event)
+        self.assertIn("form", response.context)
+
+    def test_confirm_renders_template(self):
+        response = self.client.get(reverse("merchants:confirm"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "merch-confirm.html")
+
+    def test_index_with_no_current_event(self):
+        self.event.event_end = datetime.date.today() - datetime.timedelta(days=1)
+        self.event.save()
+
+        response = self.client.get(reverse("merchants:index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.context["event"])
+        self.assertEqual(response.context["merchant_count"], 0)
+        self.assertEqual(response.context["max_merchants"], 0)
