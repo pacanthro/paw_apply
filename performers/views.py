@@ -32,8 +32,6 @@ def new(request):
     event = get_current_event()
     form = PerformerForm(request.POST)
 
-    print(form.errors)
-
     if form.is_valid():
         performer = form.save(commit=False)
         performer.event = event
