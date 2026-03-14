@@ -7,7 +7,7 @@
 <h1>Merchant Application</h1>
 {% if event.module_merchants_enabled %}
 <form action="{% url 'merchants:new' %}" method="post">
-  {% crispy form %}
+    {% crispy form %}
 </form>
 {% else %}
 <div class="alert alert-danger" role="alert">
