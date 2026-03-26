@@ -6,5 +6,5 @@ django-crispy-forms==2.5
 Markdown==3.8.1
 mysqlclient==2.2.8
 python-dotenv==1.2.1
-requests==2.32.5
+requests==2.33.0
 sendgrid-django==4.2.0
