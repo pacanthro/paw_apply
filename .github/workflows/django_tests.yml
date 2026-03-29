@@ -3,6 +3,7 @@ name: Django CI
 on:
   pull_request:
     branches: [ "main" ] # Triggers on pull requests to the 'main' branch
+    types: [opened, synchronize, reopened]
   push:
     branches: [ "main" ] # Also runs on direct pushes to 'main'
 
