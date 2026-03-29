@@ -8,7 +8,7 @@ on:
     branches: [ "main", "master" ] # Also runs on direct pushes to 'main'
 
 jobs:
-  test:
+  django_tests:
     runs-on: ubuntu-latest # Specifies the operating system to run the job on
 
     steps:
@@ -24,6 +24,6 @@ jobs:
     - name: Run Tests
       env:
         # Set the Django settings module environment variable
-        DJANGO_SETTINGS_MODULE: your_project_name.settings 
+        DJANGO_SETTINGS_MODULE: paw.settings 
       run: |
         python manage.py test # Executes Django's built-in test command
