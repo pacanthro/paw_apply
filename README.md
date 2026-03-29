@@ -45,3 +45,4 @@ Please Don't Open Issues or Pull Requests unless you've contacted Laveur already
 * Activate your virtual environment: `source .venv/bin/activate`
 * Source your environment variables: `source .env`
 * Run the dev server: `./manage.py runserver`
+* Run the tests: `./manage.py test`

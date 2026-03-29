@@ -1,0 +1,1 @@
+"""Console app test package."""
