@@ -24,6 +24,12 @@ jobs:
     - name: Run Tests
       env:
         # Set the Django settings module environment variable
-        DJANGO_SETTINGS_MODULE: paw.settings 
+        DJANGO_SETTINGS_MODULE: paw.test_settings
+        DJANGO_SECRET_KEY: "some_really_secret_key_for_unit_tests"
+        DEBUG: "True"
+        EMAIL_BACKEND: "django.core.mail.backends.filebased.EmailBackend"
+        CONCAT_CLIENT_ID: "3"
+        CONCAT_CLIENT_SECRET: "stuff"
+        CONCAT_CLIENT_NAME: "concat-test"
       run: |
-        python manage.py test # Executes Django's built-in test command
+        python manage.py test --verbosity 3 # Executes Django's built-in test command
