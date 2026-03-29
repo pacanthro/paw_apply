@@ -223,7 +223,6 @@ class PerformerActionUnscheduleRedirect(RedirectView):
         performer.save()
 
         view_name = resolve(urlparse(self.request.META.get('HTTP_REFERER')).path).view_name
-        print(view_name)
         if view_name == "console:performer-detail":
             return reverse('console:performer-detail', args=[performer.id])
 

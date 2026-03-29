@@ -74,7 +74,6 @@ class VolunteerDetailsPageView(PageView):
         volunteer = get_object_or_404(Volunteer, pk=kwargs['volunteer_id'])
         tasks = VolunteerTask.objects.filter(volunteer=volunteer)
         total_hours = reduce(operator.add, [task.effective_hours() for task in tasks]) if len(tasks) > 0 else None
-        print(total_hours, file=sys.stderr)
         context['volunteer'] = volunteer
         context['tasks'] = tasks
         context['total_hours'] = total_hours
@@ -100,7 +99,6 @@ class VolunteerComposeMassEmailPageView(PageView):
             case 'accepted':
                 volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
 
-        print(f'volunteer size {len(volunteers)}')
         volunteer_emails = []
         for volunteer in volunteers:
             volunteer_emails.append(volunteer.email)

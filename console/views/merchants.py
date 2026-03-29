@@ -149,8 +149,7 @@ class MerchantActionPaymentConfirmedRedirect(RedirectView):
         oauth_response = client.post("v0/users/search", json=search_json, token=token)
         resp_json = oauth_response.json()
         user_id = resp_json["data"][0]["id"]
-        resp_add_role = client.put(f'v0/users/{user_id}/roles/18', json={"scope": "convention"}, token=token)
-        logger.info(f'response: {resp_add_role.content}')
+        client.put(f'v0/users/{user_id}/roles/18', json={"scope": "convention"}, token=token)
 
 @method_decorator(decorators, name="dispatch")
 class MerchantActionRegistrationReminderRedirect(RedirectView):
