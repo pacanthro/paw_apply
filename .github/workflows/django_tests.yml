@@ -1,0 +1,28 @@
+name: Django CI
+
+on:
+  pull_request:
+    branches: [ "main" ] # Triggers on pull requests to the 'main' branch
+  push:
+    branches: [ "main" ] # Also runs on direct pushes to 'main'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest # Specifies the operating system to run the job on
+
+    steps:
+    - uses: actions/checkout@v4 # Checks out your repository code
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13" # Specify your desired Python version
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements_postgres.txt # Installs project dependencies from requirements.txt
+    - name: Run Tests
+      env:
+        # Set the Django settings module environment variable
+        DJANGO_SETTINGS_MODULE: your_project_name.settings 
+      run: |
+        python manage.py test # Executes Django's built-in test command
