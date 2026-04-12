@@ -1,5 +1,5 @@
 from .page_view import PageView
-from console.forms import PerformerScheduleDayForm, PerformerScheduleSlotForm
+from console.forms import PerformerScheduleDayForm, PerformerScheduleSlotForm, PerformerUpdateContentForm
 from core.models import get_current_event, ApplicationState, DaysAvailable, SchedulingConfig
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
 from modules.email import send_paw_email
-from performers.models import Performer
+from performers.models import Performer, PerformerContent
 
 from django.conf import settings
 import django.utils.timezone
@@ -227,3 +227,27 @@ class PerformerActionUnscheduleRedirect(RedirectView):
             return reverse('console:performer-detail', args=[performer.id])
 
         return reverse('console:performer-schedule')
+
+@method_decorator(decorators, name="dispatch")
+class PerformersUpdateContentPageView(PageView):
+    template_name = 'console-performer-content.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        content = PerformerContent.objects.first()
+        form = PerformerUpdateContentForm(instance=content)
+
+        context['content'] = content
+        context['form'] = form
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        form = PerformerUpdateContentForm(request.POST, instance=context['content'])
+        
+        context['form'] = form
+
+        if form.is_valid():
+            host = form.save()
+        
+        return self.render_to_response(context)
