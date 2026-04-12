@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from core.models import Event
 from performers.forms import PerformerForm
-from performers.models import Performer
+from performers.models import Performer, PerformerContent
 
 
 class PerformerViewsTests(TestCase):
@@ -18,6 +18,19 @@ class PerformerViewsTests(TestCase):
             event_end=today + datetime.timedelta(days=2),
             submissions_end=today + datetime.timedelta(days=1),
             module_performers_enabled=True,
+        )
+        self.content = PerformerContent.objects.create(
+            card_title="Performer Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
+            email_assigned="Assigned email content",
         )
 
     def _valid_post_data(self, **overrides):
@@ -53,8 +66,8 @@ class PerformerViewsTests(TestCase):
         self.assertIsInstance(response.context["form"], PerformerForm)
 
     @override_settings(PERFORMERS_EMAIL="performers@example.com")
-    @patch("performers.views.send_paw_email")
-    def test_new_view_creates_performer_and_redirects(self, send_paw_email):
+    @patch("performers.views.send_paw_email_new")
+    def test_new_view_creates_performer_and_redirects(self, send_paw_email_new):
         response = self.client.post(reverse("performers:new"), data=self._valid_post_data())
 
         self.assertEqual(response.status_code, 302)
@@ -65,9 +78,9 @@ class PerformerViewsTests(TestCase):
         self.assertEqual(performer.legal_name, "Legal Name")
         self.assertEqual(performer.fan_name, "Fan Name")
 
-        send_paw_email.assert_called_once()
-        args, kwargs = send_paw_email.call_args
-        self.assertEqual(args[0], "email-performers-confirm.html")
+        send_paw_email_new.assert_called_once()
+        args, kwargs = send_paw_email_new.call_args
+        self.assertEqual(args[0], self.content.email_submit)
         self.assertEqual(kwargs["subject"], "PAWCon DJ Application")
         self.assertEqual(kwargs["recipient_list"], ["performer@example.com"])
         self.assertEqual(kwargs["reply_to"], "performers@example.com")
