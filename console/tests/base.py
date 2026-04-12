@@ -6,6 +6,7 @@ from django.test import TestCase
 from core.models import DaysAvailable, Department, Event
 from volunteers.models import TimesAvailable, VolunteerContent
 from performers.models import PerformerContent
+from partyfloor.models import PartyHostContent
 
 
 class ConsoleViewBase(TestCase):
@@ -42,6 +43,19 @@ class ConsoleViewBase(TestCase):
         )
         PerformerContent.objects.create(
             card_title="Performer Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
+            email_assigned="Assigned email content",
+        )
+        PartyHostContent.objects.create(
+            card_title="Party Host Card",
             card_body="Card body",
             card_cta="Apply now",
             page_interstitial="Interstitial content",

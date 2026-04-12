@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from core.models import ApplicationState, DaysAvailable, Event
-from partyfloor.models import PartyHost
+from partyfloor.models import PartyHost, PartyHostContent
 
 
 class PartyfloorTests(TestCase):
@@ -31,6 +31,19 @@ class PartyfloorTests(TestCase):
             name="Friday",
             order=1,
             available_party=True,
+        )
+        PartyHostContent.objects.create(
+            card_title="Party Host Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
+            email_assigned="Assigned email content",
         )
 
     def _host_payload(self, **overrides):
@@ -101,7 +114,7 @@ class PartyfloorTests(TestCase):
 
     def test_new_creates_host_sends_email_and_redirects(self):
         payload = self._host_payload()
-        with patch("partyfloor.views.send_paw_email") as send_email:
+        with patch("partyfloor.views.send_paw_email_new") as send_email:
             response = self.client.post(reverse("partyfloor:new"), data=payload)
 
         self.assertEqual(response.status_code, 302)

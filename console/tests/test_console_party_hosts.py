@@ -48,7 +48,7 @@ class ConsolePartyHostViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-host-detail.html")
         self.assertEqual(response.context["host"], self.host)
 
-    @patch("console.views.partyfloor.send_paw_email")
+    @patch("console.views.partyfloor.send_paw_email_new")
     def test_host_accept_updates_state(self, mock_send):
         response = self.client.get(reverse("console:host-accept", args=[self.host.id]))
 
@@ -57,7 +57,7 @@ class ConsolePartyHostViewsTests(ConsoleViewBase):
         self.assertEqual(self.host.host_state, ApplicationState.STATE_ACCEPTED)
         mock_send.assert_called_once()
 
-    @patch("console.views.partyfloor.send_paw_email")
+    @patch("console.views.partyfloor.send_paw_email_new")
     def test_host_waitlist_updates_state(self, mock_send):
         response = self.client.get(reverse("console:host-waitlist", args=[self.host.id]))
 
@@ -66,7 +66,7 @@ class ConsolePartyHostViewsTests(ConsoleViewBase):
         self.assertEqual(self.host.host_state, ApplicationState.STATE_WAITLIST)
         mock_send.assert_called_once()
 
-    @patch("console.views.partyfloor.send_paw_email")
+    @patch("console.views.partyfloor.send_paw_email_new")
     def test_host_decline_updates_state(self, mock_send):
         response = self.client.get(reverse("console:host-decline", args=[self.host.id]))
 
@@ -82,7 +82,7 @@ class ConsolePartyHostViewsTests(ConsoleViewBase):
         self.host.refresh_from_db()
         self.assertEqual(self.host.host_state, ApplicationState.STATE_DELETED)
 
-    @patch("console.views.partyfloor.send_paw_email")
+    @patch("console.views.partyfloor.send_paw_email_new")
     def test_host_assign_posts(self, mock_send):
         response = self.client.post(
             reverse("console:host-assign", args=[self.host.id]),
