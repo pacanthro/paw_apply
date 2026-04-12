@@ -1,14 +1,15 @@
-from core.models import get_current_event, ApplicationState, DaysAvailable
+import markdown
+
+from core.models import get_current_event, ApplicationState
 from django.conf import settings
-from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from modules.email import send_paw_email
+from modules.email import send_paw_email, send_paw_email_new
 
 from .forms import HostForm
-from .models import Event, PartyHost
+from .models import PartyHost, PartyHostContent
 
 def __is_partyfloor_full():
     max_partyhosts = 0
@@ -23,10 +24,12 @@ def __is_partyfloor_full():
 # Create your views here.
 def index(request):
     event = get_current_event()
+    content = PartyHostContent.objects.first()
     context =  {
         'is_partyfloor': True,
         'is_partyfloor_full': __is_partyfloor_full(),
         'event': event,
+        'page_content': markdown.markdown(content.page_interstitial)
     }
     return render(request, 'partyfloor.html', context)
 
@@ -35,16 +38,19 @@ def apply(request):
         return HttpResponseRedirect(reverse('partyfloor:index'))
     
     event = get_current_event()
+    content = PartyHostContent.objects.first()
     form = HostForm()
     context =  {
         'is_partyfloor': True,
         'event': event,
+        'page_content': markdown.markdown(content.page_apply),
         'form': form
     }
     return render(request, 'partyfloor-apply.html', context)
 
 def new(request):
     event = get_current_event()
+    content = PartyHostContent.objects.first()
     form = HostForm(request.POST)
 
     if form.is_valid():
@@ -53,13 +59,14 @@ def new(request):
         host.save()
         form.save_m2m()
 
-        send_paw_email('email-party-confirm.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+        send_paw_email_new(content.email_submit, {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
         return HttpResponseRedirect(reverse('partyfloor:confirm'))
     
     context =  {
         'is_partyfloor': True,
         'event': event,
+        'page_content': markdown.markdown(content.page_apply),
         'form': form
     }
 
@@ -67,9 +74,11 @@ def new(request):
 
 def confirm(request):
     event = get_current_event()
-    
+    content = PartyHostContent.objects.first()
+
     context =  {
         'is_partyfloor': True,
         'event': event,
+        'page_content': markdown.markdown(content.page_confirmation)
     }
     return render(request, 'partyfloor-confirm.html', context)
