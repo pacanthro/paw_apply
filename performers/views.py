@@ -1,3 +1,5 @@
+import markdown
+
 from core.models import get_current_event
 from django.conf import settings
 from django.db import IntegrityError
@@ -7,29 +9,34 @@ from django.urls import reverse
 from modules.email import send_paw_email
 
 from .forms import PerformerForm
-from .models import Event, Performer
+from .models import Event, Performer, PerformerContent
 
 # Create your views here.
 def index(request):
     event = get_current_event()
+    content = PerformerContent.objects.first()
     context = {
         'is_djs': True,
-        'event': event
+        'event': event,
+        'page_content': markdown.markdown(content.page_interstitial)
     }
     return render(request, "performer.html", context)
 
 def apply(request):
     event = get_current_event()
+    content = PerformerContent.objects.first()
     form = PerformerForm()
     context = {
         'is_djs': True,
         'event': event,
+        'page_content': markdown.markdown(content.page_apply),
         'form': form
     }
     return render(request, 'performer-apply.html', context)
 
 def new(request):
     event = get_current_event()
+    content = PerformerContent.objects.first()
     form = PerformerForm(request.POST)
 
     if form.is_valid():
@@ -43,15 +50,19 @@ def new(request):
     context = {
         'is_djs': True,
         'event': event,
+        'page_content': markdown.markdown(content.page_apply),
         'form': form
     }
+
     return render(request, 'performer-apply.html', context)
 
 def confirm(request):
     event = get_current_event()
-    
+    content = PerformerContent.objects.first()
+
     context = {
         'is_djs': True,
-        'event': event
+        'event': event,
+        'page_content': markdown.markdown(content.page_confirmation),
     }
     return render(request, 'performer-confirm.html', context)

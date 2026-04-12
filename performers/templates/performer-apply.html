@@ -6,6 +6,7 @@
 {% block content %}
 <h1>DJ Application</h1>
 {% if event.module_performers_enabled %}
+{{ page_content|safe }}
 <form action="{% url 'performers:new' %}" method="post">
     {% crispy form %}
 </form>
