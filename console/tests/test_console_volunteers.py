@@ -98,7 +98,7 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
         recipients = mock_send.call_args.kwargs["recipient_list"]
         self.assertEqual(set(recipients), {"new@example.com", "accepted@example.com"})
 
-    @patch("console.views.volunteers.send_paw_email")
+    @patch("console.views.volunteers.send_paw_email_new")
     def test_volunteer_accept_updates_state(self, mock_send):
         volunteer = self._create_volunteer()
 
@@ -109,7 +109,7 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
         self.assertEqual(volunteer.volunteer_state, ApplicationState.STATE_ACCEPTED)
         mock_send.assert_called_once()
 
-    @patch("console.views.volunteers.send_paw_email")
+    @patch("console.views.volunteers.send_paw_email_new")
     def test_volunteer_decline_updates_state(self, mock_send):
         volunteer = self._create_volunteer()
 
