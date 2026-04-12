@@ -5,6 +5,7 @@
 
 {% block content %}
 <h1>Volunteer Application</h1>
+{{page_content|safe}}
 <form action="{% url 'volunteers:new' %}" method="post">
     {% crispy form %}
 </form>

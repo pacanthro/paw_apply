@@ -54,3 +54,14 @@ class VolunteerTask(models.Model):
     
     def effective_hours(self):
         return self.task_hours() * self.task_multiplier
+    
+class VolunteerContent(models.Model):
+    card_title = models.CharField(max_length=100)
+    card_body = models.TextField()
+    card_cta = models.CharField(max_length=50, verbose_name="Card Call To Action", help_text="Button Text")
+    page_interstitial = models.TextField()
+    page_apply = models.TextField(verbose_name="Application")
+    page_confirmation = models.TextField()
+    email_submit = models.TextField()
+    email_accepted = models.TextField()
+    email_declined = models.TextField()

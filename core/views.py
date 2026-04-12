@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 from .models import Event
 from performers.models import PerformerContent
+from volunteers.models import VolunteerContent
 
 # Create your views here.
 def index(request):
@@ -11,6 +12,8 @@ def index(request):
         'is_home': True,
         'event': event
     }
+
+    context['volunteer_content'] = VolunteerContent.objects.first()
 
     if event.module_performers_enabled:
         context['performer_content'] = PerformerContent.objects.first()

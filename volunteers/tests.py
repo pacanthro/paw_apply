@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from core.models import DaysAvailable, Department, Event
 from volunteers.forms import VolunteerForm
-from volunteers.models import TimesAvailable, Volunteer, VolunteerTask
+from volunteers.models import TimesAvailable, Volunteer, VolunteerTask, VolunteerContent
 
 
 class VolunteerViewsTests(TestCase):
@@ -18,6 +18,17 @@ class VolunteerViewsTests(TestCase):
             event_start=today,
             event_end=today + datetime.timedelta(days=1),
             submissions_end=today + datetime.timedelta(days=1),
+        )
+        VolunteerContent.objects.create(
+            card_title="Volunteer Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
         )
         self.department = Department.objects.create(
             department_name="Ops",
@@ -69,8 +80,8 @@ class VolunteerViewsTests(TestCase):
         self.assertIn("form", response.context)
 
     @override_settings(VOLUNTEER_EMAIL="volunteer@example.com")
-    @mock.patch("volunteers.views.send_paw_email")
-    def test_new_view_creates_volunteer_and_redirects(self, send_paw_email):
+    @mock.patch("volunteers.views.send_paw_email_new")
+    def test_new_view_creates_volunteer_and_redirects(self, send_paw_email_new):
         response = self.client.post(reverse("volunteers:new"), data=self._valid_post_data())
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response["Location"], reverse("volunteers:confirm"))
@@ -81,7 +92,7 @@ class VolunteerViewsTests(TestCase):
         self.assertEqual(list(volunteer.days_available.all()), [self.day])
         self.assertEqual(list(volunteer.time_availble.all()), [self.time])
 
-        send_paw_email.assert_called_once()
+        send_paw_email_new.assert_called_once()
 
     def test_new_view_invalid_rerenders(self):
         response = self.client.post(

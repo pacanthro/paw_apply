@@ -9,21 +9,19 @@
     <div class="col-sm-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Volunteer</h5>
-                <p class="card-text">Volunteers are key to PAW's success if you wish to help be part of that. Apply to
-                    volunteer with us.</p>
-                <a href="{% url 'volunteers:index' %}" class="btn btn-primary">Volunteer</a>
+                <h5 class="card-title">{{volunteer_content.card_title}}</h5>
+                <p class="card-text">{{volunteer_content.card_body}}</p>
+                <a href="{% url 'volunteers:index' %}" class="btn btn-primary">{{volunteer_content.card_cta}}</a>
             </div>
         </div>
     </div>
     {% else %}
-    <div class="col-sm-4 d-flex align-items-stretch">
+    <div class="col-sm-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Volunteer</h5>
-                <p class="card-text">Volunteers are key to PAW's success if you wish to help be part of that. Apply to
-                    volunteer with us.</p>
-                <a href="{% url 'volunteers:index' %}" class="btn btn-primary">Volunteer</a>
+                <h5 class="card-title">{{volunteer_content.card_title}}</h5>
+                <p class="card-text">{{volunteer_content.card_body}}</p>
+                <a href="{% url 'volunteers:index' %}" class="btn btn-primary">{{volunteer_content.card_cta}}</a>
             </div>
         </div>
     </div>
