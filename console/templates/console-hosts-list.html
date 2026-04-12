@@ -4,6 +4,9 @@
 
 {% block tool %}
 <h1>Hosts</h1>
+<div class="col">
+    <a href="{% url 'console:host-content' %}" class="btn btn-primary">Update Content</a>
+</div>
 <table class="table">
   <thead class="text-left">
     <tr class="table-dark">

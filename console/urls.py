@@ -73,6 +73,7 @@ urlpatterns = [
     path('hosts/<int:host_id>/waitlist', views.PartyHostActionWaitlistRedirect.as_view(), name='host-waitlist'),
     path('hosts/<int:host_id>/decline', views.PartyHostActionDeclineRedirect.as_view(), name='host-decline'),
     path('hosts/<int:host_id>/delete', views.PartyHostActionDeleteRedirect.as_view(), name='host-delete'),
+    path('hosts/content', views.PartyHostUpdateContentPageView.as_view(), name='host-content'),
 
     # Competitors
     path('competitors', views.CompetitorsListPageView.as_view(), name='competitors'),

@@ -66,10 +66,9 @@
     <div class="col-sm-4 d-flex align-items-stretch">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Throw a Party</h5>
-                <p class="card-text">Strut your stuff on the PAWCon party floor! Want to host a party? Or just be right
-                    in the middle of the action?</p>
-                <a href="{% url 'partyfloor:index' %}" class="btn btn-primary">Party!</a>
+                <h5 class="card-title">{{partyhost_content.card_title}}</h5>
+                <p class="card-text">{{partyhost_content.card_body}}</p>
+                <a href="{% url 'partyfloor:index' %}" class="btn btn-primary">{{partyhost_content.card_cta}}</a>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 from typing import Any
 from .page_view import PageView
-from console.forms import HostAssignRoomForm
+from console.forms import HostAssignRoomForm, PartyHostUpdateContentForm
 from core.models import get_current_event, ApplicationState
 from datetime import date
 from django.contrib.auth.decorators import login_required, permission_required
@@ -10,8 +10,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
-from modules.email import send_paw_email
-from partyfloor.models import PartyHost
+from modules.email import send_paw_email, send_paw_email_new
+from partyfloor.models import PartyHost, PartyHostContent
 
 decorators = [login_required, permission_required('partyfloor.view_partyhost')]
 
@@ -59,7 +59,9 @@ class PartyHostActionDeclineRedirect(RedirectView):
         host.state_changed = date.today()
         host.save()
 
-        send_paw_email('email-party-declined.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+        content = PartyHostContent.objects.first()
+
+        send_paw_email_new(content.email_declined, {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
         return reverse('console:hosts')
     
@@ -74,7 +76,9 @@ class PartyHostActionAcceptRedirect(RedirectView):
         host.state_changed = date.today()
         host.save()
 
-        send_paw_email('email-party-accepted.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+        content = PartyHostContent.objects.first()
+
+        send_paw_email_new(content.email_accepted, {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
     
@@ -89,7 +93,9 @@ class PartyHostActionWaitlistRedirect(RedirectView):
         host.state_changed = date.today()
         host.save()
 
-        send_paw_email('email-party-waitlist.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+        content = PartyHostContent.objects.first()
+
+        send_paw_email_new(content.email_waitlisted, {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -132,8 +138,34 @@ class PartyHostActionAssignPageView(PageView):
             host.state_changed = date.today()
             host.save()
 
-            send_paw_email('email-party-assigned.html', {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
+            content = PartyHostContent.objects.first()
+
+            send_paw_email_new(content.email_assigned, {'host':host}, subject='PAWCon Party Floor Submission', recipient_list=[host.email], reply_to=settings.HOTEL_EMAIL)
 
             return HttpResponseRedirect(reverse('console:host-detail', args=[kwargs['host_id']]))
+        
+        return self.render_to_response(context)
+
+@method_decorator(decorators, name="dispatch")
+class PartyHostUpdateContentPageView(PageView):
+    template_name = 'console-host-content.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        content = PartyHostContent.objects.first()
+        form = PartyHostUpdateContentForm(instance=content)
+
+        context['content'] = content
+        context['form'] = form
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        form = PartyHostUpdateContentForm(request.POST, instance=context['content'])
+        
+        context['form'] = form
+
+        if form.is_valid():
+            host = form.save()
         
         return self.render_to_response(context)

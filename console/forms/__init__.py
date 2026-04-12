@@ -1,6 +1,6 @@
 from .authentication import LoginForm
 from .merchants import MerchantAssignTableForm
 from .panels import PanelScheduleRoomDayForm, PanelScheduleSlotForm
-from .partyfloor import HostAssignRoomForm
+from .partyfloor import HostAssignRoomForm, PartyHostUpdateContentForm
 from .performers import PerformerScheduleDayForm, PerformerScheduleSlotForm, PerformerUpdateContentForm
 from .volunteers import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm, VolunteerUpdateContentForm
