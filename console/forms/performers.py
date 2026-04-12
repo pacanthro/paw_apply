@@ -70,7 +70,7 @@ class PerformerUpdateContentForm(forms.ModelForm):
             'page_interstitial',
             'page_apply',
             'page_confirmation',
-            'email_confirm',
+            'email_submit',
             'email_accepted',
             'email_declined',
             'email_waitlisted',
@@ -106,7 +106,7 @@ class PerformerUpdateContentForm(forms.ModelForm):
             Fieldset(
                 'Email Content',
                 HTML('<p>This is the email that is sent when the form is submitted.</p>'),
-                'email_confirm',
+                'email_submit',
                 HTML('<p>This is the email that is sent when the application is accepted.</p>'),
                 'email_accepted',
                 HTML('<p>This is the email that is sent when the application is declined.</p>'),

@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from modules.email import send_paw_email
+from modules.email import send_paw_email_new
 
 from .forms import PerformerForm
 from .models import Event, Performer, PerformerContent
@@ -44,7 +44,7 @@ def new(request):
         performer.event = event
         performer.save()
 
-        send_paw_email('email-performers-confirm.html', {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
+        send_paw_email_new(content.email_submit, {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
         return HttpResponseRedirect(reverse('performers:confirm'))
     
     context = {

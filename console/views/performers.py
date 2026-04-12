@@ -6,19 +6,17 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, resolve
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
-from modules.email import send_paw_email
+from modules.email import send_paw_email, send_paw_email_new
+from modules.helpers import helper_expand_email_content
 from performers.models import Performer, PerformerContent
 
 from django.conf import settings
-import django.utils.timezone
 
 from urllib.parse import urlparse
 from datetime import date, timedelta
 from datetimerange import DateTimeRange
-import logging
 
 decorators = [login_required, permission_required('performers.view_performer')]
 
@@ -62,11 +60,16 @@ class PerformerActionAcceptRedirect(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         performer = get_object_or_404(Performer, pk=kwargs['performer_id'])
+        content = PerformerContent.objects.first()
         performer.performer_state = ApplicationState.STATE_ACCEPTED
         performer.state_changed = date.today()
         performer.save()
+        
+        email_context = {
+            'performer': performer
+        }
 
-        send_paw_email('email-performers-accepted.html', {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
+        send_paw_email_new(content.email_accepted, email_context, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -77,11 +80,12 @@ class PerformerActionWaitlistRedirect(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         performer = get_object_or_404(Performer, pk=kwargs['performer_id'])
+        content = PerformerContent.objects.first()
         performer.performer_state = ApplicationState.STATE_WAITLIST
         performer.state_changed = date.today()
         performer.save()
 
-        send_paw_email('email-performers-waitlisted.html', {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
+        send_paw_email_new(content.email_waitlisted, {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -91,11 +95,12 @@ class PerformerActionDeclineRedirect(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         performer = get_object_or_404(Performer, pk=kwargs['performer_id'])
+        content = PerformerContent.objects.first()
         performer.performer_state = ApplicationState.STATE_DENIED
         performer.state_changed = date.today()
         performer.save()
 
-        send_paw_email('email-performers-declined.html', {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
+        send_paw_email_new(content.email_declined, {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
 
         return reverse('console:performers')
 
@@ -191,7 +196,8 @@ class PerformerActionAssignPageView(PageView):
                 performer.state_changed = date.today()
                 performer.save()
 
-                send_paw_email('email-performers-assigned.html', {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
+                content = PerformerContent.objects.first()
+                send_paw_email_new(content.email_assigned, {'performer': performer}, subject='PAWCon DJ Application', recipient_list=[performer.email], reply_to=settings.PERFORMERS_EMAIL)
 
                 return HttpResponseRedirect(reverse('console:performer-schedule'))
         
@@ -199,7 +205,7 @@ class PerformerActionAssignPageView(PageView):
     
     def _get_slots(self, currentEvent, day):
         schedulingConfigs = SchedulingConfig.objects.filter(event=currentEvent).filter(day_available=day).order_by('day_available__order')
-
+        
         days = []
         for config in schedulingConfigs:
             slots = [] 

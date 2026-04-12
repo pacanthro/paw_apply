@@ -25,7 +25,7 @@ class PerformerContent(models.Model):
     page_interstitial = models.TextField()
     page_apply = models.TextField(verbose_name="Application")
     page_confirmation = models.TextField()
-    email_confirm = models.TextField()
+    email_submit = models.TextField()
     email_accepted = models.TextField()
     email_declined = models.TextField()
     email_waitlisted = models.TextField()
