@@ -3,4 +3,4 @@ from .merchants import MerchantAssignTableForm
 from .panels import PanelScheduleRoomDayForm, PanelScheduleSlotForm
 from .partyfloor import HostAssignRoomForm
 from .performers import PerformerScheduleDayForm, PerformerScheduleSlotForm, PerformerUpdateContentForm
-from .volunteers import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm
+from .volunteers import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm, VolunteerUpdateContentForm

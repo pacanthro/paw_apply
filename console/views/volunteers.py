@@ -3,7 +3,7 @@ import markdown
 import operator
 
 from .page_view import PageView
-from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm
+from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm, VolunteerUpdateContentForm
 from core.models import get_current_event, ApplicationState
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -16,8 +16,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
 from functools import reduce
-from modules.email import send_paw_email, send_mass_paw_email
-from volunteers.models import Volunteer, VolunteerTask
+from modules.email import send_paw_email, send_paw_email_new, send_mass_paw_email
+from volunteers.models import Volunteer, VolunteerTask, VolunteerContent
 
 from datetime import date
 from django.db.models import DurationField, F, ExpressionWrapper, Sum
@@ -125,7 +125,9 @@ class VolunteerActionAcceptRedirect(RedirectView):
         volunteer.state_changed = date.today()
         volunteer.save()
 
-        send_paw_email('email-volunteers-accepted.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
+        content = VolunteerContent.objects.first()
+
+        send_paw_email_new(content.email_accepted, {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -139,7 +141,9 @@ class VolunteerActionDeclinedRedirect(RedirectView):
         volunteer.state_changed = date.today()
         volunteer.save()
 
-        send_paw_email('email-volunteers-denied.html', {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
+        content = VolunteerContent.objects.first()
+
+        send_paw_email_new(content.email_declined, {'volunteer': volunteer}, subject='PAWCon Volunteer Application', recipient_list=[volunteer.email], reply_to=settings.VOLUNTEER_EMAIL)
 
         return reverse('console:volunteers')
     
@@ -300,3 +304,28 @@ class VolunteerActionDeleteTaskRedirect(RedirectView):
         task.delete()
 
         return super().get_redirect_url(*args, **kwargs)
+
+@method_decorator(decorators, name="dispatch")
+class VolunteerUpdateContentPageView(PageView):
+    template_name = 'console-volunteer-content.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        content = VolunteerContent.objects.first()
+        form = VolunteerUpdateContentForm(instance=content)
+
+        context['content'] = content
+        context['form'] = form
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        form = VolunteerUpdateContentForm(request.POST, instance=context['content'])
+        
+        context['form'] = form
+
+        if form.is_valid():
+            host = form.save()
+        
+        return self.render_to_response(context)
+    
