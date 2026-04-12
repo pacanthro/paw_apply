@@ -62,6 +62,7 @@ urlpatterns = [
     path('performers/schedule', views.PerformersSchedulePageView.as_view(), name='performer-schedule'),
     path('performers/schedule/<int:performer_id>/assign', views.PerformerActionAssignPageView.as_view(), name='performer-assign'),
     path('performers/schedule/<int:performer_id>/unassign', views.PerformerActionUnscheduleRedirect.as_view(), name='performer-unassign'),
+    path('performers/content', views.PerformersUpdateContentPageView.as_view(), name='performer-content'),
 
     # Party Hosts
     path('hosts', views.PartyHostListPageViewView.as_view(), name='hosts'),

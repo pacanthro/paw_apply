@@ -52,7 +52,7 @@ class ConsolePerformerViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-performer-detail.html")
         self.assertEqual(response.context["performer"], self.performer)
 
-    @patch("console.views.performers.send_paw_email")
+    @patch("console.views.performers.send_paw_email_new")
     def test_performer_accept_updates_state(self, mock_send):
         response = self.client.get(
             reverse("console:performer-accept", args=[self.performer.id])
@@ -63,7 +63,7 @@ class ConsolePerformerViewsTests(ConsoleViewBase):
         self.assertEqual(self.performer.performer_state, ApplicationState.STATE_ACCEPTED)
         mock_send.assert_called_once()
 
-    @patch("console.views.performers.send_paw_email")
+    @patch("console.views.performers.send_paw_email_new")
     def test_performer_waitlist_updates_state(self, mock_send):
         response = self.client.get(
             reverse("console:performer-waitlist", args=[self.performer.id])
@@ -74,7 +74,7 @@ class ConsolePerformerViewsTests(ConsoleViewBase):
         self.assertEqual(self.performer.performer_state, ApplicationState.STATE_WAITLIST)
         mock_send.assert_called_once()
 
-    @patch("console.views.performers.send_paw_email")
+    @patch("console.views.performers.send_paw_email_new")
     def test_performer_decline_updates_state(self, mock_send):
         response = self.client.get(
             reverse("console:performer-decline", args=[self.performer.id])
@@ -116,7 +116,7 @@ class ConsolePerformerViewsTests(ConsoleViewBase):
         slot_time = timezone.localtime(self.performer_start)
         slot_value = slot_time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
-        with patch("console.views.performers.send_paw_email") as mock_send:
+        with patch("console.views.performers.send_paw_email_new") as mock_send:
             response = self.client.post(
                 reverse("console:performer-assign", args=[self.performer.id]),
                 data={"scheduled_time": slot_value},

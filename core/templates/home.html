@@ -57,10 +57,9 @@
     <div class="col-sm-4 d-flex align-items-stretch">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Perform</h5>
-                <p class="card-text">DJ's are a critical element of con nightlife. Submit your demo for a chance to play
-                    on stage and showcase your unique sound!</p>
-                <a href="{% url 'performers:index' %}" class="btn btn-primary">Apply</a>
+                <h5 class="card-title">{{performer_content.card_title}}</h5>
+                <p class="card-text">{{performer_content.card_body}}</p>
+                <a href="{% url 'performers:index' %}" class="btn btn-primary">{{performer_content.card_cta}}</a>
             </div>
         </div>
     </div>

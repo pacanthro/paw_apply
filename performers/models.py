@@ -17,3 +17,16 @@ class Performer(models.Model):
     state_changed = models.DateField(auto_now_add=True)
     scheduled_day = models.ForeignKey(DaysAvailable, on_delete=models.CASCADE, blank=True, null=True)
     scheduled_time = models.DateTimeField(blank=True, null=True)
+
+class PerformerContent(models.Model):
+    card_title = models.CharField(max_length=100)
+    card_body = models.TextField()
+    card_cta = models.CharField(max_length=50, verbose_name="Card Call To Action", help_text="Button Text")
+    page_interstitial = models.TextField()
+    page_apply = models.TextField(verbose_name="Application")
+    page_confirmation = models.TextField()
+    email_submit = models.TextField()
+    email_accepted = models.TextField()
+    email_declined = models.TextField()
+    email_waitlisted = models.TextField()
+    email_assigned = models.TextField()
