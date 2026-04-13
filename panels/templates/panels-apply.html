@@ -5,6 +5,7 @@
 
 {% block content %}
 <h1>Panels Application</h1>
+{{page_content|safe}}
 {% if event.module_panels_enabled %}
 <form action="{% url 'panels:new' %}" method="post">
   {% crispy form %}

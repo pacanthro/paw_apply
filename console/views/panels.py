@@ -1,5 +1,5 @@
 from typing import Any
-from console.forms import PanelScheduleRoomDayForm, PanelScheduleSlotForm
+from console.forms import PanelScheduleRoomDayForm, PanelScheduleSlotForm, PanelUpdateContentForm
 from core.models import get_current_event, ApplicationState, EventRoom, RoomType, SchedulingConfig
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
@@ -9,8 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse, resolve
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
-from modules.email import send_paw_email
-from panels.models import Panel
+from modules.email import send_paw_email, send_paw_email_new
+from panels.models import Panel, PanelContent
 
 from .page_view import PageView
 
@@ -76,7 +76,9 @@ class PanelActionAcceptRedirect(RedirectView):
         panel.state_changed = date.today()
         panel.save()
 
-        send_paw_email('email-panels-accepted.html', {'panelist':panel}, subject='PAWCon Panel Accepted', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+        content = PanelContent.objects.first()
+
+        send_paw_email_new(content.email_accepted, {'panelist':panel}, subject='PAWCon Panel Accepted', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
     
@@ -91,7 +93,9 @@ class PanelActionWaitlistRedirect(RedirectView):
         panel.state_changed = date.today()
         panel.save()
 
-        send_paw_email('email-panels-waitlisted.html', {'panelist':panel}, subject='PAWCon Panel Waitlisted', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+        content = PanelContent.objects.first()
+
+        send_paw_email_new(content.email_waitlisted, {'panelist':panel}, subject='PAWCon Panel Waitlisted', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -106,7 +110,9 @@ class PanelActionDenyRedirect(RedirectView):
         panel.state_changed = date.today()
         panel.save()
 
-        send_paw_email('email-panels-declined.html', {'panelist':panel}, subject='PAWCon Panel Denied', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+        content = PanelContent.objects.first()
+
+        send_paw_email_new(content.email_declined, {'panelist':panel}, subject='PAWCon Panel Denied', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -214,7 +220,9 @@ class PanelActionAssignPageView(PageView):
                 panel.state_changed = date.today()
                 panel.save()
 
-                send_paw_email('email-panel-assigned.html', {'panel': panel}, subject='PAWCon Panel Application', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
+                content = PanelContent.objects.first()
+
+                send_paw_email_new(content.email_assigned, {'panel': panel}, subject='PAWCon Panel Application', recipient_list=[panel.email], reply_to=settings.PANEL_EMAIL)
 
                 return HttpResponseRedirect(reverse('console:panels-schedule'))
         
@@ -267,3 +275,27 @@ class PanelActionCancelRedirect(RedirectView):
             return reverse('console:panel-detail', args=[panel.id])
 
         return reverse('console:panels-schedule')
+
+@method_decorator(decorators, name="dispatch")
+class PanelUpdateContentPageView(PageView):
+    template_name = 'console-panels-content.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        content = PanelContent.objects.first()
+        form = PanelUpdateContentForm(instance=content)
+
+        context['content'] = content
+        context['form'] = form
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        form = PanelUpdateContentForm(request.POST, instance=context['content'])
+        
+        context['form'] = form
+
+        if form.is_valid():
+            host = form.save()
+        
+        return self.render_to_response(context)
