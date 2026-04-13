@@ -29,10 +29,9 @@
     <div class="col-sm-4 d-flex align-items-stretch">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Host A Panel</h5>
-                <p class="card-text">Panels are an important part of PAW's success. Panels allow us to educate,
-                    entertain and interact with our community.</p>
-                <a href="{% url 'panels:index' %}" class="btn btn-primary">Submit</a>
+                <h5 class="card-title">{{panels_content.card_title}}</h5>
+                <p class="card-text">{{panels_content.card_body}}</p>
+                <a href="{% url 'panels:index' %}" class="btn btn-primary">{{panels_content.card_cta}}</a>
             </div>
         </div>
     </div>

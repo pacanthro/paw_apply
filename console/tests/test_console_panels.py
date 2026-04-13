@@ -69,7 +69,7 @@ class ConsolePanelViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-panels-detail.html")
         self.assertEqual(response.context["panel"], self.panel)
 
-    @patch("console.views.panels.send_paw_email")
+    @patch("console.views.panels.send_paw_email_new")
     def test_panel_accept_updates_state(self, mock_send):
         response = self.client.get(reverse("console:panel-accept", args=[self.panel.id]))
 
@@ -78,7 +78,7 @@ class ConsolePanelViewsTests(ConsoleViewBase):
         self.assertEqual(self.panel.panel_state, ApplicationState.STATE_ACCEPTED)
         mock_send.assert_called_once()
 
-    @patch("console.views.panels.send_paw_email")
+    @patch("console.views.panels.send_paw_email_new")
     def test_panel_waitlist_updates_state(self, mock_send):
         response = self.client.get(reverse("console:panel-waitlist", args=[self.panel.id]))
 
@@ -87,7 +87,7 @@ class ConsolePanelViewsTests(ConsoleViewBase):
         self.assertEqual(self.panel.panel_state, ApplicationState.STATE_WAITLIST)
         mock_send.assert_called_once()
 
-    @patch("console.views.panels.send_paw_email")
+    @patch("console.views.panels.send_paw_email_new")
     def test_panel_deny_updates_state(self, mock_send):
         response = self.client.get(reverse("console:panel-deny", args=[self.panel.id]))
 
@@ -135,7 +135,7 @@ class ConsolePanelViewsTests(ConsoleViewBase):
         slot_time = timezone.localtime(self.panel_start)
         slot_value = slot_time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
-        with patch("console.views.panels.send_paw_email") as mock_send:
+        with patch("console.views.panels.send_paw_email_new") as mock_send:
             response = self.client.post(
                 reverse("console:panel-assign", args=[self.panel.id]),
                 data={"scheduled_time": slot_value},
