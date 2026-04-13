@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from core.models import DaysAvailable, Event
 from panels.forms import PanelForm
-from panels.models import Panel, PanelDuration, PanelSlot
+from panels.models import Panel, PanelContent, PanelDuration, PanelSlot
 
 
 class PanelViewsTests(TestCase):
@@ -17,6 +17,19 @@ class PanelViewsTests(TestCase):
             event_start=today,
             event_end=today + datetime.timedelta(days=3),
             submissions_end=today,
+        )
+        PanelContent.objects.create(
+            card_title="Panel Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
+            email_assigned="Assigned email content",
         )
 
     def test_index_renders_with_event(self):
@@ -37,8 +50,8 @@ class PanelViewsTests(TestCase):
         self.assertIsInstance(response.context["form"], PanelForm)
 
     @override_settings(PANEL_EMAIL="panels@example.com")
-    @patch("panels.views.send_paw_email")
-    def test_new_creates_panel_and_redirects(self, send_paw_email):
+    @patch("panels.views.send_paw_email_new")
+    def test_new_creates_panel_and_redirects(self, send_paw_email_new):
         day = DaysAvailable.objects.create(
             key="FRI",
             name="Friday",
@@ -79,9 +92,9 @@ class PanelViewsTests(TestCase):
         self.assertEqual(list(panel.panel_day.all()), [day])
         self.assertEqual(list(panel.panel_times.all()), [slot])
 
-        send_paw_email.assert_called_once()
-        args, kwargs = send_paw_email.call_args
-        self.assertEqual(args[0], "email-panels-confirm.html")
+        send_paw_email_new.assert_called_once()
+        args, kwargs = send_paw_email_new.call_args
+        self.assertEqual(args[0], "Submit email content")
         self.assertEqual(kwargs["subject"], "PAWCon Panel Submission")
         self.assertEqual(kwargs["recipient_list"], [payload["email"]])
         self.assertEqual(kwargs["reply_to"], "panels@example.com")

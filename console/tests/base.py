@@ -7,6 +7,7 @@ from core.models import DaysAvailable, Department, Event
 from volunteers.models import TimesAvailable, VolunteerContent
 from performers.models import PerformerContent
 from partyfloor.models import PartyHostContent
+from panels.models import PanelContent
 
 
 class ConsoleViewBase(TestCase):
@@ -77,4 +78,17 @@ class ConsoleViewBase(TestCase):
             email_submit="Submit email content",
             email_accepted="Accepted email content",
             email_declined="Declined email content",
+        )
+        PanelContent.objects.create(
+            card_title="Panel Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
+            email_assigned="Assigned email content",
         )
