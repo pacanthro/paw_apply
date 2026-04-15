@@ -7,7 +7,7 @@ from django.urls import reverse
 from core.models import Event
 from merchants import views as merchant_views
 from merchants.forms import MerchantForm
-from merchants.models import Merchant, MerchantState, Table
+from merchants.models import Merchant, MerchantContent, MerchantState, Table
 
 
 class MerchantTests(TestCase):
@@ -23,6 +23,22 @@ class MerchantTests(TestCase):
         )
         self.table_full = Table.objects.create(key="FULL", name="Full", order=1, deleted=False)
         self.table_double = Table.objects.create(key="DOUB", name="Double", order=2, deleted=False)
+        MerchantContent.objects.create(
+            card_title="Merchant Host Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_payment_requested="Payment requested email content",
+            email_payment_confirmed="Payment confirmed email content",
+            email_payment_remind="Payment remind email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
+            email_assigned="Assigned email content",
+        )
 
     def _valid_form_data(self, **overrides):
         data = {
@@ -130,7 +146,7 @@ class MerchantTests(TestCase):
         response = self.client.get(reverse("merchants:apply"))
         self.assertRedirects(response, reverse("merchants:index"))
 
-    @patch("merchants.views.send_paw_email")
+    @patch("merchants.views.send_paw_email_new")
     def test_new_creates_merchant_and_sends_email(self, mock_send_email):
         response = self.client.post(reverse("merchants:new"), data=self._valid_form_data())
 

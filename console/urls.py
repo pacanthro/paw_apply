@@ -24,6 +24,7 @@ urlpatterns = [
     path('merchants/<int:merchant_id>/waitlist', views.MerchantActionWaitlistRedirect.as_view(), name='merchant-waitlist'),
     path('merchants/<int:merchant_id>/delete', views.MerchantActionDeleteRedirect.as_view(), name='merchant-delete'),
     path('merchants/<int:merchant_id>/assign', views.MerchantActionAssignPageView.as_view(), name='merchant-assign'),
+    path('merchants/content', views.MerchantUpdateContentPageView.as_view(), name='merchant-content'),
 
     # Panels
     path('panels', views.PanelsListPageView.as_view(), name='panels'),

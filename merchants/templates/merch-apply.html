@@ -5,6 +5,7 @@
 
 {% block content %}
 <h1>Merchant Application</h1>
+{{page_content|safe}}
 {% if event.module_merchants_enabled %}
 <form action="{% url 'merchants:new' %}" method="post">
     {% crispy form %}

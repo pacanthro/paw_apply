@@ -254,6 +254,6 @@ class PerformersUpdateContentPageView(PageView):
         context['form'] = form
 
         if form.is_valid():
-            host = form.save()
+            form.save()
         
         return self.render_to_response(context)

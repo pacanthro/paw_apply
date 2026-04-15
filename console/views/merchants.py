@@ -2,7 +2,7 @@ import csv
 from typing import Any
 
 from .page_view import PageView
-from console.forms import MerchantAssignTableForm
+from console.forms import MerchantAssignTableForm, MerchantUpdateContentForm
 from core.models import get_current_event
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -13,8 +13,8 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
-from merchants.models import Merchant, MerchantState
-from modules.email import send_paw_email
+from merchants.models import Merchant, MerchantContent, MerchantState
+from modules.email import send_paw_email, send_paw_email_new
 from modules.oauth import oauth
 
 from datetime import date
@@ -89,7 +89,10 @@ class MerchantActionAcceptedRedirect(RedirectView):
         if merchant.merchant_state == MerchantState.STATE_NEW or merchant.merchant_state == MerchantState.STATE_WAITLISTED:
             merchant.merchant_state = MerchantState.STATE_ACCEPTED
             merchant.save()
-            send_paw_email('email-merchant-accepted.html', {'merchant': merchant}, subject='PAWCon Merchant Application Accepted', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+            content = MerchantContent.objects.first()
+
+            send_paw_email_new(content.email_accepted, {'merchant': merchant}, subject='PAWCon Merchant Application Accepted', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
         
         return super().get_redirect_url(*args, **kwargs)
 
@@ -105,10 +108,16 @@ class MerchantActionRequestPaymentRedirect(RedirectView):
         if merchant.merchant_state == MerchantState.STATE_ACCEPTED or merchant.merchant_state == MerchantState.STATE_WAITLISTED:
             merchant.merchant_state = MerchantState.STATE_PAYMENT
             merchant.save()
-            send_paw_email('email-merchant-payment.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+            content = MerchantContent.objects.first()
+
+            send_paw_email_new(content.email_payment_requested, {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
         elif merchant.merchant_state == MerchantState.STATE_PAYMENT:
             merchant.save()
-            send_paw_email('email-merchant-payment-remind.html', {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+            content = MerchantContent.objects.first()
+
+            send_paw_email_new(content.email_payment_remind, {'merchant': merchant}, subject='PAWCon Merchant Cart Ready', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
         else:
             raise BadRequest("Invalid Merchant State for requesting payment.")
         
@@ -127,7 +136,9 @@ class MerchantActionPaymentConfirmedRedirect(RedirectView):
             merchant.state_changed = date.today()
             merchant.save()
 
-            send_paw_email('email-merchant-payment-confirmed.html', {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+            content = MerchantContent.objects.first()
+
+            send_paw_email_new(content.email_payment_confirmed, {'merchant': merchant}, subject='PAWCon - Welcome to the shopping District', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
             self.concat_add_merchant_role(merchant)
         else:
@@ -148,8 +159,9 @@ class MerchantActionPaymentConfirmedRedirect(RedirectView):
 
         oauth_response = client.post("v0/users/search", json=search_json, token=token)
         resp_json = oauth_response.json()
-        user_id = resp_json["data"][0]["id"]
-        client.put(f'v0/users/{user_id}/roles/18', json={"scope": "convention"}, token=token)
+        if len(resp_json['data']) > 0:
+            user_id = resp_json["data"][0]["id"]
+            client.put(f'v0/users/{user_id}/roles/18', json={"scope": "convention"}, token=token)
 
 @method_decorator(decorators, name="dispatch")
 class MerchantActionRegistrationReminderRedirect(RedirectView):
@@ -158,7 +170,10 @@ class MerchantActionRegistrationReminderRedirect(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         merchant = get_object_or_404(Merchant, pk=kwargs['merchant_id'])
-        send_paw_email('email-merchant-accepted.html', {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+
+        content = MerchantContent.objects.first()
+
+        send_paw_email_new(content.email_accepted, {'merchant': merchant}, subject='PAWCon Merchant Application', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -175,7 +190,9 @@ class MerchantActionWaitlistRedirect(RedirectView):
             merchant.state_changed = date.today()
             merchant.save()
 
-            send_paw_email('email-merchant-waitlist.html', {'merchant': merchant}, subject='PAWCon Merchant Waitlist', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+            content = MerchantContent.objects.first()
+
+            send_paw_email_new(content.email_waitlisted, {'merchant': merchant}, subject='PAWCon Merchant Waitlist', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
         
         return super().get_redirect_url(*args, **kwargs)
     
@@ -216,11 +233,36 @@ class MerchantActionAssignPageView(PageView):
             merchant = form.save(commit=False)
             merchant.merchant_state = MerchantState.STATE_ASSIGNED
             merchant.state_changed = date.today()
-            merchant.save();
+            merchant.save()
+            
+            content = MerchantContent.objects.first()
 
-            send_paw_email('email-merchant-table-assigned.html', {'merchant': merchant}, subject='PAWCon Merchant Table Assigned', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
+            send_paw_email_new(content.email_assigned, {'merchant': merchant}, subject='PAWCon Merchant Table Assigned', recipient_list=[merchant.email], reply_to=settings.MERCHANT_EMAIL)
 
             return HttpResponseRedirect(reverse('console:merchant-detail', args=[merchant.id]))
         
         return self.render_to_response(context)
+
+@method_decorator(decorators, name="dispatch")
+class MerchantUpdateContentPageView(PageView):
+    template_name = 'console-merchant-content.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        content = MerchantContent.objects.first()
+        form = MerchantUpdateContentForm(instance=content)
+
+        context['content'] = content
+        context['form'] = form
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        form = MerchantUpdateContentForm(request.POST, instance=context['content'])
         
+        context['form'] = form
+
+        if form.is_valid():
+            form.save()
+        
+        return self.render_to_response(context)
