@@ -2,7 +2,7 @@ from unittest.mock import Mock, patch
 
 from django.urls import reverse
 
-from merchants.models import Merchant, MerchantState, Table
+from merchants.models import Merchant, MerchantContent, MerchantState, Table
 
 from .base import ConsoleViewBase
 
@@ -22,6 +22,22 @@ class ConsoleMerchantViewsTests(ConsoleViewBase):
             business_name="Business",
             wares_description="Wares",
             merchant_state=MerchantState.STATE_NEW,
+        )
+        MerchantContent.objects.create(
+            card_title="Merchant Host Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_payment_requested="Payment requested email content",
+            email_payment_confirmed="Payment confirmed email content",
+            email_payment_remind="Payment remind email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
+            email_assigned="Assigned email content",
         )
 
     def test_merchants_list_view_renders(self):
@@ -61,7 +77,7 @@ class ConsoleMerchantViewsTests(ConsoleViewBase):
         self.assertIn(self.merchant.business_name, body)
         self.assertNotIn(deleted.business_name, body)
 
-    @patch("console.views.merchants.send_paw_email")
+    @patch("console.views.merchants.send_paw_email_new")
     def test_merchant_accept_updates_state(self, mock_send):
         response = self.client.get(
             reverse("console:merchant-accept", args=[self.merchant.id])
@@ -72,7 +88,7 @@ class ConsoleMerchantViewsTests(ConsoleViewBase):
         self.assertEqual(self.merchant.merchant_state, MerchantState.STATE_ACCEPTED)
         mock_send.assert_called_once()
 
-    @patch("console.views.merchants.send_paw_email")
+    @patch("console.views.merchants.send_paw_email_new")
     def test_merchant_payment_request_updates_state(self, mock_send):
         self.merchant.merchant_state = MerchantState.STATE_ACCEPTED
         self.merchant.save()
@@ -87,7 +103,7 @@ class ConsoleMerchantViewsTests(ConsoleViewBase):
         mock_send.assert_called_once()
 
     @patch("console.views.merchants.oauth.create_client")
-    @patch("console.views.merchants.send_paw_email")
+    @patch("console.views.merchants.send_paw_email_new")
     def test_merchant_payment_confirmed_calls_oauth(self, mock_send, mock_client):
         self.merchant.merchant_state = MerchantState.STATE_PAYMENT
         self.merchant.save()
@@ -109,7 +125,7 @@ class ConsoleMerchantViewsTests(ConsoleViewBase):
         client.post.assert_called_once()
         client.put.assert_called_once()
 
-    @patch("console.views.merchants.send_paw_email")
+    @patch("console.views.merchants.send_paw_email_new")
     def test_merchant_waitlist_updates_state(self, mock_send):
         response = self.client.get(
             reverse("console:merchant-waitlist", args=[self.merchant.id])
@@ -130,7 +146,7 @@ class ConsoleMerchantViewsTests(ConsoleViewBase):
         self.assertEqual(self.merchant.merchant_state, MerchantState.STATE_DELETED)
         self.assertEqual(response["Location"], reverse("console:merchants"))
 
-    @patch("console.views.merchants.send_paw_email")
+    @patch("console.views.merchants.send_paw_email_new")
     def test_merchant_assign_table_posts(self, mock_send):
         response = self.client.post(
             reverse("console:merchant-assign", args=[self.merchant.id]),
