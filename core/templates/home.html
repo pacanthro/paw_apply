@@ -40,10 +40,9 @@
     <div class="col-sm-4 d-flex align-items-stretch">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Become a Merchant</h5>
-                <p class="card-text">Our vibrant shopping district attracts merchants of all types, allowing them to
-                    share their wares with our attendees.</p>
-                <a href="{% url 'merchants:index' %}" class="btn btn-primary">Apply</a>
+                <h5 class="card-title">{{merchant_content.card_title}}</h5>
+                <p class="card-text">{{merchant_content.card_body}}</p>
+                <a href="{% url 'merchants:index' %}" class="btn btn-primary">{{merchant_content.card_cta}}</a>
             </div>
         </div>
     </div>
