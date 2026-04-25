@@ -10,9 +10,8 @@ from django.urls import reverse, resolve
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
 from modules.email import send_paw_email, send_paw_email_new
+from modules.page_view import PageView
 from panels.models import Panel, PanelContent
-
-from .page_view import PageView
 
 from urllib.parse import urlparse
 from datetime import date, timedelta

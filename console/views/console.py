@@ -1,4 +1,3 @@
-from .page_view import PageView
 from console.forms import LoginForm
 from core.models import get_current_event, ApplicationState
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -13,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.base import RedirectView
 from merchants.models import Merchant, MerchantState, Table
+from modules.page_view import PageView
 from panels.models import Panel
 from partyfloor.models import PartyHost
 from performers.models import Performer

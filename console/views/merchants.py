@@ -1,7 +1,6 @@
 import csv
 from typing import Any
 
-from .page_view import PageView
 from console.forms import MerchantAssignTableForm, MerchantUpdateContentForm
 from core.models import get_current_event
 from django.conf import settings
@@ -16,6 +15,7 @@ from django.views.generic.base import RedirectView
 from merchants.models import Merchant, MerchantContent, MerchantState
 from modules.email import send_paw_email, send_paw_email_new
 from modules.oauth import oauth
+from modules.page_view import PageView
 
 from datetime import date
 
