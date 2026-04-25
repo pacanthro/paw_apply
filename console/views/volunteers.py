@@ -72,9 +72,11 @@ class VolunteerDetailsPageView(PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         volunteer = get_object_or_404(Volunteer, pk=kwargs['volunteer_id'])
+        volunteer_history = Volunteer.objects.filter(email=volunteer.email)
         tasks = VolunteerTask.objects.filter(volunteer=volunteer)
         total_hours = reduce(operator.add, [task.effective_hours() for task in tasks]) if len(tasks) > 0 else None
         context['volunteer'] = volunteer
+        context['volunteer_history'] = volunteer_history
         context['tasks'] = tasks
         context['total_hours'] = total_hours
 

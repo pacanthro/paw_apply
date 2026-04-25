@@ -56,6 +56,7 @@ class VolunteerViewsTests(TestCase):
             "twitter_handle": "handle",
             "telegram_handle": "telehandle",
             "department_interest": [self.department.id],
+            "referred_by": "Friend",
             "volunteer_history": "Some history",
             "special_skills": "Some skills",
             "days_available": [self.day.key],
@@ -88,6 +89,7 @@ class VolunteerViewsTests(TestCase):
 
         volunteer = Volunteer.objects.get(email="volunteer@example.com", event=self.event)
         self.assertEqual(volunteer.legal_name, "Legal Name")
+        self.assertEqual(volunteer.referred_by, "Friend")
         self.assertEqual(list(volunteer.department_interest.all()), [self.department])
         self.assertEqual(list(volunteer.days_available.all()), [self.day])
         self.assertEqual(list(volunteer.time_availble.all()), [self.time])
@@ -144,6 +146,7 @@ class VolunteerFormTests(TestCase):
             "twitter_handle": "handle",
             "telegram_handle": "telehandle",
             "department_interest": [self.department.id],
+            "referred_by": "Friend",
             "volunteer_history": "History",
             "special_skills": "Skills",
             "days_available": [self.day.key],
@@ -163,6 +166,7 @@ class VolunteerFormTests(TestCase):
             phone_number="555-0102",
             twitter_handle="existing",
             telegram_handle="existing",
+            referred_by="",
             volunteer_history="",
             special_skills="",
             avail_setup=False,
@@ -190,6 +194,7 @@ class VolunteerTaskModelTests(TestCase):
             phone_number="555-0103",
             twitter_handle="tasker",
             telegram_handle="tasker",
+            referred_by="",
             volunteer_history="",
             special_skills="",
             avail_setup=False,

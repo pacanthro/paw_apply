@@ -6,7 +6,11 @@
 {% block tool %}
 <div class="row">
   <div class="col-md">
+    {% if volunteer.event == event %}
     <h1>Volunteer</h1>
+    {% else %}
+    <h1>{{volunteer.event.event_name}} Volunteer</h1>
+    {% endif %}
     <table class="table">
       <tr>
         <td>Fan Name:</td>
@@ -48,6 +52,10 @@
         </td>
       </tr>
       <tr>
+        <td>Referred By:</td>
+        <td>{{volunteer.referred_by}}</td>
+      </tr>
+      <tr>
         <td>Volunteer History:</td>
         <td>{{volunteer.volunteer_history}}</td>
       </tr>
@@ -87,12 +95,22 @@
         <td>State:</td>
         <td>{{volunteer.get_volunteer_state_display}} ({{volunteer.state_changed}})</td>
       </tr>
+      <tr>
+        <td>Previous Applications:</td>
+        <td>
+            {% for historic in volunteer_history %}
+            {% if historic.event != event %}
+            <a href={% url 'console:volunteer-detail' historic.id %}>{{historic.event.event_name}}</a>
+            {% endif %}
+            {% endfor %}
+        </td>
+      </tr>
     </table>
   </div>
 </div>
 <div class="row">
   <div class="col-md">
-    <h1>Volunteer Tasks</h1>
+    <h3>Volunteer Tasks</h3>
     <table class="table table-striped">
       <thead class="table-dark">
         <tr>
