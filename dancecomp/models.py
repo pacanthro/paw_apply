@@ -19,3 +19,15 @@ class Competitor(models.Model):
     performer_five = models.CharField(max_length=300, null=True, blank=True)
     competitor_state = models.CharField(max_length=20, null=False, choices=ApplicationState, default=ApplicationState.STATE_NEW)
     state_changed = models.DateField(auto_now_add=True)
+
+class CompetitorContent(models.Model):
+    card_title = models.CharField(max_length=100)
+    card_body = models.TextField()
+    card_cta = models.CharField(max_length=50, verbose_name="Card Call To Action", help_text="Button Text")
+    page_interstitial = models.TextField()
+    page_apply = models.TextField(verbose_name="Application")
+    page_confirmation = models.TextField()
+    email_submit = models.TextField()
+    email_accepted = models.TextField()
+    email_declined = models.TextField()
+    email_waitlisted = models.TextField()
