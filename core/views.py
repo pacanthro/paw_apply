@@ -2,6 +2,7 @@ from core.models import get_current_event
 from django.shortcuts import render
 
 from .models import Event
+from dancecomp.models import CompetitorContent
 from merchants.models import MerchantContent
 from panels.models import PanelContent
 from partyfloor.models import PartyHostContent
@@ -29,5 +30,8 @@ def index(request):
 
     if event.module_partyfloor_enabled:
         context['partyhost_content'] = PartyHostContent.objects.first()
+    
+    if event.module_competitors_enabled:
+        context['competitor_content'] = CompetitorContent.objects.first()
 
     return render(request, 'home.html', context)

@@ -75,10 +75,9 @@
     <div class="col-sm-4 d-flex align-items-stretch">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Compete</h5>
-                <p class="card-text">No better way to show us your moves than by competing in our Dance Competition for
-                    free con membership and other prizes!</p>
-                <a href="{% url 'dancecomp:index' %}" class="btn btn-primary">Enter</a>
+                <h5 class="card-title">{{competitor_content.card_title}}</h5>
+                <p class="card-text">{{competitor_content.card_body}}</p>
+                <a href="{% url 'dancecomp:index' %}" class="btn btn-primary">{{competitor_content.card_cta}}</a>
             </div>
         </div>
     </div>

@@ -1,16 +1,13 @@
-from typing import Any
-from console.forms import PanelScheduleRoomDayForm, PanelScheduleSlotForm
-from core.models import get_current_event, ApplicationState, EventRoom, RoomType, SchedulingConfig
-from dancecomp.models import Competitor
+from console.forms import CompetitorUpdateContentForm
+from core.models import get_current_event, ApplicationState
+from dancecomp.models import Competitor, CompetitorContent
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, resolve
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
-from modules.email import send_paw_email
+from modules.email import send_paw_email, send_paw_email_new
 
 from .page_view import PageView
 
@@ -58,7 +55,9 @@ class CompetitorActionAcceptRedirect(RedirectView):
         competitor.state_changed = date.today()
         competitor.save()
 
-        send_paw_email('email-dance-accepted.html', {'competitor':competitor}, subject='PAWCon Dance Competitor Accepted', recipient_list=[competitor.email], reply_to=settings.DANCE_EMAIL)
+        content = CompetitorContent.objects.first()
+
+        send_paw_email_new(content.email_accepted, {'competitor':competitor}, subject='PAWCon Dance Competitor Accepted', recipient_list=[competitor.email], reply_to=settings.DANCE_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -72,8 +71,10 @@ class CompetitorActionDeclineRedirect(RedirectView):
         competitor.competitor_state = ApplicationState.STATE_DENIED
         competitor.state_changed = date.today()
         competitor.save()
+        
+        content = CompetitorContent.objects.first()
 
-        send_paw_email('email-dance-declined.html', {'competitor':competitor}, subject='PAWCon Dance Competitor Declined', recipient_list=[competitor.email], reply_to=settings.DANCE_EMAIL)
+        send_paw_email_new(content.email_declined, {'competitor':competitor}, subject='PAWCon Dance Competitor Declined', recipient_list=[competitor.email], reply_to=settings.DANCE_EMAIL)
 
         return super().get_redirect_url(*args, **kwargs)
 
@@ -89,3 +90,27 @@ class CompetitorActionDeleteRedirect(RedirectView):
         competitor.save()
 
         return reverse(self.pattern_name)
+
+@method_decorator(decorators, name="dispatch")
+class CompetitorUpdateContentPageView(PageView):
+    template_name = 'console-competitor-content.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        content = CompetitorContent.objects.first()
+        form = CompetitorUpdateContentForm(instance=content)
+
+        context['content'] = content
+        context['form'] = form
+        return context
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        form = CompetitorUpdateContentForm(request.POST, instance=context['content'])
+        
+        context['form'] = form
+
+        if form.is_valid():
+            form.save()
+        
+        return self.render_to_response(context)

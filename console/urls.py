@@ -82,5 +82,6 @@ urlpatterns = [
     path('competitors/<int:competitor_id>', views.CompetitorDetailPageView.as_view(), name='competitor-detail'),
     path('competitors/<int:competitor_id>/accept', views.CompetitorActionAcceptRedirect.as_view(), name='competitor-accept'),
     path('competitors/<int:competitor_id>/decline', views.CompetitorActionDeclineRedirect.as_view(), name='competitor-decline'),
-    path('competitors/<int:competitor_id>/delete', views.CompetitorActionDeleteRedirect.as_view(), name='competitor-delete')
+    path('competitors/<int:competitor_id>/delete', views.CompetitorActionDeleteRedirect.as_view(), name='competitor-delete'),
+    path('competitors/content', views.CompetitorUpdateContentPageView.as_view(), name='competitor-content')
 ]
