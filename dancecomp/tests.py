@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from core.models import ApplicationState, Event
 from dancecomp.forms import CompetitorForm
-from dancecomp.models import Competitor
+from dancecomp.models import Competitor, CompetitorContent
 
 
 class DanceCompViewsTests(TestCase):
@@ -26,6 +26,18 @@ class DanceCompViewsTests(TestCase):
             module_competitors_enabled=True,
             voucher_performers="",
             voucher_volunteer="",
+        )
+        CompetitorContent.objects.create(
+            card_title="Competitor Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
         )
 
     def _valid_post_data(self):
@@ -66,7 +78,7 @@ class DanceCompViewsTests(TestCase):
         self.assertEqual(response.context["event"], self.event)
         self.assertTrue(response.context["is_dancecomp"])
 
-    @patch("dancecomp.views.send_paw_email")
+    @patch("dancecomp.views.send_paw_email_new")
     def test_new_creates_competitor_and_redirects(self, mock_send_email):
         response = self.client.post(reverse("dancecomp:new"), data=self._valid_post_data())
         self.assertEqual(response.status_code, 302)
@@ -77,7 +89,7 @@ class DanceCompViewsTests(TestCase):
         self.assertEqual(competitor.competitor_state, ApplicationState.STATE_NEW)
         mock_send_email.assert_called_once()
 
-    @patch("dancecomp.views.send_paw_email")
+    @patch("dancecomp.views.send_paw_email_new")
     def test_new_invalid_rerenders_form(self, mock_send_email):
         data = self._valid_post_data()
         data.pop("email")
