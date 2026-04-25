@@ -24,6 +24,7 @@ class Volunteer(models.Model):
     twitter_handle = models.CharField('Twitter/BSky Handle', max_length=30)
     telegram_handle = models.CharField(max_length=30)
     department_interest = models.ManyToManyField(Department)
+    referred_by = models.CharField(max_length=100, blank=True)
     volunteer_history = models.TextField()
     special_skills = models.TextField()
     days_available = models.ManyToManyField(DaysAvailable)

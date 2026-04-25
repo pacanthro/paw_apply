@@ -39,7 +39,7 @@ class ConsoleCompetitorViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-competitor-detail.html")
         self.assertEqual(response.context["competitor"], self.competitor)
 
-    @patch("console.views.competitors.send_paw_email")
+    @patch("console.views.competitors.send_paw_email_new")
     def test_competitor_accept_updates_state(self, mock_send):
         response = self.client.get(
             reverse("console:competitor-accept", args=[self.competitor.id])
@@ -50,7 +50,7 @@ class ConsoleCompetitorViewsTests(ConsoleViewBase):
         self.assertEqual(self.competitor.competitor_state, ApplicationState.STATE_ACCEPTED)
         mock_send.assert_called_once()
 
-    @patch("console.views.competitors.send_paw_email")
+    @patch("console.views.competitors.send_paw_email_new")
     def test_competitor_decline_updates_state(self, mock_send):
         response = self.client.get(
             reverse("console:competitor-decline", args=[self.competitor.id])

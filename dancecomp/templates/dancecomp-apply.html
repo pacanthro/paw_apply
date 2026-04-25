@@ -5,6 +5,7 @@
 
 {% block content %}
 <h1>Dance Comp Application</h1>
+{{page_content|safe}}
 {% if event.module_competitors_enabled %}
 <form action="{% url 'dancecomp:new' %}" method="post">
   {% crispy form %}

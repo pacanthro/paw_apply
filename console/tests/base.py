@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from core.models import DaysAvailable, Department, Event
+from dancecomp.models import CompetitorContent
 from volunteers.models import TimesAvailable, VolunteerContent
 from performers.models import PerformerContent
 from partyfloor.models import PartyHostContent
@@ -91,4 +92,16 @@ class ConsoleViewBase(TestCase):
             email_declined="Declined email content",
             email_waitlisted="Waitlisted email content",
             email_assigned="Assigned email content",
+        )
+        CompetitorContent.objects.create(
+            card_title="Competitor Card",
+            card_body="Card body",
+            card_cta="Apply now",
+            page_interstitial="Interstitial content",
+            page_apply="Apply content",
+            page_confirmation="Confirmation content",
+            email_submit="Submit email content",
+            email_accepted="Accepted email content",
+            email_declined="Declined email content",
+            email_waitlisted="Waitlisted email content",
         )

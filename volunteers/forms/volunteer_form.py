@@ -1,7 +1,7 @@
 from core.models import get_current_event
 from crispy_forms.bootstrap import PrependedText
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit
+from crispy_forms.layout import HTML, Layout, Fieldset, Submit
 from django import forms
 
 from core.models import DaysAvailable, Department
@@ -19,6 +19,7 @@ class VolunteerForm(forms.ModelForm):
             'twitter_handle',
             'telegram_handle',
             'department_interest',
+            'referred_by',
             'volunteer_history',
             'special_skills',
             'days_available',
@@ -58,7 +59,9 @@ class VolunteerForm(forms.ModelForm):
             ),
             Fieldset(
                 'Volunteer Interests',
+                HTML('<strong>If not choosen for a specific department, you will be placed in ConOps.</strong>'),
                 'department_interest',
+                'referred_by',
                 'volunteer_history',
                 'special_skills',
                 'days_available',

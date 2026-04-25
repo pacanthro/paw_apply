@@ -1,10 +1,10 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from unittest.mock import patch
 
 from django.urls import reverse
 from django.utils import timezone
 
-from core.models import ApplicationState
+from core.models import ApplicationState, Event
 from volunteers.models import Volunteer, VolunteerTask
 
 from .base import ConsoleViewBase
@@ -20,6 +20,7 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
             "phone_number": "555-0105",
             "twitter_handle": "handle",
             "telegram_handle": "telegram",
+            "referred_by": "Friend",
             "volunteer_history": "History",
             "special_skills": "Skills",
             "avail_setup": True,
@@ -44,6 +45,17 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
 
     def test_volunteer_detail_view_renders_with_tasks(self):
         volunteer = self._create_volunteer()
+        previous_event = Event.objects.create(
+            event_name="Previous Event",
+            event_start=date.today() - timedelta(days=10),
+            event_end=date.today() - timedelta(days=8),
+            submissions_end=date.today() - timedelta(days=12),
+            max_merchants=25,
+        )
+        previous_application = self._create_volunteer(
+            event=previous_event,
+            email=volunteer.email,
+        )
         start = timezone.now() - timedelta(hours=2)
         end = timezone.now() - timedelta(hours=1)
         VolunteerTask.objects.create(
@@ -62,6 +74,10 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "console-volunteers-detail.html")
         self.assertEqual(response.context["volunteer"], volunteer)
+        self.assertEqual(
+            list(response.context["volunteer_history"]),
+            [volunteer, previous_application],
+        )
         self.assertAlmostEqual(
             response.context["total_hours"].total_seconds(),
             timedelta(hours=2).total_seconds(),
