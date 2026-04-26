@@ -68,7 +68,7 @@ class SchedulingConfigCreateView(PageView):
 
 class SchedulingConfighDeleteRedirectView(RedirectView):
     permanent = False
-    pattern_name = 'system:departments-list'
+    pattern_name = 'system:schedconfig-list'
 
     def get_redirect_url(self, *args, **kwargs):
         config = get_object_or_404(SchedulingConfig, pk=kwargs['config_id'])

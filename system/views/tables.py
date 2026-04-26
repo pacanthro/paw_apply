@@ -68,7 +68,7 @@ class MerchantTablesCreateView(PageView):
 
 class MerchantTableDeleteRedirectView(RedirectView):
     permanent = False
-    pattern_name = 'system:departments-list'
+    pattern_name = 'system:tables-list'
 
     def get_redirect_url(self, *args, **kwargs):
         table = get_object_or_404(Table, pk=kwargs['table_id'])

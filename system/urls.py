@@ -33,6 +33,9 @@ urlpatterns = [
 
     # Days Available
     path('days', views.days_available.DaysAvailableListView.as_view(), name="days-list"),
+    path('days/edit/<str:day_id>', views.days_available.DaysAvailableEditView.as_view(), name="days-edit"),
+    path('days/create', views.days_available.DaysAvailableCreateView.as_view(), name="days-create"),
+    path('days/delete/<str:day_id>', views.days_available.DayAvailableDeleteRedirectView.as_view(), name="days-delete"),
 
     # Panel Durations
     path('durations', views.panel_durations.PanelDurationListView.as_view(), name="duration-list"),
