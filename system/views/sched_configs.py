@@ -1,8 +1,8 @@
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-
 from core.models import SchedulingConfig
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.views.generic import RedirectView
 from modules.page_view import PageView
 from system.forms import SchedulingConfigEditForm, SchedulingConfigCreateForm
 
@@ -65,3 +65,13 @@ class SchedulingConfigCreateView(PageView):
             return HttpResponseRedirect(reverse('system:schedconfig-edit', args=[config.id]))
 
         return self.render_to_response(context)
+
+class SchedulingConfighDeleteRedirectView(RedirectView):
+    permanent = False
+    pattern_name = 'system:departments-list'
+
+    def get_redirect_url(self, *args, **kwargs):
+        config = get_object_or_404(SchedulingConfig, pk=kwargs['config_id'])
+        config.delete()
+
+        return reverse('system:schedconfig-list')

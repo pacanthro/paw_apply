@@ -23,9 +23,13 @@ urlpatterns = [
     path('schedconfig', views.sched_configs.SchedulingConfigListView.as_view(), name="schedconfig-list"),
     path('schedconfig/<int:config_id>', views.sched_configs.SchedulingConfigEditView.as_view(), name="schedconfig-edit"),
     path('schedconfig/create', views.sched_configs.SchedulingConfigCreateView.as_view(), name="schedconfig-create"),
+    path('schedconfig/delete/<int:config_id>', views.sched_configs.SchedulingConfighDeleteRedirectView.as_view(), name="schedconfig-delete"),
 
     # Merchant Tables
     path('tables', views.tables.MerchantTablesListView.as_view(), name="tables-list"),
+    path('tables/edit/<str:table_id>', views.tables.MerchantTablesEditView.as_view(), name="tables-edit"),
+    path('tables/create', views.tables.MerchantTablesCreateView.as_view(), name="tables-create"),
+    path('tables/delete/<str:table_id>', views.tables.MerchantTableDeleteRedirectView.as_view(), name="tables-delete"),
 
     # Days Available
     path('days', views.days_available.DaysAvailableListView.as_view(), name="days-list"),
