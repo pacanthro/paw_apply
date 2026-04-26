@@ -21,6 +21,8 @@ urlpatterns = [
 
     # Scheduling Configs
     path('schedconfig', views.sched_configs.SchedulingConfigListView.as_view(), name="schedconfig-list"),
+    path('schedconfig/<int:config_id>', views.sched_configs.SchedulingConfigEditView.as_view(), name="schedconfig-edit"),
+    path('schedconfig/create', views.sched_configs.SchedulingConfigCreateView.as_view(), name="schedconfig-create"),
 
     # Merchant Tables
     path('tables', views.tables.MerchantTablesListView.as_view(), name="tables-list"),
