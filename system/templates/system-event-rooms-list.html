@@ -4,4 +4,29 @@
 
 {% block tool %}
 <h1>Event Rooms</h1>
+<div class="row">
+    <div class="col-md-3">
+        <a class="btn btn-primary" href="{% url 'system:rooms-create' %}">Create</a>
+    </div>
+</div>
+<div class="col-md-3">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Room Name</th>
+                <th>Room Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event_room in event_rooms %}
+            <tr>
+                <td>
+                    <a href="{% url 'system:rooms-edit' event_room.id %}">{{event_room.room_name}}</a>
+                </td>
+                <td>{{event_room.get_room_type_display}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

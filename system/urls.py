@@ -15,6 +15,9 @@ urlpatterns = [
 
     # Event Rooms
     path('rooms', views.event_rooms.EventRoomsListPageView.as_view(), name="rooms-list"),
+    path('rooms/<int:event_room_id>', views.event_rooms.EventRoomsEditPageView.as_view(), name='rooms-edit'),
+    path('rooms/create', views.event_rooms.EventRoomsCreatePageView.as_view(), name="rooms-create"),
+    path('rooms/delete/<int:event_room_id>', views.event_rooms.EventRoomsDeleteRedirectView.as_view(), name="rooms-delete"),
 
     # Scheduling Configs
     path('schedconfig', views.sched_configs.SchedulingConfigListView.as_view(), name="schedconfig-list"),
