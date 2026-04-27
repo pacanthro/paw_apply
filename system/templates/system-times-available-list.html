@@ -4,4 +4,30 @@
 
 {% block tool %}
 <h1>Times Available</h1>
+<div class="row mb-3">
+    <div class="col-md-3">
+        <a class="btn btn-primary" href="{% url 'system:times-create' %}">Create</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Key</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for time_available in times_available %}
+                <tr>
+                    <td>
+                        <a href="{% url 'system:times-edit' time_available.key %}">{{time_available.key}}</a>    
+                    </td>
+                    <td>{{time_available.name}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

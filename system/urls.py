@@ -51,4 +51,7 @@ urlpatterns = [
 
     # Times Available
     path('times', views.times_available.TimesAvailableListView.as_view(), name="times-list"),
+    path('times/edit/<str:times_id>', views.times_available.TimesAvailableEditView.as_view(), name="times-edit"),
+    path('times/create', views.times_available.TimesAvailableCreateView.as_view(), name="times-create"),
+    path('times/delete/<str:times_id>', views.times_available.TimesAvailableDeleteRedirectView.as_view(), name='times-delete'),
 ]
