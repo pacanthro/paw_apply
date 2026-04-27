@@ -1,12 +1,12 @@
 {% extends 'system.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}PAWCon Apply Admin - Panel Slots{% endblock %}
+{% block title %}PAWCon Apply Admin - Panel Durations{% endblock %}
 
 {% block tool %}
-<h1>Create Panel Slot</h1>
+<h1>Create Panel Duration</h1>
 <div class="col-md-3">
-    <form class="form" action="{% url 'system:slot-create' %}" method="post">
+    <form class="form" action="{% url 'system:duration-create' %}" method="post">
         {% crispy form %}
         <input type="submit" value="Save" class="btn btn-primary">
     </form>

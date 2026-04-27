@@ -39,6 +39,9 @@ urlpatterns = [
 
     # Panel Durations
     path('durations', views.panel_durations.PanelDurationListView.as_view(), name="duration-list"),
+    path('durations/edit/<str:duration_id>', views.panel_durations.PanelDurationEditView.as_view(), name="duration-edit"),
+    path('durations/create', views.panel_durations.PanelDurationCreateView.as_view(), name="duration-create"),
+    path('durations/delete/<str:duration_id>', views.panel_durations.PanelDurationDeleteRedirectView.as_view(), name='duration-delete'),
 
     # Panel Slots
     path('slots', views.panel_slots.PanelSlotsListView.as_view(), name="slot-list"),
