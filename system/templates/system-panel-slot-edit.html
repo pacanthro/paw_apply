@@ -1,0 +1,15 @@
+{% extends 'system.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}PAWCon Apply Admin - Panel Slots{% endblock %}
+
+{% block tool %}
+<h1>Edit Panel Slot</h1>
+<div class="col-md-3">
+    <form class="form" action="{% url 'system:slot-edit' slot.key %}" method="post">
+        {% crispy form %}
+        <input type="submit" value="Save" class="btn btn-primary">
+        <a class="btn btn-danger" href="{% url 'system:slot-delete' slot.key %}">Delete</a>
+    </form>
+</div>
+{% endblock %}

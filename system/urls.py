@@ -42,6 +42,9 @@ urlpatterns = [
 
     # Panel Slots
     path('slots', views.panel_slots.PanelSlotsListView.as_view(), name="slot-list"),
+    path('slots/edit/<str:slot_id>', views.panel_slots.PanelSlotsEditView.as_view(), name="slot-edit"),
+    path('slots/create', views.panel_slots.PanelSlotsCreateView.as_view(), name="slot-create"),
+    path('slots/delete/<str:slot_id>', views.panel_slots.PanelSlotDeleteRedirectView.as_view(), name='slot-delete'),
 
     # Times Available
     path('times', views.times_available.TimesAvailableListView.as_view(), name="times-list"),

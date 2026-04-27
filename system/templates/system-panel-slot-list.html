@@ -4,4 +4,31 @@
 
 {% block tool %}
 <h1>Panel Slots</h1>
+<div class="row mb-3">
+    <div class="col-md-3">
+        <a class="btn btn-primary" href="{% url 'system:slot-create' %}">Create</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Key</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slot in slots %}
+                <tr>
+                    <td>
+                        <a href="{% url 'system:slot-edit' slot.key %}">{{slot.key}}</a>    
+                    </td>
+                    <td>{{slot.name}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
