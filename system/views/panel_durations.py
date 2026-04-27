@@ -2,11 +2,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import RedirectView
+from modules.mixins import SuperuserRequiredMixin
 from modules.page_view import PageView
 from panels.models import PanelDuration
 from system.forms import PanelDurationCreateForm, PanelDurationEditForm
 
-class PanelDurationListView(PageView):
+class PanelDurationListView(SuperuserRequiredMixin, PageView):
     template_name = "system-panel-duration-list.html"
 
     def get_context_data(self, **kwargs):
@@ -16,7 +17,7 @@ class PanelDurationListView(PageView):
 
         return context
 
-class PanelDurationEditView(PageView):
+class PanelDurationEditView(SuperuserRequiredMixin, PageView):
     template_name = "system-panel-duration-edit.html"
 
     def get_context_data(self, **kwargs):
@@ -40,7 +41,7 @@ class PanelDurationEditView(PageView):
 
         return self.render_to_response(context)
 
-class PanelDurationCreateView(PageView):
+class PanelDurationCreateView(SuperuserRequiredMixin, PageView):
     template_name = "system-panel-duration-create.html"
 
     def get_context_data(self, **kwargs):
@@ -64,7 +65,7 @@ class PanelDurationCreateView(PageView):
 
         return self.render_to_response(context)
 
-class PanelDurationDeleteRedirectView(RedirectView):
+class PanelDurationDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'system:slot-list'
 

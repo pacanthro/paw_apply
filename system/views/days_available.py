@@ -3,10 +3,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import RedirectView
+from modules.mixins import SuperuserRequiredMixin
 from modules.page_view import PageView
 from system.forms import DaysAvailableEditForm, DaysAvailableCreateForm
 
-class DaysAvailableListView(PageView):
+class DaysAvailableListView(SuperuserRequiredMixin, PageView):
     template_name = "system-days-list.html"
 
     def get_context_data(self, **kwargs):
@@ -16,7 +17,7 @@ class DaysAvailableListView(PageView):
 
         return context
 
-class DaysAvailableEditView(PageView):
+class DaysAvailableEditView(SuperuserRequiredMixin, PageView):
     template_name = "system-days-edit.html"
 
     def get_context_data(self, **kwargs):
@@ -40,7 +41,7 @@ class DaysAvailableEditView(PageView):
 
         return self.render_to_response(context)
 
-class DaysAvailableCreateView(PageView):
+class DaysAvailableCreateView(SuperuserRequiredMixin, PageView):
     template_name = "system-days-create.html"
 
     def get_context_data(self, **kwargs):
@@ -64,7 +65,7 @@ class DaysAvailableCreateView(PageView):
 
         return self.render_to_response(context)
 
-class DayAvailableDeleteRedirectView(RedirectView):
+class DayAvailableDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'system:days-list'
 

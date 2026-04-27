@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
@@ -8,9 +9,16 @@ from core.models import Event
 
 class SystemViewsTestCase(TestCase):
     def setUp(self):
+        super().setUp()
         today = datetime.date.today()
         self.factory = RequestFactory()
         self.timezone = timezone.get_current_timezone()
+        self.superuser = get_user_model().objects.create_superuser(
+            username="root",
+            email="root@example.com",
+            password="secret-pass",
+        )
+        self.client.force_login(self.superuser)
         self.current_event = Event.objects.create(
             event_name="Current Event",
             event_start=today,

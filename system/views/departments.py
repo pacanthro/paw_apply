@@ -3,10 +3,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import RedirectView
+from modules.mixins import SuperuserRequiredMixin
 from modules.page_view import PageView
 from system.forms import DepartmentEditForm
 
-class DepartmentListPageView(PageView):
+class DepartmentListPageView(SuperuserRequiredMixin, PageView):
     template_name = "system-department-list.html"
 
     def get_context_data(self, **kwargs):
@@ -16,7 +17,7 @@ class DepartmentListPageView(PageView):
 
         return context
 
-class DepartmentCreatePageView(PageView):
+class DepartmentCreatePageView(SuperuserRequiredMixin, PageView):
     template_name = "system-department-create.html"
 
     def get_context_data(self, **kwargs):
@@ -40,7 +41,7 @@ class DepartmentCreatePageView(PageView):
         
         return self.render_to_response(context)
 
-class DepartmentEditPageView(PageView):
+class DepartmentEditPageView(SuperuserRequiredMixin, PageView):
     template_name = "system-department-edit.html"
 
     def get_context_data(self, **kwargs):
@@ -64,7 +65,7 @@ class DepartmentEditPageView(PageView):
         
         return self.render_to_response(context)
 
-class DepartmentDeleteRedirectView(RedirectView):
+class DepartmentDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'system:departments-list'
 

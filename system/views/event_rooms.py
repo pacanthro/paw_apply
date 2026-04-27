@@ -2,12 +2,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import RedirectView
+from modules.mixins import SuperuserRequiredMixin
 from modules.page_view import PageView
 from panels.models import EventRoom
 
 from system.forms import EventRoomEditForm
 
-class EventRoomsListPageView(PageView):
+class EventRoomsListPageView(SuperuserRequiredMixin, PageView):
     template_name = "system-event-rooms-list.html"
 
     def get_context_data(self, **kwargs):
@@ -18,7 +19,7 @@ class EventRoomsListPageView(PageView):
 
         return context
     
-class EventRoomsCreatePageView(PageView):
+class EventRoomsCreatePageView(SuperuserRequiredMixin, PageView):
     template_name = "system-event-rooms-create.html"
 
     def get_context_data(self, **kwargs):
@@ -44,7 +45,7 @@ class EventRoomsCreatePageView(PageView):
 
         return self.render_to_response(context)
 
-class EventRoomsEditPageView(PageView):
+class EventRoomsEditPageView(SuperuserRequiredMixin, PageView):
     template_name = "system-event-rooms-edit.html"
 
     def get_context_data(self, **kwargs):
@@ -68,7 +69,7 @@ class EventRoomsEditPageView(PageView):
 
         return self.render_to_response(context)
 
-class EventRoomsDeleteRedirectView(RedirectView):
+class EventRoomsDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'system:rooms-list'
 

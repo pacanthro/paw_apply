@@ -3,10 +3,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import RedirectView
+from modules.mixins import SuperuserRequiredMixin
 from modules.page_view import PageView
 from system.forms import SchedulingConfigEditForm, SchedulingConfigCreateForm
 
-class SchedulingConfigListView(PageView):
+class SchedulingConfigListView(SuperuserRequiredMixin, PageView):
     template_name = "system-schedconfig-list.html"
 
     def get_context_data(self, **kwargs):
@@ -16,7 +17,7 @@ class SchedulingConfigListView(PageView):
 
         return context
     
-class SchedulingConfigEditView(PageView):
+class SchedulingConfigEditView(SuperuserRequiredMixin, PageView):
     template_name = "system-schedconfig-edit.html"
 
     def get_context_data(self, **kwargs):
@@ -40,7 +41,7 @@ class SchedulingConfigEditView(PageView):
 
         return self.render_to_response(context)
 
-class SchedulingConfigCreateView(PageView):
+class SchedulingConfigCreateView(SuperuserRequiredMixin, PageView):
     template_name = "system-schedconfig-create.html"
 
     def get_context_data(self, **kwargs):
@@ -66,7 +67,7 @@ class SchedulingConfigCreateView(PageView):
 
         return self.render_to_response(context)
 
-class SchedulingConfighDeleteRedirectView(RedirectView):
+class SchedulingConfighDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'system:schedconfig-list'
 

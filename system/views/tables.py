@@ -3,11 +3,12 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import RedirectView
 from merchants.models import Table
+from modules.mixins import SuperuserRequiredMixin
 from modules.page_view import PageView
 from system.forms import TableEditForm
 from system.forms.tables import TableCreateForm
 
-class MerchantTablesListView(PageView):
+class MerchantTablesListView(SuperuserRequiredMixin, PageView):
     template_name = "system-tables-list.html"
 
     def get_context_data(self, **kwargs):
@@ -17,7 +18,7 @@ class MerchantTablesListView(PageView):
 
         return context
 
-class MerchantTablesEditView(PageView):
+class MerchantTablesEditView(SuperuserRequiredMixin, PageView):
     template_name = "system-tables-edit.html"
 
     def get_context_data(self, **kwargs):
@@ -41,7 +42,7 @@ class MerchantTablesEditView(PageView):
 
         return self.render_to_response(context)
     
-class MerchantTablesCreateView(PageView):
+class MerchantTablesCreateView(SuperuserRequiredMixin, PageView):
     template_name = "system-tables-create.html"
 
     def get_context_data(self, **kwargs):
@@ -66,7 +67,7 @@ class MerchantTablesCreateView(PageView):
 
         return self.render_to_response(context)
 
-class MerchantTableDeleteRedirectView(RedirectView):
+class MerchantTableDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'system:tables-list'
 

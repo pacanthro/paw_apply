@@ -2,11 +2,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import RedirectView
+from modules.mixins import SuperuserRequiredMixin
 from modules.page_view import PageView
 from system.forms.times_available import TimesAvailableCreateForm, TimesAvailableEditForm
 from volunteers.models import TimesAvailable
 
-class TimesAvailableListView(PageView):
+class TimesAvailableListView(SuperuserRequiredMixin, PageView):
     template_name = "system-times-available-list.html"
 
     def get_context_data(self, **kwargs):
@@ -16,7 +17,7 @@ class TimesAvailableListView(PageView):
 
         return context
 
-class TimesAvailableEditView(PageView):
+class TimesAvailableEditView(SuperuserRequiredMixin, PageView):
     template_name = "system-times-available-edit.html"
 
     def get_context_data(self, **kwargs):
@@ -40,7 +41,7 @@ class TimesAvailableEditView(PageView):
 
         return self.render_to_response(context)
 
-class TimesAvailableCreateView(PageView):
+class TimesAvailableCreateView(SuperuserRequiredMixin, PageView):
     template_name = "system-times-available-create.html"
 
     def get_context_data(self, **kwargs):
@@ -64,7 +65,7 @@ class TimesAvailableCreateView(PageView):
 
         return self.render_to_response(context)
 
-class TimesAvailableDeleteRedirectView(RedirectView):
+class TimesAvailableDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'system:times-list'
 
