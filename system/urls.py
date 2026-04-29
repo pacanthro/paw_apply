@@ -6,6 +6,7 @@ app_name='system'
 urlpatterns = [
     # Event
     path('event', views.event.EventIndexPageView.as_view(), name="event-index"),
+    path('event/edit', views.event.EventEditPageView.as_view(), name="event-edit"),
 
     # Departments
     path('departments', views.departments.DepartmentListPageView.as_view(), name="departments-list"),
