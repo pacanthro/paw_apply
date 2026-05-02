@@ -19,9 +19,10 @@ class RoomType(models.TextChoices):
     ROOM_PANELS = "ROOM_PANELS", "Panel Space"
 
 class DaysAvailable(models.Model):
-    key = models.CharField(max_length=4, primary_key=True)
+    key = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=50)
     order = models.IntegerField(default=0)
+    deleted = models.BooleanField(default=False)
     available_scheduling = models.BooleanField(default=False)
     available_party = models.BooleanField(default=False)
     party_only = models.BooleanField(default=False)
@@ -62,6 +63,7 @@ class Event(models.Model):
 class SchedulingConfig(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     day_available = models.ForeignKey(DaysAvailable, on_delete=models.CASCADE)
+    deleted = models.BooleanField(default=False)
     panels_start = models.DateTimeField()
     panels_end = models.DateTimeField()
     performers_start = models.DateTimeField()
@@ -71,7 +73,7 @@ class EventRoom(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     room_name = models.CharField(max_length=100)
     room_type = models.CharField(max_length=20, choices=RoomType, default=RoomType.ROOM_PANELS)
-
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.room_name

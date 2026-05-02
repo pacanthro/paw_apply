@@ -3,17 +3,19 @@ from django.db import models
 
 # Create your models here.
 class PanelDuration(models.Model):
-    key = models.CharField(max_length=4, primary_key=True)
+    key = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=20)
     order = models.IntegerField(default=0)
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
 class PanelSlot(models.Model):
-    key = models.CharField(max_length=4, primary_key=True)
+    key = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=30)
     order = models.IntegerField(default=0)
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
