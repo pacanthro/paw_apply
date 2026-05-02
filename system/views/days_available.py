@@ -13,7 +13,7 @@ class DaysAvailableListView(SuperuserRequiredMixin, PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['days_available'] = DaysAvailable.objects.all()
+        context['days_available'] = DaysAvailable.objects.filter(deleted=False).all()
 
         return context
 
@@ -71,6 +71,7 @@ class DayAvailableDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         day_available = get_object_or_404(DaysAvailable, pk=kwargs['day_id'])
-        day_available.delete()
+        day_available.deleted = True
+        day_available.save()
 
         return reverse('system:days-list')

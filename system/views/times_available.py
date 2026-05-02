@@ -13,7 +13,7 @@ class TimesAvailableListView(SuperuserRequiredMixin, PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['times_available'] = TimesAvailable.objects.order_by('order').all()
+        context['times_available'] = TimesAvailable.objects.filter(deleted=False).order_by('order').all()
 
         return context
 
@@ -71,6 +71,7 @@ class TimesAvailableDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         time_available = get_object_or_404(TimesAvailable, pk=kwargs['times_id'])
-        time_available.delete()
+        time_available.deleted = True
+        time_available.save()
 
         return reverse('system:times-list')

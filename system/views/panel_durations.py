@@ -13,7 +13,7 @@ class PanelDurationListView(SuperuserRequiredMixin, PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['durations'] = PanelDuration.objects.order_by('order').all()
+        context['durations'] = PanelDuration.objects.filter(deleted=False).order_by('order').all()
 
         return context
 
@@ -70,7 +70,8 @@ class PanelDurationDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     pattern_name = 'system:slot-list'
 
     def get_redirect_url(self, *args, **kwargs):
-        table = get_object_or_404(PanelDuration, pk=kwargs['duration_id'])
-        table.delete()
+        duration = get_object_or_404(PanelDuration, pk=kwargs['duration_id'])
+        duration.deleted = True
+        duration.save()
 
-        return reverse('system:slot-list')
+        return reverse('system:duration-list')

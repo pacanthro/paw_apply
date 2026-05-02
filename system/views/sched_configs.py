@@ -13,7 +13,7 @@ class SchedulingConfigListView(SuperuserRequiredMixin, PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['sched_configs'] = SchedulingConfig.objects.filter(event=context['event']).all()
+        context['sched_configs'] = SchedulingConfig.objects.filter(event=context['event']).filter(deleted=False).all()
 
         return context
     
@@ -73,6 +73,7 @@ class SchedulingConfighDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         config = get_object_or_404(SchedulingConfig, pk=kwargs['config_id'])
-        config.delete()
+        config.deleted = True
+        config.save()
 
         return reverse('system:schedconfig-list')

@@ -13,7 +13,7 @@ class PanelSlotsListView(SuperuserRequiredMixin, PageView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        context['slots'] = PanelSlot.objects.order_by('order').all()
+        context['slots'] = PanelSlot.objects.filter(deleted=False).order_by('order').all()
 
         return context
     
@@ -70,7 +70,8 @@ class PanelSlotDeleteRedirectView(SuperuserRequiredMixin, RedirectView):
     pattern_name = 'system:slot-list'
 
     def get_redirect_url(self, *args, **kwargs):
-        table = get_object_or_404(PanelSlot, pk=kwargs['slot_id'])
-        table.delete()
+        slot = get_object_or_404(PanelSlot, pk=kwargs['slot_id'])
+        slot.deleted = True
+        slot.save()
 
         return reverse('system:slot-list')
