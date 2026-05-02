@@ -14,7 +14,7 @@ class MerchantState(models.TextChoices):
     STATE_OLD = "STATE_OLD", "Migrated Data"
 
 class Table(models.Model):
-    key = models.CharField(max_length=4, primary_key=True)
+    key = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=20)
     order = models.IntegerField(default=0)
     deleted = models.BooleanField(default=False)
