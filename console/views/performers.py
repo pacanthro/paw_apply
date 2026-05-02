@@ -1,4 +1,3 @@
-from .page_view import PageView
 from console.forms import PerformerScheduleDayForm, PerformerScheduleSlotForm, PerformerUpdateContentForm
 from core.models import get_current_event, ApplicationState, DaysAvailable, SchedulingConfig
 from django.conf import settings
@@ -10,6 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView
 from modules.email import send_paw_email, send_paw_email_new
 from modules.helpers import helper_expand_email_content
+from modules.page_view import PageView
 from performers.models import Performer, PerformerContent
 
 from django.conf import settings

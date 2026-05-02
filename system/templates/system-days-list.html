@@ -1,0 +1,40 @@
+{% extends 'system.html' %}
+
+{% block title %}PAWCon Apply Admin - Days Available{% endblock %}
+
+{% block tool %}
+<h1>Days Available</h1>
+<div class="row mb-3">
+    <div class="col-md-3">
+        <a class="btn btn-primary" href="{% url 'system:days-create' %}">Create</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Key</th>
+                    <th>Name</th>
+                    <th>Scheduling?</th>
+                    <th>Party?</th>
+                    <th>Party Only?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day_available in days_available %}
+                <tr>
+                    <td>
+                        <a href="{% url 'system:days-edit' day_available.key %}">{{day_available.key}}</a>
+                    </td>
+                    <td>{{day_available.name}}</td>
+                    <td>{{day_available.available_scheduling}}</td>
+                    <td>{{day_available.available_party}}</td>
+                    <td>{{day_available.party_only}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

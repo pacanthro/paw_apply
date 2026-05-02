@@ -1,0 +1,91 @@
+{% extends 'system.html' %}
+
+{% block title %}PAWCon Apply Admin - Event{% endblock %}
+
+{% block tool %}
+<h1>Current Event</h1>
+<div class="row mb-3">
+    <div class="col-md-3">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td><strong>Name:</strong></td>
+                    <td>{{event.event_name}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Event Start:</strong></td>
+                    <td>{{event.event_start}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Event End:</strong></td>
+                    <td>{{event.event_end}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Maximum Merchants:</strong></td>
+                    <td>{{event.max_merchants}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Maximum Party Rooms:</strong></td>
+                    <td>{{event.max_party_rooms}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Submissions End:</strong></td>
+                    <td>{{event.submissions_end}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Panels Enabled:</strong></td>
+                    <td>{{event.module_panels_enabled}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Merchants Enabled:</strong></td>
+                    <td>{{event.module_merchants_enabled}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Performers Enabled:</strong></td>
+                    <td>{{event.module_performers_enabled}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Party Floor Enabled:</strong></td>
+                    <td>{{event.module_partyfloor_enabled}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Competitors Enabled:</strong></td>
+                    <td>{{event.module_competitors_enabled}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Performers Voucher:</strong></td>
+                    <td>{{event.voucher_performers}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Volunteer Voucher:</strong></td>
+                    <td>{{event.voucher_volunteer}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <a class="btn btn-primary" href="{% url 'system:event-edit' %}">Edit</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Past Events</h3>
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Event Name</th>
+                    <th>Event Start</th>
+                    <th>Event End</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for past_event in past_events %}
+                <tr>
+                    <td>{{past_event.event_name}}</td>
+                    <td>{{past_event.event_start}}</td>
+                    <td>{{past_event.event_end}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

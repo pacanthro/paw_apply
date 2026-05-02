@@ -1,0 +1,36 @@
+{% extends 'system.html' %}
+
+{% block title %}PAWCon Apply Admin - Schedule Configuration{% endblock %}
+
+{% block tool %}
+<h1>Schedule Configuration</h1>
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <a class="btn btn-primary" href="{% url 'system:schedconfig-create' %}">Create</a>
+    </div>
+</div>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>Day</th>
+            <th>Panels Start</th>
+            <th>Panels End</th>
+            <th>Performers Start</th>
+            <th>Performers End</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for config in sched_configs %}
+        <tr>
+            <td>
+                <a href="{% url 'system:schedconfig-edit' config.id %}">{{config.day_available.name}}</a>
+            </td>
+            <td>{{config.panels_start}}</td>
+            <td>{{config.panels_end}}</td>
+            <td>{{config.performers_start}}</td>
+            <td>{{config.performers_end}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

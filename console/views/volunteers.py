@@ -2,7 +2,6 @@ import csv
 import markdown
 import operator
 
-from .page_view import PageView
 from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm, VolunteerUpdateContentForm
 from core.models import get_current_event, ApplicationState
 from django.conf import settings
@@ -17,6 +16,7 @@ from django.views import View
 from django.views.generic.base import RedirectView
 from functools import reduce
 from modules.email import send_paw_email, send_paw_email_new, send_mass_paw_email
+from modules.page_view import PageView
 from volunteers.models import Volunteer, VolunteerTask, VolunteerContent
 
 from datetime import date

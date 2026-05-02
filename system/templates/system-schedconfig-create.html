@@ -1,0 +1,14 @@
+{% extends 'system.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}PAWCon Apply Admin - Scheduling Config{% endblock %}
+
+{% block tool %}
+<h1>Create Scheduling Configuration</h1>
+<div class="col-md-3">
+    <form class="form" action="{% url 'system:schedconfig-create' %}" method="post">
+        {% crispy form %}
+        <input type="submit" value="Save" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}

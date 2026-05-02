@@ -5,9 +5,12 @@
 {% block content %}
 <div class="row">
     <div class="col">
-        <div class="card">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Tools</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Tools</h5>
+                
                 <ul class="nav nav-pills flex-column">
                     {% if is_superuser or has_volunteers_permission %}
                     <li class="nav-item">
@@ -43,6 +46,54 @@
                 </ul>
             </div>
         </div>
+        {% if is_superuser %}
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <h5>Super Admin</h5>
+                    </div>
+                    <div class="col-auto text-end">
+                        <a class="btn btn-sm btn-primary" href="">Wizard</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:event-index' %}">Event</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:departments-list' %}">Departments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:rooms-list' %}">Event Rooms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:schedconfig-list' %}">Scheduling Configuration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:tables-list' %}">Merchant Tables</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:days-list' %}">Days Available</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:duration-list' %}">Panel Durations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:slot-list' %}">Panel Slots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'system:times-list' %}">Times Available</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}" target="_blank">Django Admin <i class="bi bi-arrow-right-square"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <div class="col-10">
         {% block tool %}

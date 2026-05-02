@@ -1,0 +1,30 @@
+{% extends 'system.html' %}
+
+{% block title %}PAWCon Apply Admin - Departments{% endblock %}
+
+{% block tool %}
+<h1>Departments</h1>
+<div class="row mb-3">
+    <div class="col-mn-3">
+        <a class="btn btn-primary" href="{% url 'system:department-create' %}">Create</a>
+    </div>
+</div>
+<div class="col-md-3">
+	<table class="table">
+		<thead class="text-left">
+			<tr class="table-dark">
+				<th>Department Name:</th>
+			</tr>
+		</thead>
+		<tbody>
+            {% for department in departments %}
+			<tr>
+				<td>
+                    <a href="{% url 'system:department-edit' department.id %}">{{department.department_name}}</a>
+                </td>
+			</tr>
+            {% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
