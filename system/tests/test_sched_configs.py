@@ -137,3 +137,75 @@ class SchedulingConfigViewsTests(SystemViewsTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context["form"].errors)
         self.assertEqual(timezone.localtime(config.panels_start).hour, 10)
+
+    def test_sched_config_create_rejects_end_times_before_or_equal_to_start_times(self):
+        day = DaysAvailable.objects.create(
+            key="FRI",
+            name="Friday",
+            order=1,
+            available_scheduling=True,
+        )
+
+        response = self.client.post(
+            reverse("system:schedconfig-create"),
+            {
+                "day_available": day.pk,
+                "panels_start": "2030-03-01T10:00",
+                "panels_end": "2030-03-01T10:00",
+                "performers_start": "2030-03-01T12:00",
+                "performers_end": "2030-03-01T11:00",
+            },
+        )
+
+        form = response.context["form"]
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("panels_end", form.errors)
+        self.assertIn("performers_end", form.errors)
+        self.assertIn(
+            "'Panels End' must be after 'Panels Start'.",
+            form.errors["panels_end"],
+        )
+        self.assertIn(
+            "'Performers End' must be after 'Performers Start'",
+            form.errors["performers_end"],
+        )
+        self.assertFalse(
+            SchedulingConfig.objects.filter(
+                day_available=day,
+                event=self.current_event,
+            ).exists()
+        )
+
+    def test_sched_config_edit_rejects_end_times_before_or_equal_to_start_times(self):
+        day = DaysAvailable.objects.create(
+            key="FRI",
+            name="Friday",
+            order=1,
+            available_scheduling=True,
+        )
+        config = SchedulingConfig.objects.create(
+            event=self.current_event,
+            day_available=day,
+            panels_start=self.aware_datetime(2030, 1, 1, 10),
+            panels_end=self.aware_datetime(2030, 1, 1, 11),
+            performers_start=self.aware_datetime(2030, 1, 1, 12),
+            performers_end=self.aware_datetime(2030, 1, 1, 13),
+        )
+
+        response = self.client.post(
+            reverse("system:schedconfig-edit", args=[config.id]),
+            {
+                "panels_start": "2030-01-01T10:00",
+                "panels_end": "2030-01-01T09:00",
+                "performers_start": "2030-01-01T12:00",
+                "performers_end": "2030-01-01T12:00",
+            },
+        )
+
+        config.refresh_from_db()
+        form = response.context["form"]
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("panels_end", form.errors)
+        self.assertIn("performers_end", form.errors)
+        self.assertEqual(timezone.localtime(config.panels_end).hour, 11)
+        self.assertEqual(timezone.localtime(config.performers_end).hour, 13)
