@@ -99,8 +99,13 @@ class SchedulingConfigViewsTests(SystemViewsTestCase):
             reverse("system:schedconfig-delete", args=[current_config.id])
         )
 
+        current_config.refresh_from_db()
         self.assertRedirects(delete_response, reverse("system:schedconfig-list"))
-        self.assertFalse(SchedulingConfig.objects.filter(pk=current_config.pk).exists())
+        self.assertTrue(current_config.deleted)
+        self.assertNotIn(
+            current_config,
+            self.client.get(reverse("system:schedconfig-list")).context["sched_configs"],
+        )
 
     def test_sched_config_edit_invalid_post_rerenders_without_saving(self):
         day = DaysAvailable.objects.create(

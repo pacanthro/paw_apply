@@ -39,8 +39,13 @@ class PanelDurationViewsTests(SystemViewsTestCase):
             reverse("system:duration-delete", args=[second.pk])
         )
 
-        self.assertRedirects(delete_response, reverse("system:slot-list"))
-        self.assertFalse(PanelDuration.objects.filter(pk=second.pk).exists())
+        second.refresh_from_db()
+        self.assertRedirects(delete_response, reverse("system:duration-list"))
+        self.assertTrue(second.deleted)
+        self.assertNotIn(
+            second,
+            self.client.get(reverse("system:duration-list")).context["durations"],
+        )
 
     def test_panel_duration_invalid_posts_rerender_without_saving(self):
         duration = PanelDuration.objects.create(key="030", name="30 min", order=1)

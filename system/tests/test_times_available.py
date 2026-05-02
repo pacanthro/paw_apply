@@ -39,8 +39,13 @@ class TimesAvailableViewsTests(SystemViewsTestCase):
             reverse("system:times-delete", args=[second.pk])
         )
 
+        second.refresh_from_db()
         self.assertRedirects(delete_response, reverse("system:times-list"))
-        self.assertFalse(TimesAvailable.objects.filter(pk=second.pk).exists())
+        self.assertTrue(second.deleted)
+        self.assertNotIn(
+            second,
+            self.client.get(reverse("system:times-list")).context["times_available"],
+        )
 
     def test_times_available_invalid_posts_rerender_without_saving(self):
         time = TimesAvailable.objects.create(key="MORN", name="Morning", order=1)

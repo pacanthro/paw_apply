@@ -58,8 +58,13 @@ class DaysAvailableViewsTests(SystemViewsTestCase):
 
         delete_response = self.client.get(reverse("system:days-delete", args=[existing.pk]))
 
+        existing.refresh_from_db()
         self.assertRedirects(delete_response, reverse("system:days-list"))
-        self.assertFalse(DaysAvailable.objects.filter(pk=existing.pk).exists())
+        self.assertTrue(existing.deleted)
+        self.assertNotIn(
+            existing,
+            self.client.get(reverse("system:days-list")).context["days_available"],
+        )
 
     def test_days_available_invalid_posts_rerender_without_saving(self):
         day = DaysAvailable.objects.create(

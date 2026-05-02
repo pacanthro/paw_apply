@@ -36,8 +36,13 @@ class PanelSlotViewsTests(SystemViewsTestCase):
 
         delete_response = self.client.get(reverse("system:slot-delete", args=[second.pk]))
 
+        second.refresh_from_db()
         self.assertRedirects(delete_response, reverse("system:slot-list"))
-        self.assertFalse(PanelSlot.objects.filter(pk=second.pk).exists())
+        self.assertTrue(second.deleted)
+        self.assertNotIn(
+            second,
+            self.client.get(reverse("system:slot-list")).context["slots"],
+        )
 
     def test_panel_slot_invalid_posts_rerender_without_saving(self):
         slot = PanelSlot.objects.create(key="AM", name="Morning", order=1)
