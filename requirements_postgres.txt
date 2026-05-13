@@ -1,4 +1,4 @@
-authlib==1.6.11
+authlib==1.6.12
 crispy-bootstrap5==2025.6
 DateTimeRange==2.3.2
 Django==5.2.14
