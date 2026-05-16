@@ -16,20 +16,66 @@ class PanelViewsTests(TestCase):
             event_start=today,
             event_end=today + datetime.timedelta(days=3),
             submissions_end=today,
+            module_panels_enabled=True,
         )
-        PanelContent.objects.create(
+        self.content = PanelContent.objects.create(
             card_title="Panel Card",
             card_body="Card body",
             card_cta="Apply now",
-            page_interstitial="Interstitial content",
-            page_apply="Apply content",
-            page_confirmation="Confirmation content",
+            page_interstitial="Interstitial **content**",
+            page_apply="Apply *content*",
+            page_confirmation="Confirmation _content_",
             email_submit="Submit email content",
             email_accepted="Accepted email content",
             email_declined="Declined email content",
             email_waitlisted="Waitlisted email content",
             email_assigned="Assigned email content",
         )
+
+    def build_valid_payload(self, **overrides):
+        day = (
+            overrides.pop("day")
+            if "day" in overrides
+            else DaysAvailable.objects.create(
+                key="FRI",
+                name="Friday",
+                order=1,
+                available_scheduling=True,
+                party_only=False,
+            )
+        )
+        slot = (
+            overrides.pop("slot")
+            if "slot" in overrides
+            else PanelSlot.objects.create(key="AM", name="Morning", order=1)
+        )
+        duration = (
+            overrides.pop("duration")
+            if "duration" in overrides
+            else PanelDuration.objects.create(key="30", name="30 Minutes", order=1)
+        )
+
+        payload = {
+            "email": "panelist@example.com",
+            "legal_name": "Panelist Legal",
+            "fan_name": "Panelist Fan",
+            "phone_number": "555-123-4567",
+            "twitter_handle": "panelist",
+            "telegram_handle": "panelist",
+            "panelist_bio": "Bio text",
+            "panel_name": "Awesome Panel",
+            "panel_description": "Description text",
+            "panel_duration": duration.key,
+            "equipment_needs": "Projector",
+            "mature_content": "on",
+            "panel_day": [day.key],
+            "panel_times": [slot.key],
+            "check_ids": "on",
+            "captcha_0": "test-captcha-key",
+            "captcha_1": "passed",
+        }
+        payload.update(overrides)
+        return payload
 
     def test_index_renders_with_event(self):
         response = self.client.get(reverse("panels:index"))
@@ -38,6 +84,26 @@ class PanelViewsTests(TestCase):
         self.assertTemplateUsed(response, "panels.html")
         self.assertTrue(response.context["is_panels"])
         self.assertEqual(response.context["event"], self.event)
+        self.assertContains(response, "<strong>content</strong>", html=True)
+        self.assertContains(response, reverse("panels:apply"))
+
+    def test_index_hides_apply_button_when_submissions_closed(self):
+        self.event.submissions_end = datetime.date.today() - datetime.timedelta(days=1)
+        self.event.save(update_fields=["submissions_end"])
+
+        response = self.client.get(reverse("panels:index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, reverse("panels:apply"))
+
+    def test_index_hides_apply_button_when_module_disabled(self):
+        self.event.module_panels_enabled = False
+        self.event.save(update_fields=["module_panels_enabled"])
+
+        response = self.client.get(reverse("panels:index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, reverse("panels:apply"))
 
     def test_apply_renders_form(self):
         response = self.client.get(reverse("panels:apply"))
@@ -47,6 +113,19 @@ class PanelViewsTests(TestCase):
         self.assertTrue(response.context["is_panels"])
         self.assertEqual(response.context["event"], self.event)
         self.assertIsInstance(response.context["form"], PanelForm)
+        self.assertContains(response, "<em>content</em>", html=True)
+        self.assertContains(response, 'action="%s"' % reverse("panels:new"))
+
+    def test_apply_hides_form_when_module_disabled(self):
+        self.event.module_panels_enabled = False
+        self.event.save(update_fields=["module_panels_enabled"])
+
+        response = self.client.get(reverse("panels:apply"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "panels-apply.html")
+        self.assertNotContains(response, "<form", html=False)
+        self.assertContains(response, "Sorry Applictions for Panels are currently closed.")
 
     @override_settings(PANEL_EMAIL="panels@example.com")
     @patch("captcha.fields.settings.CAPTCHA_TEST_MODE", True)
@@ -62,25 +141,7 @@ class PanelViewsTests(TestCase):
         slot = PanelSlot.objects.create(key="AM", name="Morning", order=1)
         duration = PanelDuration.objects.create(key="30", name="30 Minutes", order=1)
 
-        payload = {
-            "email": "panelist@example.com",
-            "legal_name": "Panelist Legal",
-            "fan_name": "Panelist Fan",
-            "phone_number": "555-123-4567",
-            "twitter_handle": "panelist",
-            "telegram_handle": "panelist",
-            "panelist_bio": "Bio text",
-            "panel_name": "Awesome Panel",
-            "panel_description": "Description text",
-            "panel_duration": duration.key,
-            "equipment_needs": "Projector",
-            "mature_content": True,
-            "panel_day": [day.key],
-            "panel_times": [slot.key],
-            "check_ids": True,
-            "captcha_0": "test-captcha-key",
-            "captcha_1": "passed",
-        }
+        payload = self.build_valid_payload(day=day, slot=slot, duration=duration)
 
         response = self.client.post(reverse("panels:new"), data=payload)
 
@@ -101,6 +162,72 @@ class PanelViewsTests(TestCase):
         self.assertEqual(kwargs["recipient_list"], [payload["email"]])
         self.assertEqual(kwargs["reply_to"], "panels@example.com")
 
+    @patch("panels.views.send_paw_email_new")
+    def test_new_invalid_captcha_renders_error_without_sending_email(self, send_paw_email_new):
+        payload = self.build_valid_payload(captcha_1="not-right")
+
+        response = self.client.post(reverse("panels:new"), data=payload)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "panels-apply.html")
+        self.assertEqual(Panel.objects.count(), 0)
+        self.assertFormError(response.context["form"], "captcha", "Invalid CAPTCHA")
+        send_paw_email_new.assert_not_called()
+
+    @patch("panels.views.send_paw_email_new")
+    def test_new_rejects_party_only_day_choice(self, send_paw_email_new):
+        invalid_day = DaysAvailable.objects.create(
+            key="PRTY",
+            name="Party Only",
+            order=1,
+            available_scheduling=True,
+            party_only=True,
+        )
+        slot = PanelSlot.objects.create(key="AM", name="Morning", order=1)
+        duration = PanelDuration.objects.create(key="30", name="30 Minutes", order=1)
+        payload = self.build_valid_payload(
+            day=invalid_day,
+            slot=slot,
+            duration=duration,
+            panel_day=[invalid_day.key],
+            captcha_1="not-right",
+        )
+
+        response = self.client.post(reverse("panels:new"), data=payload)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "panels-apply.html")
+        self.assertEqual(Panel.objects.count(), 0)
+        self.assertFormError(
+            response.context["form"],
+            "panel_day",
+            "Select a valid choice. PRTY is not one of the available choices.",
+        )
+        send_paw_email_new.assert_not_called()
+
+    @patch("panels.views.send_paw_email_new")
+    def test_new_rejects_unschedulable_day_choice(self, send_paw_email_new):
+        invalid_day = DaysAvailable.objects.create(
+            key="MON",
+            name="Monday",
+            order=1,
+            available_scheduling=False,
+            party_only=False,
+        )
+        payload = self.build_valid_payload(day=invalid_day, panel_day=[invalid_day.key], captcha_1="not-right")
+
+        response = self.client.post(reverse("panels:new"), data=payload)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "panels-apply.html")
+        self.assertEqual(Panel.objects.count(), 0)
+        self.assertFormError(
+            response.context["form"],
+            "panel_day",
+            "Select a valid choice. MON is not one of the available choices.",
+        )
+        send_paw_email_new.assert_not_called()
+
     def test_new_invalid_form_renders_errors(self):
         response = self.client.post(reverse("panels:new"), data={})
 
@@ -108,6 +235,13 @@ class PanelViewsTests(TestCase):
         self.assertTemplateUsed(response, "panels-apply.html")
         self.assertEqual(Panel.objects.count(), 0)
         self.assertTrue(response.context["form"].errors)
+
+    def test_confirm_renders_confirmation_content(self):
+        response = self.client.get(reverse("panels:confirm"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "panels-confirm.html")
+        self.assertContains(response, "<em>content</em>", html=True)
 
 
 class PanelFormTests(TestCase):
@@ -157,6 +291,42 @@ class PanelFormTests(TestCase):
             list(form.fields["panel_times"].queryset.values_list("key", flat=True)),
             ["AM", "PM"],
         )
+
+    def test_form_rejects_party_only_day_selection(self):
+        invalid_day = DaysAvailable.objects.create(
+            key="PRTY",
+            name="Party Only",
+            order=1,
+            available_scheduling=True,
+            party_only=True,
+        )
+        slot = PanelSlot.objects.create(key="AM", name="Morning", order=1)
+        duration = PanelDuration.objects.create(key="30", name="30 Minutes", order=1)
+
+        form = PanelForm(
+            data={
+                "email": "panelist@example.com",
+                "legal_name": "Panelist Legal",
+                "fan_name": "Panelist Fan",
+                "phone_number": "555-123-4567",
+                "twitter_handle": "panelist",
+                "telegram_handle": "panelist",
+                "panelist_bio": "Bio text",
+                "panel_name": "Awesome Panel",
+                "panel_description": "Description text",
+                "panel_duration": duration.key,
+                "equipment_needs": "Projector",
+                "mature_content": "on",
+                "panel_day": [invalid_day.key],
+                "panel_times": [slot.key],
+                "check_ids": "on",
+                "captcha_0": "test-captcha-key",
+                "captcha_1": "not-right",
+            }
+        )
+
+        self.assertFalse(form.is_valid())
+        self.assertIn("panel_day", form.errors)
 
 
 class PanelModelTests(TestCase):
