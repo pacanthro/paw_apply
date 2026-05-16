@@ -8,7 +8,6 @@ from core.models import DaysAvailable, Event
 from panels.forms import PanelForm
 from panels.models import Panel, PanelContent, PanelDuration, PanelSlot
 
-
 class PanelViewsTests(TestCase):
     def setUp(self):
         today = datetime.date.today()
@@ -50,6 +49,7 @@ class PanelViewsTests(TestCase):
         self.assertIsInstance(response.context["form"], PanelForm)
 
     @override_settings(PANEL_EMAIL="panels@example.com")
+    @patch("captcha.fields.settings.CAPTCHA_TEST_MODE", True)
     @patch("panels.views.send_paw_email_new")
     def test_new_creates_panel_and_redirects(self, send_paw_email_new):
         day = DaysAvailable.objects.create(
@@ -78,6 +78,8 @@ class PanelViewsTests(TestCase):
             "panel_day": [day.key],
             "panel_times": [slot.key],
             "check_ids": True,
+            "captcha_0": "test-captcha-key",
+            "captcha_1": "passed",
         }
 
         response = self.client.post(reverse("panels:new"), data=payload)
