@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'console.templatetags',
     'sendgrid',
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'captcha'
 ]
 
 MIDDLEWARE = [
@@ -90,6 +91,10 @@ TEMPLATES = [
         },
     },
 ]
+
+# Captchas
+CAPTCHA_FONT_SIZE = 60
+CAPTCHA_IMAGE_SIZE = (200,100)
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
