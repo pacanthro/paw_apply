@@ -1,12 +1,14 @@
+from captcha.fields import CaptchaField
 from crispy_forms.bootstrap import InlineCheckboxes, PrependedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Fieldset, HTML, Layout, Submit
 from django import forms
 
 from core.models import DaysAvailable
-from panels.models import Panel, PanelDuration, PanelSlot
+from panels.models import Panel, PanelDuration, PanelSlot    
 
 class PanelForm(forms.ModelForm):
+    captcha = CaptchaField()
     class Meta:
         model = Panel
         fields = (
@@ -74,6 +76,10 @@ class PanelForm(forms.ModelForm):
                      <strong>If your panel is mature, you must check photo ID at the door and not admit anyone under the age of 18.</strong>
                 """),
                 'check_ids'
+            ),
+            Fieldset(
+                'Captcha',
+                'captcha'
             )
         )
 

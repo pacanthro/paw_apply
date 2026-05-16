@@ -26,5 +26,6 @@ urlpatterns = [
     path('volunteers/', include('volunteers.urls')),
     path('partyfloor/', include('partyfloor.urls')),
     path('dancecomp/', include('dancecomp.urls')),
-    path('system/', include('system.urls'))
+    path('system/', include('system.urls')),
+    path('captcha/', include('captcha.urls')),
 ]
