@@ -5,126 +5,154 @@
 {% block tool %}
 <h1>Performers</h1>
 <div class="row pb-1">
-    <div class="col">
-        <a href="{% url 'console:performer-schedule' %}" class="btn btn-primary">Schedule</a>
-        <a href="{% url 'console:performer-content' %}" class="btn btn-primary">Update Content</a>
-    </div>
+	<div class="col">
+		<a href="{% url 'console:performer-schedule' %}" class="btn btn-primary">Schedule</a>
+		<a href="{% url 'console:performer-content' %}" class="btn btn-primary">Update Content</a>
+	</div>
 </div>
 <table class="table">
-  <thead class="table-dark text-left">
-    <tr>
-      <th scope="col">Fan Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Legal Name</th>
-      <th scope="col">Phone Number</th>
-      <th scope="col">Telegram Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="table-info">
-        <td colspan="5">New ({{performers|length}})</td>
-    </tr>
-    {% for performer in performers %}
-    <tr>
-      <td>
-          <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
-      </td>
-      <td>
-        <a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i> {{performer.email}}</a>
-      </td>
-      <td>{{panel.legal_name}}</td>
-      <td>
-        <a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i> {{performer.phone_number}}</a>
-      </td>
-      <td>
-        <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i> {{performer.telegram_handle}}</a>
-      </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5">Accepted ({{performers_accepted|length}})</td>
-    </tr>
-    {% for performer in performers_accepted %}
-    <tr>
-        <td>
-            <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i> {{performer.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i> {{performer.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
-                {{performer.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5">Assigned ({{performers_assigned|length}})</td>
-    </tr>
-    {% for performer in performers_assigned %}
-    <tr>
-        <td>
-            <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i> {{performer.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i> {{performer.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
-                {{performer.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5">Waitlisted ({{performers_waitlisted|length}})</td>
-    </tr>
-    {% for performer in performers_waitlisted %}
-    <tr>
-        <td>
-            <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i> {{performer.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i> {{performer.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
-                {{performer.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td colspan="5">Declined ({{performers_declined|length}})</td>
-    </tr>
-    {% for performer in performers_declined %}
-    <tr>
-        <td>
-            <a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
-        </td>
-        <td>
-            <a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i> {{performer.email}}</a>
-        </td>
-        <td>{{panel.legal_name}}</td>
-        <td>
-            <a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i> {{performer.phone_number}}</a>
-        </td>
-        <td>
-            <a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
-                {{performer.telegram_handle}}</a>
-        </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+	<thead class="table-dark text-left">
+        <tr>
+			<td class="text-center" colspan="5">
+				<form class="mb-0" action="{% url 'console:performers' %}">
+                    <label class="form-label-sm" for="event_select">Event:</label>
+                    <select class="form-select-sm" name="event_id" id="event_select">
+                        {% for prev_event in prev_events %}
+                        {% if prev_event.id == event_id %}
+                        <option value="{{prev_event.id}}" selected>{{prev_event.event_name}}</option>
+                        {% else %}
+                        <option value="{{prev_event.id}}">{{prev_event.event_name}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input class="btn btn-sm btn-primary" type="submit">
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<th scope="col">Fan Name</th>
+			<th scope="col">Email</th>
+			<th scope="col">Legal Name</th>
+			<th scope="col">Phone Number</th>
+			<th scope="col">Telegram Handle</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="table-info">
+			<td colspan="5">New ({{performers|length}})</td>
+		</tr>
+		{% for performer in performers %}
+		<tr>
+			<td>
+				<a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
+			</td>
+			<td>
+				<a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i>
+				{{performer.email}}</a>
+			</td>
+			<td>{{panel.legal_name}}</td>
+			<td>
+				<a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i>
+				{{performer.phone_number}}</a>
+			</td>
+			<td>
+				<a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+				{{performer.telegram_handle}}</a>
+			</td>
+		</tr>
+		{% endfor %}
+		<tr class="table-info">
+			<td colspan="5">Accepted ({{performers_accepted|length}})</td>
+		</tr>
+		{% for performer in performers_accepted %}
+		<tr>
+			<td>
+				<a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
+			</td>
+			<td>
+				<a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i>
+				{{performer.email}}</a>
+			</td>
+			<td>{{panel.legal_name}}</td>
+			<td>
+				<a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i>
+				{{performer.phone_number}}</a>
+			</td>
+			<td>
+				<a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+				{{performer.telegram_handle}}</a>
+			</td>
+		</tr>
+		{% endfor %}
+		<tr class="table-info">
+			<td colspan="5">Assigned ({{performers_assigned|length}})</td>
+		</tr>
+		{% for performer in performers_assigned %}
+		<tr>
+			<td>
+				<a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
+			</td>
+			<td>
+				<a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i>
+				{{performer.email}}</a>
+			</td>
+			<td>{{panel.legal_name}}</td>
+			<td>
+				<a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i>
+				{{performer.phone_number}}</a>
+			</td>
+			<td>
+				<a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+				{{performer.telegram_handle}}</a>
+			</td>
+		</tr>
+		{% endfor %}
+		<tr class="table-info">
+			<td colspan="5">Waitlisted ({{performers_waitlisted|length}})</td>
+		</tr>
+		{% for performer in performers_waitlisted %}
+		<tr>
+			<td>
+				<a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
+			</td>
+			<td>
+				<a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i>
+				{{performer.email}}</a>
+			</td>
+			<td>{{panel.legal_name}}</td>
+			<td>
+				<a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i>
+				{{performer.phone_number}}</a>
+			</td>
+			<td>
+				<a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+				{{performer.telegram_handle}}</a>
+			</td>
+		</tr>
+		{% endfor %}
+		<tr class="table-info">
+			<td colspan="5">Declined ({{performers_declined|length}})</td>
+		</tr>
+		{% for performer in performers_declined %}
+		<tr>
+			<td>
+				<a href="{% url 'console:performer-detail' performer.id %}">{{performer.fan_name}}</a>
+			</td>
+			<td>
+				<a href="mailto:{{performer.email}}"><i class="bi bi-envelope"></i>
+				{{performer.email}}</a>
+			</td>
+			<td>{{panel.legal_name}}</td>
+			<td>
+				<a href="tel:{{performer.phone_number}}"><i class="bi bi-phone"></i>
+				{{performer.phone_number}}</a>
+			</td>
+			<td>
+				<a href="https://t.me/{{panel.telegram_handle}}"><i class="bi bi-telegram"></i>
+				{{performer.telegram_handle}}</a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
 </table>
 {% endblock %}
