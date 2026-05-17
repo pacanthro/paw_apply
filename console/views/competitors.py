@@ -1,5 +1,5 @@
 from console.forms import CompetitorUpdateContentForm
-from core.models import get_current_event, ApplicationState
+from core.models import Event, get_current_event, ApplicationState
 from dancecomp.models import Competitor, CompetitorContent
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
@@ -20,11 +20,21 @@ class CompetitorsListPageView(PageView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = get_current_event()
+
+        event_id = self.request.GET.get('event_id', None)
+        prev_events = Event.objects.all().order_by('-event_end')
+
+        if event_id is None:
+            event = get_current_event()
+        else:
+            event = Event.objects.get(pk=event_id)
+
         new_competitors = Competitor.objects.filter(event=event).filter(competitor_state=ApplicationState.STATE_NEW)
         accepted_competitors = Competitor.objects.filter(event=event).filter(competitor_state=ApplicationState.STATE_ACCEPTED)
         declined_competitors = Competitor.objects.filter(event=event).filter(competitor_state=ApplicationState.STATE_DENIED)
 
+        context['event_id'] = event.id
+        context['prev_events'] = prev_events
         context['new_competitors'] = new_competitors
         context['accepted_competitors'] = accepted_competitors
         context['declined_competitors'] = declined_competitors
