@@ -1,6 +1,6 @@
 from typing import Any
 from console.forms import PanelScheduleRoomDayForm, PanelScheduleSlotForm, PanelUpdateContentForm
-from core.models import get_current_event, ApplicationState, EventRoom, RoomType, SchedulingConfig
+from core.models import Event, get_current_event, ApplicationState, EventRoom, RoomType, SchedulingConfig
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
 from django.http import HttpResponseRedirect
@@ -35,7 +35,14 @@ class PanelsListPageView(PageView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = get_current_event()
+        event_id = self.request.GET.get('event_id', None)
+        prev_events = Event.objects.all().order_by('-event_end')
+
+        if event_id is None:
+            event = get_current_event()
+        else:
+            event = Event.objects.get(pk=event_id)
+
         panels = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_NEW)
         panels_accepted = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ACCEPTED)
         panels_scheduled = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_ASSIGNED)
@@ -43,6 +50,8 @@ class PanelsListPageView(PageView):
         panels_waitlisted = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_WAITLIST)
         panels_denied = Panel.objects.filter(event=event).filter(panel_state=ApplicationState.STATE_DENIED)
 
+        context['event_id'] = event.id
+        context['prev_events'] = prev_events
         context['panels'] = panels
         context['panels_accepted'] = panels_accepted
         context['panels_scheduled'] = panels_scheduled
