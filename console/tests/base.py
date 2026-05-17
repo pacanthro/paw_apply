@@ -105,3 +105,12 @@ class ConsoleViewBase(TestCase):
             email_declined="Declined email content",
             email_waitlisted="Waitlisted email content",
         )
+
+    def create_previous_event(self, name="Previous Event", days_ago=10):
+        return Event.objects.create(
+            event_name=name,
+            event_start=datetime.date.today() - datetime.timedelta(days=days_ago),
+            event_end=datetime.date.today() - datetime.timedelta(days=days_ago - 2),
+            submissions_end=datetime.date.today() - datetime.timedelta(days=days_ago + 1),
+            max_merchants=25,
+        )

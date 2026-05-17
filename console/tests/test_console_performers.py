@@ -43,6 +43,33 @@ class ConsolePerformerViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-performers-list.html")
         self.assertIn(self.performer, response.context["performers"])
 
+    def test_performers_list_view_filters_by_selected_previous_event(self):
+        previous_event = self.create_previous_event()
+        previous_performer = Performer.objects.create(
+            event=previous_event,
+            email="previous-performer@example.com",
+            legal_name="Previous Legal Name",
+            fan_name="Previous Fan Name",
+            phone_number="555-1003",
+            twitter_handle="previous-handle",
+            telegram_handle="previous-telegram",
+            biography="Previous Bio",
+            dj_history="Previous History",
+            set_link="https://example.com/previous-set",
+            performer_state=ApplicationState.STATE_NEW,
+        )
+
+        response = self.client.get(
+            reverse("console:performers"),
+            data={"event_id": previous_event.id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["event_id"], previous_event.id)
+        self.assertIn(previous_event, response.context["prev_events"])
+        self.assertIn(previous_performer, response.context["performers"])
+        self.assertNotIn(self.performer, response.context["performers"])
+
     def test_performer_detail_view_renders(self):
         response = self.client.get(
             reverse("console:performer-detail", args=[self.performer.id])

@@ -41,6 +41,42 @@ class ConsolePartyHostViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-hosts-list.html")
         self.assertIn(self.host, response.context["new_hosts"])
 
+    def test_hosts_list_view_filters_by_selected_previous_event(self):
+        previous_event = self.create_previous_event()
+        previous_host = PartyHost.objects.create(
+            event=previous_event,
+            email="previous-host@example.com",
+            legal_name="Previous Legal Name",
+            fan_name="Previous Fan Name",
+            phone_number="555-1004",
+            twitter_handle="previous-handle",
+            telegram_handle="previous-telegram",
+            rbs_certification="previous-cert",
+            hotel_primary="Previous Primary",
+            hotel_ack_num="PREV123",
+            party_name="Previous Party",
+            party_description="Previous Desc",
+            ack_no_smoking=True,
+            ack_amplified_sound=True,
+            ack_verify_age=True,
+            ack_wristbands=True,
+            ack_closure_time=True,
+            ack_suspension_policy=True,
+            host_state=ApplicationState.STATE_NEW,
+        )
+        previous_host.party_days.add(self.day)
+
+        response = self.client.get(
+            reverse("console:hosts"),
+            data={"event_id": previous_event.id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["event_id"], previous_event.id)
+        self.assertIn(previous_event, response.context["prev_events"])
+        self.assertIn(previous_host, response.context["new_hosts"])
+        self.assertNotIn(self.host, response.context["new_hosts"])
+
     def test_host_detail_view_renders(self):
         response = self.client.get(reverse("console:host-detail", args=[self.host.id]))
 
