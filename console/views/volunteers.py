@@ -1,9 +1,10 @@
 import csv
+import logging
 import markdown
 import operator
 
 from console.forms import VolunteerTaskStartForm, VolunteerTaskEndForm, VolunteerAddTaskForm, VolunteerEditTaskForm, VolunteerUpdateContentForm
-from core.models import get_current_event, ApplicationState
+from core.models import Event, get_current_event, ApplicationState
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
@@ -25,17 +26,28 @@ import sys
 
 decorators = [login_required, permission_required('volunteers.view_volunteer')]
 
+logger = logging.getLogger('django.server')
+
 @method_decorator(decorators, name="dispatch")
 class VolunteerListPageView(PageView):
     template_name = 'console-volunteers-list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = get_current_event()
+        event_id = self.request.GET.get('event_id', None)
+        prev_events = Event.objects.all().order_by('-event_end')
+
+        if event_id is None:
+            event = get_current_event()
+        else:
+            event = Event.objects.get(pk=event_id)
+
         volunteers = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_NEW)
         volunteers_accepted = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_ACCEPTED)
         volunteers_declined = Volunteer.objects.filter(event=event).filter(volunteer_state=ApplicationState.STATE_DENIED)
 
+        context['event_id'] = event.id
+        context['prev_events'] = prev_events
         context['volunteers'] = volunteers
         context['volunteers_accepted'] = volunteers_accepted
         context['volunteers_declined'] = volunteers_declined
