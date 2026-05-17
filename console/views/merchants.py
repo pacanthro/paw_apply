@@ -2,7 +2,7 @@ import csv
 from typing import Any
 
 from console.forms import MerchantAssignTableForm, MerchantUpdateContentForm
-from core.models import get_current_event
+from core.models import Event, get_current_event
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import BadRequest
@@ -31,7 +31,14 @@ class MerchantsListPageView(PageView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = get_current_event()
+        event_id = self.request.GET.get('event_id', None)
+        prev_events = Event.objects.all().order_by('-event_end')
+
+        if event_id is None:
+            event = get_current_event()
+        else:
+            event = Event.objects.get(pk=event_id)
+
         merchants = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_NEW)
         accepted = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_ACCEPTED)
         waitlisted = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_WAITLISTED)
@@ -40,6 +47,8 @@ class MerchantsListPageView(PageView):
         assigned = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_ASSIGNED)
         denied = Merchant.objects.filter(event=event).filter(merchant_state=MerchantState.STATE_DENIED)
         
+        context['event_id'] = event.id
+        context['prev_events'] = prev_events
         context['merchants'] = merchants
         context['accepted'] = accepted
         context['waitlisted'] = waitlisted

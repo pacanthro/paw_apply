@@ -5,112 +5,129 @@
 {% block tool %}
 <h1>Merchants</h1>
 <div class="row pb-1">
-    <div class="col">
-        <a href="{% url 'console:merchant-download' %}" class="btn btn-primary">Export CSV</a>
-        <a href="{% url 'console:merchant-content' %}" class="btn btn-primary">Update Content</a>
-    </div>
+	<div class="col">
+		<a href="{% url 'console:merchant-download' %}" class="btn btn-primary">Export CSV</a>
+		<a href="{% url 'console:merchant-content' %}" class="btn btn-primary">Update Content</a>
+	</div>
 </div>
 <table class="table">
-  <thead class="text-left">
-    <tr class="table-dark">
-      <th scope="col">Business Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Legal Name</th>
-      <th scope="col">Fan Name</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="table-info">
-      <td scope="row" colspan="4">New ({{merchants|length}})</td>
-    </tr>
-    {% for merchant in merchants %}
-    <tr>
-      <td>
-        <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
-      </td>
-      <td>{{merchant.email}}</td>
-      <td>{{merchant.legal_name}}</td>
-      <td>{{merchant.fan_name}}</td>
-    </tr>
-    {% endfor %}
-    <tr class="table-info">
-        <td scope="row" colspan="4">Accepted ({{accepted|length}})</td>
-    </tr>
-    {% for merchant in accepted %}
-    <tr>
-        <td>
-            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
-        </td>
-        <td>{{merchant.email}}</td>
-        <td>{{merchant.legal_name}}</td>
-        <td>{{merchant.fan_name}}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="4" class="table-info">Waitlisted ({{waitlisted|length}})</td>
-    </tr>
-    {% for merchant in waitlisted %}
-    <tr>
-        <td>
-            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
-        </td>
-        <td>{{merchant.email}}</td>
-        <td>{{merchant.legal_name}}</td>
-        <td>{{merchant.fan_name}}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-      <td colspan="4" class="table-info">Payment Requested ({{processed|length}})</td>
-    </tr>
-    {% for merchant in processed %}
-    <tr>
-      <td>
-        <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
-      </td>
-      <td>{{merchant.email}}</td>
-      <td>{{merchant.legal_name}}</td>
-      <td>{{merchant.fan_name}}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-      <td colspan="4" class="table-info">Confirmed ({{confirmed|length}})</td>
-    </tr>
-    {% for merchant in confirmed %}
-    <tr>
-      <td>
-        <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
-      </td>
-      <td>{{merchant.email}}</td>
-      <td>{{merchant.legal_name}}</td>
-      <td>{{merchant.fan_name}}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="4" class="table-info">Table Assigned ({{assigned|length}})</td>
-    </tr>
-    {% for merchant in assigned %}
-    <tr>
-        <td>
-            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
-        </td>
-        <td>{{merchant.email}}</td>
-        <td>{{merchant.legal_name}}</td>
-        <td>{{merchant.fan_name}}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="4" class="table-info">Denied ({{denied|length}})</td>
-    </tr>
-    {% for merchant in denied %}
-    <tr>
-        <td>
-            <a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
-        </td>
-        <td>{{merchant.email}}</td>
-        <td>{{merchant.legal_name}}</td>
-        <td>{{merchant.fan_name}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
+	<thead class="table-dark text-left">
+        <tr>
+			<td class="text-center" colspan="5">
+				<form class="mb-0" action="{% url 'console:merchants' %}">
+                    <label class="form-label-sm" for="event_select">Event:</label>
+                    <select class="form-select-sm" name="event_id" id="event_select">
+                        {% for prev_event in prev_events %}
+                        {% if prev_event.id == event_id %}
+                        <option value="{{prev_event.id}}" selected>{{prev_event.event_name}}</option>
+                        {% else %}
+                        <option value="{{prev_event.id}}">{{prev_event.event_name}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input class="btn btn-sm btn-primary" type="submit">
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<th scope="col">Business Name</th>
+			<th scope="col">Email</th>
+			<th scope="col">Legal Name</th>
+			<th scope="col">Fan Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="table-info">
+			<td scope="row" colspan="4">New ({{merchants|length}})</td>
+		</tr>
+		{% for merchant in merchants %}
+		<tr>
+			<td>
+				<a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+			</td>
+			<td>{{merchant.email}}</td>
+			<td>{{merchant.legal_name}}</td>
+			<td>{{merchant.fan_name}}</td>
+		</tr>
+		{% endfor %}
+		<tr class="table-info">
+			<td scope="row" colspan="4">Accepted ({{accepted|length}})</td>
+		</tr>
+		{% for merchant in accepted %}
+		<tr>
+			<td>
+				<a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+			</td>
+			<td>{{merchant.email}}</td>
+			<td>{{merchant.legal_name}}</td>
+			<td>{{merchant.fan_name}}</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td colspan="4" class="table-info">Waitlisted ({{waitlisted|length}})</td>
+		</tr>
+		{% for merchant in waitlisted %}
+		<tr>
+			<td>
+				<a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+			</td>
+			<td>{{merchant.email}}</td>
+			<td>{{merchant.legal_name}}</td>
+			<td>{{merchant.fan_name}}</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td colspan="4" class="table-info">Payment Requested ({{processed|length}})</td>
+		</tr>
+		{% for merchant in processed %}
+		<tr>
+			<td>
+				<a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+			</td>
+			<td>{{merchant.email}}</td>
+			<td>{{merchant.legal_name}}</td>
+			<td>{{merchant.fan_name}}</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td colspan="4" class="table-info">Confirmed ({{confirmed|length}})</td>
+		</tr>
+		{% for merchant in confirmed %}
+		<tr>
+			<td>
+				<a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+			</td>
+			<td>{{merchant.email}}</td>
+			<td>{{merchant.legal_name}}</td>
+			<td>{{merchant.fan_name}}</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td colspan="4" class="table-info">Table Assigned ({{assigned|length}})</td>
+		</tr>
+		{% for merchant in assigned %}
+		<tr>
+			<td>
+				<a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+			</td>
+			<td>{{merchant.email}}</td>
+			<td>{{merchant.legal_name}}</td>
+			<td>{{merchant.fan_name}}</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td colspan="4" class="table-info">Denied ({{denied|length}})</td>
+		</tr>
+		{% for merchant in denied %}
+		<tr>
+			<td>
+				<a href="{% url 'console:merchant-detail' merchant.id %}">{{merchant.business_name}}</a>
+			</td>
+			<td>{{merchant.email}}</td>
+			<td>{{merchant.legal_name}}</td>
+			<td>{{merchant.fan_name}}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
 </table>
 {% endblock %}
