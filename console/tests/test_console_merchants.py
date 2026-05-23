@@ -47,6 +47,31 @@ class ConsoleMerchantViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-merchants-list.html")
         self.assertIn(self.merchant, response.context["merchants"])
 
+    def test_merchants_list_view_filters_by_selected_previous_event(self):
+        previous_event = self.create_previous_event()
+        previous_merchant = Merchant.objects.create(
+            event=previous_event,
+            email="previous-merchant@example.com",
+            legal_name="Previous Legal Name",
+            fan_name="Previous Fan Name",
+            phone_number="555-1000",
+            table_size=self.full_table,
+            business_name="Previous Business",
+            wares_description="Previous Wares",
+            merchant_state=MerchantState.STATE_NEW,
+        )
+
+        response = self.client.get(
+            reverse("console:merchants"),
+            data={"event_id": previous_event.id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["event_id"], previous_event.id)
+        self.assertIn(previous_event, response.context["prev_events"])
+        self.assertIn(previous_merchant, response.context["merchants"])
+        self.assertNotIn(self.merchant, response.context["merchants"])
+
     def test_merchant_detail_view_renders(self):
         response = self.client.get(
             reverse("console:merchant-detail", args=[self.merchant.id])

@@ -11,8 +11,25 @@
     </div>
 </div>
 <table class="table">
-    <thead class="text-left">
-        <tr class="table-dark">
+    <thead class="table-dark text-left">
+        <tr>
+			<td class="text-center" colspan="5">
+				<form class="mb-0" action="{% url 'console:panels' %}">
+                    <label class="form-label-sm" for="event_select">Event:</label>
+                    <select class="form-select-sm" name="event_id" id="event_select">
+                        {% for prev_event in prev_events %}
+                        {% if prev_event.id == event_id %}
+                        <option value="{{prev_event.id}}" selected>{{prev_event.event_name}}</option>
+                        {% else %}
+                        <option value="{{prev_event.id}}">{{prev_event.event_name}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input class="btn btn-sm btn-primary" type="submit">
+				</form>
+			</td>
+		</tr>
+        <tr>
             <th scope="col">Panel Name</th>
             <th scope="col">Email</th>
             <th scope="col">Legal Name</th>

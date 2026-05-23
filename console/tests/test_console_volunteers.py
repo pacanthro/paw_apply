@@ -43,6 +43,26 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-volunteers-list.html")
         self.assertIn(volunteer, response.context["volunteers"])
 
+    def test_volunteers_list_view_filters_by_selected_previous_event(self):
+        volunteer = self._create_volunteer()
+        previous_event = self.create_previous_event()
+        previous_volunteer = self._create_volunteer(
+            event=previous_event,
+            email="previous-volunteer@example.com",
+            fan_name="Previous Fan Name",
+        )
+
+        response = self.client.get(
+            reverse("console:volunteers"),
+            data={"event_id": previous_event.id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["event_id"], previous_event.id)
+        self.assertIn(previous_event, response.context["prev_events"])
+        self.assertIn(previous_volunteer, response.context["volunteers"])
+        self.assertNotIn(volunteer, response.context["volunteers"])
+
     def test_volunteer_detail_view_renders_with_tasks(self):
         volunteer = self._create_volunteer()
         previous_event = Event.objects.create(

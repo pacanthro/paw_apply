@@ -30,6 +30,31 @@ class ConsoleCompetitorViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-competitors-list.html")
         self.assertIn(self.competitor, response.context["new_competitors"])
 
+    def test_competitors_list_view_filters_by_selected_previous_event(self):
+        previous_event = self.create_previous_event()
+        previous_competitor = Competitor.objects.create(
+            event=previous_event,
+            email="previous-competitor@example.com",
+            legal_name="Previous Legal Name",
+            fan_name="Previous Fan Name",
+            competitor_name="Previous Comp",
+            phone_number="555-1006",
+            twitter_handle="previous-handle",
+            telegram_handle="previous-telegram",
+            competitor_state=ApplicationState.STATE_NEW,
+        )
+
+        response = self.client.get(
+            reverse("console:competitors"),
+            data={"event_id": previous_event.id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["event_id"], previous_event.id)
+        self.assertIn(previous_event, response.context["prev_events"])
+        self.assertIn(previous_competitor, response.context["new_competitors"])
+        self.assertNotIn(self.competitor, response.context["new_competitors"])
+
     def test_competitor_detail_view_renders(self):
         response = self.client.get(
             reverse("console:competitor-detail", args=[self.competitor.id])

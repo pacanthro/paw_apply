@@ -1,6 +1,6 @@
 from typing import Any
 from console.forms import HostAssignRoomForm, PartyHostUpdateContentForm
-from core.models import get_current_event, ApplicationState
+from core.models import Event, get_current_event, ApplicationState
 from datetime import date
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
@@ -21,13 +21,22 @@ class PartyHostListPageViewView(PageView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = get_current_event()
+        event_id = self.request.GET.get('event_id', None)
+        prev_events = Event.objects.all().order_by('-event_end')
+
+        if event_id is None:
+            event = get_current_event()
+        else:
+            event = Event.objects.get(pk=event_id)
+
         new_hosts = PartyHost.objects.filter(event=event).filter(host_state=ApplicationState.STATE_NEW)
         accepted_hosts = PartyHost.objects.filter(event=event).filter(host_state=ApplicationState.STATE_ACCEPTED)
         waitlisted_hosts = PartyHost.objects.filter(event=event).filter(host_state=ApplicationState.STATE_WAITLIST)
         assigned_hosts = PartyHost.objects.filter(event=event).filter(host_state=ApplicationState.STATE_ASSIGNED)
         declined_hosts = PartyHost.objects.filter(event=event).filter(host_state=ApplicationState.STATE_DENIED)
 
+        context['event_id'] = event.id
+        context['prev_events'] = prev_events
         context['new_hosts'] = new_hosts
         context['accepted_hosts'] = accepted_hosts
         context['waitlisted_hosts'] = waitlisted_hosts

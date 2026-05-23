@@ -112,7 +112,7 @@ class ConsoleIndexPageView(PageView):
         event = get_current_event()
         merchant_count = self.merchant_table_count()
         merchants_applied = Merchant.objects.filter(event=event).exclude(merchant_state=MerchantState.STATE_DELETED).count()
-        panel_count = Panel.objects.filter(event=event).count()
+        panel_count = Panel.objects.filter(event=event).exclude(panel_state=ApplicationState.STATE_DELETED).count()
         volunteer_count = Volunteer.objects.filter(event=event).exclude(volunteer_state=ApplicationState.STATE_DELETED).count()
         performer_count = Performer.objects.filter(event=event).exclude(performer_state=ApplicationState.STATE_DELETED).count()
         host_count = PartyHost.objects.filter(event=event).exclude(host_state=ApplicationState.STATE_DELETED).count()

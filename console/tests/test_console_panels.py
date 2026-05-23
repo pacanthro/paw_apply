@@ -62,6 +62,25 @@ class ConsolePanelViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-panels-list.html")
         self.assertIn(self.panel, response.context["panels"])
 
+    def test_panels_list_view_filters_by_selected_previous_event(self):
+        previous_event = self.create_previous_event()
+        previous_panel = self._create_panel(
+            event=previous_event,
+            email="previous-panel@example.com",
+            panel_name="Previous Panel Name",
+        )
+
+        response = self.client.get(
+            reverse("console:panels"),
+            data={"event_id": previous_event.id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["event_id"], previous_event.id)
+        self.assertIn(previous_event, response.context["prev_events"])
+        self.assertIn(previous_panel, response.context["panels"])
+        self.assertNotIn(self.panel, response.context["panels"])
+
     def test_panel_detail_view_renders(self):
         response = self.client.get(reverse("console:panel-detail", args=[self.panel.id]))
 

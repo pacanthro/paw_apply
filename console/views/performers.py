@@ -1,5 +1,5 @@
 from console.forms import PerformerScheduleDayForm, PerformerScheduleSlotForm, PerformerUpdateContentForm
-from core.models import get_current_event, ApplicationState, DaysAvailable, SchedulingConfig
+from core.models import Event, get_current_event, ApplicationState, DaysAvailable, SchedulingConfig
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
@@ -26,13 +26,22 @@ class PerformersListPageView(PageView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = get_current_event()
+        event_id = self.request.GET.get('event_id', None)
+        prev_events = Event.objects.all().order_by('-event_end')
+
+        if event_id is None:
+            event = get_current_event()
+        else:
+            event = Event.objects.get(pk=event_id)
+        
         performers = Performer.objects.filter(event=event).filter(performer_state=ApplicationState.STATE_NEW)
         performers_accepted = Performer.objects.filter(event=event).filter(performer_state=ApplicationState.STATE_ACCEPTED)
         performers_assigned = Performer.objects.filter(event=event).filter(performer_state=ApplicationState.STATE_ASSIGNED)
         performers_waitlisted = Performer.objects.filter(event=event).filter(performer_state=ApplicationState.STATE_WAITLIST)
         performers_declined = Performer.objects.filter(event=event).filter(performer_state=ApplicationState.STATE_DENIED)
     
+        context['event_id'] = event.id
+        context['prev_events'] = prev_events
         context['performers'] = performers
         context['performers_accepted'] = performers_accepted
         context['performers_assigned'] = performers_assigned
