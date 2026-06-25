@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from core.models import ApplicationState, DaysAvailable, Event
+from partyfloor.forms import HostForm
 from partyfloor.models import PartyHost, PartyHostContent
 
 
@@ -66,6 +67,8 @@ class PartyfloorTests(TestCase):
             "ack_wristbands": True,
             "ack_closure_time": True,
             "ack_suspension_policy": True,
+            "captcha_0": "dummy-value",
+            "captcha_1": "PASSED",
         }
         payload.update(overrides)
         return payload
@@ -99,7 +102,64 @@ class PartyfloorTests(TestCase):
     def test_index_shows_not_full_when_empty(self):
         response = self.client.get(reverse("partyfloor:index"))
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "partyfloor.html")
+        self.assertTrue(response.context["is_partyfloor"])
+        self.assertEqual(response.context["event"], self.event)
         self.assertFalse(response.context["is_partyfloor_full"])
+        self.assertContains(response, "Interstitial content")
+
+    def test_index_marks_partyfloor_full_at_capacity(self):
+        for i in range(5):
+            self._create_host(
+                email=f"host{i}@example.com",
+                hotel_ack_num=f"RES-{i}",
+            )
+
+        response = self.client.get(reverse("partyfloor:index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["is_partyfloor_full"])
+        self.assertContains(response, "Party Floor is currently full.")
+
+    def test_index_does_not_count_inactive_hosts_toward_capacity(self):
+        inactive_states = [
+            ApplicationState.STATE_DENIED,
+            ApplicationState.STATE_DELETED,
+            ApplicationState.STATE_OLD,
+        ]
+        for i, host_state in enumerate(inactive_states):
+            self._create_host(
+                email=f"inactive{i}@example.com",
+                hotel_ack_num=f"INACTIVE-{i}",
+                host_state=host_state,
+            )
+
+        response = self.client.get(reverse("partyfloor:index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context["is_partyfloor_full"])
+
+    def test_apply_renders_form_when_partyfloor_open(self):
+        response = self.client.get(reverse("partyfloor:apply"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "partyfloor-apply.html")
+        self.assertTrue(response.context["is_partyfloor"])
+        self.assertEqual(response.context["event"], self.event)
+        self.assertIsInstance(response.context["form"], HostForm)
+        self.assertContains(response, "Apply content")
+        self.assertContains(response, 'action="%s"' % reverse("partyfloor:new"))
+
+    def test_apply_hides_form_when_module_disabled(self):
+        self.event.module_partyfloor_enabled = False
+        self.event.save(update_fields=["module_partyfloor_enabled"])
+
+        response = self.client.get(reverse("partyfloor:apply"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "partyfloor-apply.html")
+        self.assertNotContains(response, "<form", html=False)
+        self.assertContains(response, "Sorry Applictions for the Party Floor are currently closed.")
 
     def test_apply_redirects_when_partyfloor_full(self):
         for i in range(5):
@@ -127,8 +187,84 @@ class PartyfloorTests(TestCase):
     def test_email_must_be_unique_for_current_event(self):
         self._create_host(email="dupe@example.com", hotel_ack_num="RES-999")
         payload = self._host_payload(email="dupe@example.com", hotel_ack_num="RES-1000")
-        response = self.client.post(reverse("partyfloor:new"), data=payload)
+        with patch("partyfloor.views.send_paw_email_new") as send_email:
+            response = self.client.post(reverse("partyfloor:new"), data=payload)
 
         self.assertEqual(response.status_code, 200)
         form = response.context["form"]
         self.assertIn("Email already exists", form.errors["email"])
+        self.assertEqual(PartyHost.objects.count(), 1)
+        send_email.assert_not_called()
+
+    def test_email_can_match_past_event_host(self):
+        past_event = Event.objects.create(
+            event_name="Past Event",
+            event_start=self.today - datetime.timedelta(days=60),
+            event_end=self.today - datetime.timedelta(days=30),
+            max_merchants=0,
+            max_party_rooms=0,
+            submissions_end=self.today - datetime.timedelta(days=45),
+            module_panels_enabled=False,
+            module_merchants_enabled=False,
+            module_performers_enabled=False,
+            module_partyfloor_enabled=True,
+            module_competitors_enabled=False,
+            voucher_performers="",
+            voucher_volunteer="",
+        )
+        self._create_host(email="returning@example.com", hotel_ack_num="PAST-999")
+        PartyHost.objects.filter(email="returning@example.com").update(event=past_event)
+        payload = self._host_payload(email="returning@example.com", hotel_ack_num="RES-1000")
+
+        with patch("partyfloor.views.send_paw_email_new") as send_email:
+            response = self.client.post(reverse("partyfloor:new"), data=payload)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("partyfloor:confirm"))
+        self.assertEqual(PartyHost.objects.filter(event=self.event).count(), 1)
+        send_email.assert_called_once()
+
+    def test_new_rejects_missing_required_acknowledgement(self):
+        payload = self._host_payload()
+        payload.pop("ack_no_smoking")
+
+        with patch("partyfloor.views.send_paw_email_new") as send_email:
+            response = self.client.post(reverse("partyfloor:new"), data=payload)
+
+        self.assertEqual(response.status_code, 200)
+        form = response.context["form"]
+        self.assertIn("ack_no_smoking", form.errors)
+        self.assertEqual(PartyHost.objects.count(), 0)
+        send_email.assert_not_called()
+
+    def test_new_rejects_missing_captcha(self):
+        payload = self._host_payload()
+        payload.pop("captcha_0")
+        payload.pop("captcha_1")
+
+        with patch("partyfloor.views.send_paw_email_new") as send_email:
+            response = self.client.post(reverse("partyfloor:new"), data=payload)
+
+        self.assertEqual(response.status_code, 200)
+        form = response.context["form"]
+        self.assertIn("captcha", form.errors)
+        self.assertEqual(PartyHost.objects.count(), 0)
+        send_email.assert_not_called()
+
+    def test_new_rejects_unavailable_party_day(self):
+        unavailable_day = DaysAvailable.objects.create(
+            key="SAT",
+            name="Saturday",
+            order=2,
+            available_party=False,
+        )
+        payload = self._host_payload(party_days=[unavailable_day.key])
+
+        with patch("partyfloor.views.send_paw_email_new") as send_email:
+            response = self.client.post(reverse("partyfloor:new"), data=payload)
+
+        self.assertEqual(response.status_code, 200)
+        form = response.context["form"]
+        self.assertIn("party_days", form.errors)
+        self.assertEqual(PartyHost.objects.count(), 0)
+        send_email.assert_not_called()
