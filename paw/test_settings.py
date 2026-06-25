@@ -7,5 +7,3 @@ DATABASES = {
         'NAME': BASE_DIR + '/db_tests.sqlite3', # Use ':memory:' for an in-memory database
     }
 }
-
-CAPTCHA_TEST_MODE = True

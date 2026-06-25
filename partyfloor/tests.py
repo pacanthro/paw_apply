@@ -172,6 +172,7 @@ class PartyfloorTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("partyfloor:index"))
 
+    @patch("captcha.fields.settings.CAPTCHA_TEST_MODE", True)
     def test_new_creates_host_sends_email_and_redirects(self):
         payload = self._host_payload()
         with patch("partyfloor.views.send_paw_email_new") as send_email:
@@ -196,6 +197,7 @@ class PartyfloorTests(TestCase):
         self.assertEqual(PartyHost.objects.count(), 1)
         send_email.assert_not_called()
 
+    @patch("captcha.fields.settings.CAPTCHA_TEST_MODE", True)
     def test_email_can_match_past_event_host(self):
         past_event = Event.objects.create(
             event_name="Past Event",
