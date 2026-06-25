@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from core.models import get_current_event
 from crispy_forms.bootstrap import PrependedText
 from crispy_forms.helper import FormHelper
@@ -8,6 +9,7 @@ from core.models import DaysAvailable
 from partyfloor.models import PartyHost
 
 class HostForm(forms.ModelForm):
+    captcha = CaptchaField()
     class Meta:
         model = PartyHost
         fields = (
@@ -89,6 +91,10 @@ class HostForm(forms.ModelForm):
                 'ack_wristbands',
                 'ack_closure_time',
                 'ack_suspension_policy'
+            ),
+            Fieldset(
+                'Captcha',
+                'captcha'
             )
         )
         self.helper.add_input(Submit('submit', 'Apply', css_class='float-end'))
