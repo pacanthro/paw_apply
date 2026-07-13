@@ -1,7 +1,7 @@
 authlib==1.6.12
 crispy-bootstrap5==2025.6
 DateTimeRange==2.3.2
-Django==5.2.14
+Django==5.2.15
 django-crispy-forms==2.5
 django-simple-captcha==0.6.3
 Markdown==3.8.1
