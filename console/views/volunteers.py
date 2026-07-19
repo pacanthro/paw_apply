@@ -20,7 +20,7 @@ from modules.email import send_paw_email, send_paw_email_new, send_mass_paw_emai
 from modules.page_view import PageView
 from volunteers.models import Volunteer, VolunteerTask, VolunteerContent
 
-from datetime import date
+from datetime import date, timedelta
 from django.db.models import DurationField, F, ExpressionWrapper, Sum
 import sys
 
@@ -49,7 +49,18 @@ class VolunteerListPageView(PageView):
         context['event_id'] = event.id
         context['prev_events'] = prev_events
         context['volunteers'] = volunteers
-        context['volunteers_accepted'] = volunteers_accepted
+        context['volunteers_accepted'] = []
+
+        total_hours_worked = timedelta()
+        for volunteer in volunteers_accepted:
+            tasks = VolunteerTask.objects.filter(volunteer=volunteer)
+            total_hours = reduce(operator.add, [task.effective_hours() for task in tasks]) if len(tasks) > 0 else None
+            if total_hours != None:
+                total_hours_worked += total_hours
+
+            context['volunteers_accepted'].append({ "volunteer": volunteer, "total_hours": total_hours})
+
+        context['total_hours_worked'] = total_hours_worked
         context['volunteers_declined'] = volunteers_declined
         
         return context

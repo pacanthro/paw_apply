@@ -15,7 +15,7 @@
 <table class="table">
 	<thead class="table-dark">
 		<tr>
-			<td class="text-center" colspan="5">
+			<td class="text-center" colspan="6">
 				<form class="mb-0" action="{% url 'console:volunteers' %}">
                     <label class="form-label-sm" for="event_select">Event:</label>
                     <select class="form-select-sm" name="event_id" id="event_select">
@@ -37,11 +37,12 @@
 			<th scope="col">Legal Name</th>
 			<th scope="col">Phone Number</th>
 			<th scope="col">Telegram Handle</th>
+            <th scope="col">Hours Worked</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr class="table-info">
-			<td colspan="5">New ({{volunteers|length}})</td>
+			<td colspan="6">New ({{volunteers|length}})</td>
 		</tr>
 		{% for volunteer in volunteers %}
 		<tr>
@@ -61,33 +62,36 @@
 				<a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
 				{{volunteer.telegram_handle}}</a>
 			</td>
+            <td></td>
 		</tr>
 		{% endfor %}
 		<tr class="table-info">
 			<td colspan="5">Accepted ({{volunteers_accepted|length}})</td>
+            <td>Total Hours: {{total_hours_worked}}</td>
 		</tr>
 		{% for volunteer in volunteers_accepted %}
 		<tr>
 			<td>
-				<a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
+				<a href="{% url 'console:volunteer-detail' volunteer.volunteer.id %}">{{volunteer.volunteer.fan_name}}</a>
 			</td>
 			<td>
 				<a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i>
-				{{volunteer.email}}</a>
+				{{volunteer.volunteer.email}}</a>
 			</td>
 			<td>{{volunteer.legal_name}}</td>
 			<td>
 				<a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i>
-				{{volunteer.phone_number}}</a>
+				{{volunteer.volunteer.phone_number}}</a>
 			</td>
 			<td>
 				<a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
-				{{volunteer.telegram_handle}}</a>
+				{{volunteer.volunteer.telegram_handle}}</a>
 			</td>
+            <td>{{ volunteer.total_hours|default:"" }}</td>
 		</tr>
 		{% endfor %}
 		<tr class="table-info">
-			<td colspan="5">Declined ({{volunteers_declined|length}})</td>
+			<td colspan="6">Declined ({{volunteers_declined|length}})</td>
 		</tr>
 		{% for volunteer in volunteers_declined %}
 		<tr>
