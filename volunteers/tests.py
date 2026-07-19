@@ -95,8 +95,19 @@ class VolunteerViewsTests(TestCase):
         self.assertEqual(list(volunteer.time_availble.all()), [self.time])
 
         send_paw_email_new.assert_called_once()
+        self.assertEqual(send_paw_email_new.call_args.args[0], "Submit email content")
+        self.assertEqual(send_paw_email_new.call_args.args[1], {"volunteer": volunteer})
+        self.assertEqual(
+            send_paw_email_new.call_args.kwargs,
+            {
+                "subject": "PAWCon Volunteer Application",
+                "recipient_list": ["volunteer@example.com"],
+                "reply_to": "volunteer@example.com",
+            },
+        )
 
-    def test_new_view_invalid_rerenders(self):
+    @mock.patch("volunteers.views.send_paw_email_new")
+    def test_new_view_invalid_rerenders(self, send_paw_email_new):
         response = self.client.post(
             reverse("volunteers:new"),
             data=self._valid_post_data(email=""),
@@ -104,6 +115,43 @@ class VolunteerViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "volunteer-apply.html")
         self.assertIn("form", response.context)
+        self.assertFalse(response.context["form"].is_valid())
+        self.assertEqual(Volunteer.objects.count(), 0)
+        send_paw_email_new.assert_not_called()
+
+    def test_new_view_rejects_deleted_department(self):
+        deleted_department = Department.objects.create(
+            department_name="Deleted Ops",
+            description="Deleted Department",
+            order=2,
+            deleted=True,
+        )
+
+        response = self.client.post(
+            reverse("volunteers:new"),
+            data=self._valid_post_data(department_interest=[deleted_department.id]),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("department_interest", response.context["form"].errors)
+        self.assertEqual(Volunteer.objects.count(), 0)
+
+    def test_new_view_rejects_party_only_day(self):
+        party_only_day = DaysAvailable.objects.create(
+            key="PARTY",
+            name="Party Day",
+            order=2,
+            party_only=True,
+        )
+
+        response = self.client.post(
+            reverse("volunteers:new"),
+            data=self._valid_post_data(days_available=[party_only_day.key]),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("days_available", response.context["form"].errors)
+        self.assertEqual(Volunteer.objects.count(), 0)
 
     def test_confirm_view_renders(self):
         response = self.client.get(reverse("volunteers:confirm"))
@@ -175,6 +223,53 @@ class VolunteerFormTests(TestCase):
         form = VolunteerForm(data=self._valid_form_data())
         self.assertFalse(form.is_valid())
         self.assertIn("email", form.errors)
+
+    def test_clean_email_allows_duplicate_for_different_event(self):
+        previous_event = Event.objects.create(
+            event_name="Previous Event",
+            event_start=datetime.date.today() - datetime.timedelta(days=10),
+            event_end=datetime.date.today() - datetime.timedelta(days=8),
+            submissions_end=datetime.date.today() - datetime.timedelta(days=12),
+        )
+        Volunteer.objects.create(
+            event=previous_event,
+            email="dup@example.com",
+            legal_name="Existing",
+            fan_name="Existing",
+            phone_number="555-0102",
+            twitter_handle="existing",
+            telegram_handle="existing",
+            referred_by="",
+            volunteer_history="",
+            special_skills="",
+            avail_setup=False,
+            avail_teardown=False,
+        )
+
+        form = VolunteerForm(data=self._valid_form_data())
+
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_form_filters_deleted_departments_and_party_only_days(self):
+        deleted_department = Department.objects.create(
+            department_name="Deleted Ops",
+            description="Deleted Department",
+            order=2,
+            deleted=True,
+        )
+        party_only_day = DaysAvailable.objects.create(
+            key="PARTY",
+            name="Party Day",
+            order=2,
+            party_only=True,
+        )
+
+        form = VolunteerForm()
+
+        self.assertIn(self.department, form.fields["department_interest"].queryset)
+        self.assertNotIn(deleted_department, form.fields["department_interest"].queryset)
+        self.assertIn(self.day, form.fields["days_available"].queryset)
+        self.assertNotIn(party_only_day, form.fields["days_available"].queryset)
 
 
 class VolunteerTaskModelTests(TestCase):
