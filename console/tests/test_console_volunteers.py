@@ -43,6 +43,50 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
         self.assertTemplateUsed(response, "console-volunteers-list.html")
         self.assertIn(volunteer, response.context["volunteers"])
 
+    def test_volunteers_list_view_shows_accepted_volunteer_hours(self):
+        volunteer = self._create_volunteer(
+            email="accepted@example.com",
+            volunteer_state=ApplicationState.STATE_ACCEPTED,
+        )
+        VolunteerTask.objects.create(
+            event=self.event,
+            volunteer=volunteer,
+            recorded_by=self.user,
+            task_name="Registration",
+            task_notes="Checked attendees in",
+            task_multiplier=1,
+            task_start=timezone.now() - timedelta(hours=2),
+            task_end=timezone.now(),
+        )
+        VolunteerTask.objects.create(
+            event=self.event,
+            volunteer=volunteer,
+            recorded_by=self.user,
+            task_name="Setup",
+            task_notes="Moved supplies",
+            task_multiplier=2,
+            task_start=timezone.now() - timedelta(hours=1),
+            task_end=timezone.now(),
+        )
+
+        response = self.client.get(reverse("console:volunteers"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Hours Worked")
+        self.assertContains(response, "4:00:00")
+        self.assertContains(response, "Total Hours: 4:00:00")
+        self.assertEqual(response.context["volunteers_accepted"][0]["volunteer"], volunteer)
+        self.assertAlmostEqual(
+            response.context["volunteers_accepted"][0]["total_hours"].total_seconds(),
+            timedelta(hours=4).total_seconds(),
+            places=3,
+        )
+        self.assertAlmostEqual(
+            response.context["total_hours_worked"].total_seconds(),
+            timedelta(hours=4).total_seconds(),
+            places=3,
+        )
+
     def test_volunteers_list_view_filters_by_selected_previous_event(self):
         volunteer = self._create_volunteer()
         previous_event = self.create_previous_event()
