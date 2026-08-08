@@ -1,22 +1,23 @@
 {% extends 'console.html' %}
+{% load console_extras %}
 
 {% block title %}PAWCon Apply Console - Volunteers{% endblock %}
 
 {% block tool %}
 <h1>Volunteers</h1>
 <div class="row pb-1">
-	<div class="col">
-		<a href="{% url 'console:volunteer-download' %}" class="btn btn-primary">Export CSV</a>
-		<a href="{% url 'console:volunteer-dashboard' %}" class="btn btn-primary">Dashboard</a>
-		<a href="{% url 'console:volunteer-email' %}" class="btn btn-primary">Mass Email</a>
-		<a href="{% url 'console:volunteer-content' %}" class="btn btn-primary">Update Content</a>
-	</div>
+    <div class="col">
+        <a href="{% url 'console:volunteer-download' %}" class="btn btn-primary">Export CSV</a>
+        <a href="{% url 'console:volunteer-dashboard' %}" class="btn btn-primary">Dashboard</a>
+        <a href="{% url 'console:volunteer-email' %}" class="btn btn-primary">Mass Email</a>
+        <a href="{% url 'console:volunteer-content' %}" class="btn btn-primary">Update Content</a>
+    </div>
 </div>
 <table class="table">
-	<thead class="table-dark">
-		<tr>
-			<td class="text-center" colspan="6">
-				<form class="mb-0" action="{% url 'console:volunteers' %}">
+    <thead class="table-dark">
+        <tr>
+            <td class="text-center" colspan="6">
+                <form class="mb-0" action="{% url 'console:volunteers' %}">
                     <label class="form-label-sm" for="event_select">Event:</label>
                     <select class="form-select-sm" name="event_id" id="event_select">
                         {% for prev_event in prev_events %}
@@ -28,91 +29,92 @@
                         {% endfor %}
                     </select>
                     <input class="btn btn-sm btn-primary" type="submit">
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<th scope="col">Fan Name</th>
-			<th scope="col">Email</th>
-			<th scope="col">Legal Name</th>
-			<th scope="col">Phone Number</th>
-			<th scope="col">Telegram Handle</th>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <th scope="col">Fan Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Legal Name</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Telegram Handle</th>
             <th scope="col">Hours Worked</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr class="table-info">
-			<td colspan="6">New ({{volunteers|length}})</td>
-		</tr>
-		{% for volunteer in volunteers %}
-		<tr>
-			<td>
-				<a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
-			</td>
-			<td>
-				<a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i>
-				{{volunteer.email}}</a>
-			</td>
-			<td>{{volunteer.legal_name}}</td>
-			<td>
-				<a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i>
-				{{volunteer.phone_number}}</a>
-			</td>
-			<td>
-				<a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
-				{{volunteer.telegram_handle}}</a>
-			</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="table-info">
+            <td colspan="6">New ({{volunteers|length}})</td>
+        </tr>
+        {% for volunteer in volunteers %}
+        <tr>
+            <td>
+                <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i>
+                    {{volunteer.email}}</a>
+            </td>
+            <td>{{volunteer.legal_name}}</td>
+            <td>
+                <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i>
+                    {{volunteer.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
+                    {{volunteer.telegram_handle}}</a>
+            </td>
             <td></td>
-		</tr>
-		{% endfor %}
-		<tr class="table-info">
-			<td colspan="5">Accepted ({{volunteers_accepted|length}})</td>
-            <td>Total Hours: {{total_hours_worked}}</td>
-		</tr>
-		{% for volunteer in volunteers_accepted %}
-		<tr>
-			<td>
-				<a href="{% url 'console:volunteer-detail' volunteer.volunteer.id %}">{{volunteer.volunteer.fan_name}}</a>
-			</td>
-			<td>
-				<a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i>
-				{{volunteer.volunteer.email}}</a>
-			</td>
-			<td>{{volunteer.legal_name}}</td>
-			<td>
-				<a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i>
-				{{volunteer.volunteer.phone_number}}</a>
-			</td>
-			<td>
-				<a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
-				{{volunteer.volunteer.telegram_handle}}</a>
-			</td>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="5">Accepted ({{volunteers_accepted|length}})</td>
+            <td>Total Hours: {{total_hours_worked|pretty_delta}}</td>
+        </tr>
+        {% for volunteer in volunteers_accepted %}
+        <tr>
+            <td>
+                <a href="{% url 'console:volunteer-detail' volunteer.volunteer.id %}">{{volunteer.volunteer.fan_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{volunteer.volunteer.email}}"><i class="far fa-envelope"></i>
+                    {{volunteer.volunteer.email}}</a>
+            </td>
+            <td>{{volunteer.volunteer.legal_name}}</td>
+            <td>
+                <a href="tel:{{volunteer.volunteer.phone_number}}"><i class="fas fa-phone"></i>
+                    {{volunteer.volunteer.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{volunteer.volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
+                    {{volunteer.volunteer.telegram_handle}}</a>
+            </td>
             <td>{{ volunteer.total_hours|default:"" }}</td>
-		</tr>
-		{% endfor %}
-		<tr class="table-info">
-			<td colspan="6">Declined ({{volunteers_declined|length}})</td>
-		</tr>
-		{% for volunteer in volunteers_declined %}
-		<tr>
-			<td>
-				<a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
-			</td>
-			<td>
-				<a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i>
-				{{volunteer.email}}</a>
-			</td>
-			<td>{{volunteer.legal_name}}</td>
-			<td>
-				<a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i>
-				{{volunteer.phone_number}}</a>
-			</td>
-			<td>
-				<a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
-				{{volunteer.telegram_handle}}</a>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
+        </tr>
+        {% endfor %}
+        <tr class="table-info">
+            <td colspan="6">Declined ({{volunteers_declined|length}})</td>
+        </tr>
+        {% for volunteer in volunteers_declined %}
+        <tr>
+            <td>
+                <a href="{% url 'console:volunteer-detail' volunteer.id %}">{{volunteer.fan_name}}</a>
+            </td>
+            <td>
+                <a href="mailto:{{volunteer.email}}"><i class="far fa-envelope"></i>
+                    {{volunteer.email}}</a>
+            </td>
+            <td>{{volunteer.legal_name}}</td>
+            <td>
+                <a href="tel:{{volunteer.phone_number}}"><i class="fas fa-phone"></i>
+                    {{volunteer.phone_number}}</a>
+            </td>
+            <td>
+                <a href="https://t.me/{{volunteer.telegram_handle}}"><i class="fab fa-telegram"></i>
+                    {{volunteer.telegram_handle}}</a>
+            </td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

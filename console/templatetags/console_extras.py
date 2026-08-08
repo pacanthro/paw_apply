@@ -11,11 +11,6 @@ def pretty_delta(timedeltaobj):
 
     secs = timedeltaobj.total_seconds()
     timetot = ""
-    if secs > 86400: # 60sec * 60min * 24hrs
-        days = secs // 86400
-        timetot += "{} days".format(int(days))
-        secs = secs - days*86400
-
     if secs > 3600:
         hrs = secs // 3600
         timetot += " {} hours".format(int(hrs))

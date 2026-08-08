@@ -55,8 +55,8 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
             task_name="Registration",
             task_notes="Checked attendees in",
             task_multiplier=1,
-            task_start=timezone.now() - timedelta(hours=2),
-            task_end=timezone.now(),
+            task_start=timezone.now().replace(microsecond=0) - timedelta(hours=2),
+            task_end=timezone.now().replace(microsecond=0),
         )
         VolunteerTask.objects.create(
             event=self.event,
@@ -65,8 +65,8 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
             task_name="Setup",
             task_notes="Moved supplies",
             task_multiplier=2,
-            task_start=timezone.now() - timedelta(hours=1),
-            task_end=timezone.now(),
+            task_start=timezone.now().replace(microsecond=0) - timedelta(hours=1),
+            task_end=timezone.now().replace(microsecond=0),
         )
 
         response = self.client.get(reverse("console:volunteers"))
@@ -74,7 +74,7 @@ class ConsoleVolunteerViewsTests(ConsoleViewBase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Hours Worked")
         self.assertContains(response, "4:00:00")
-        self.assertContains(response, "Total Hours: 4:00:00")
+        self.assertContains(response, "Total Hours:  4 hours")
         self.assertEqual(response.context["volunteers_accepted"][0]["volunteer"], volunteer)
         self.assertAlmostEqual(
             response.context["volunteers_accepted"][0]["total_hours"].total_seconds(),

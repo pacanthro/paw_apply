@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from core.models import get_current_event
 from crispy_forms.bootstrap import PrependedText
 from crispy_forms.helper import FormHelper
@@ -8,6 +9,7 @@ from core.models import DaysAvailable
 from performers.models import Performer
 
 class PerformerForm(forms.ModelForm):
+    captcha = CaptchaField()
     class Meta:
         model = Performer
         fields = (
@@ -47,6 +49,10 @@ class PerformerForm(forms.ModelForm):
                 'biography',
                 'dj_history',
                 'set_link'
+            ),
+            Fieldset(
+                'Captcha',
+                'captcha'
             )
         )
         self.helper.add_input(Submit('submit', 'Apply', css_class='float-end'))
